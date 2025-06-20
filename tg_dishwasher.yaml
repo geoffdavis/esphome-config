@@ -1,0 +1,21 @@
+
+substitutions:
+  name: tg-dishwasher
+  old_name: tg_dishwasher
+  friendly_name: "Dishwasher"
+  # Plug state to set upon powerup (or after power loss)
+  # See options here: https://esphome.io/components/switch/gpio.html
+  restore_mode: RESTORE_DEFAULT_ON
+  # TGWF115APM (Big 15A plug)
+  current_resistor: "0.00228"
+  voltage_divider: "2120"
+  wattage_multiplier: "0.001"
+  voltage: "120.0"
+
+packages:
+  wifi: !include common/wifi.yaml
+  #ipv6: !include common/ipv6.yaml # ESPAsyncUDP does not support IPv6
+  #rename: !include common/rename.yaml
+  sensors: !include common/sensors.yaml
+  esp01: !include common/esp01.yaml
+  topgreener: !include common/outlet-topgreener.yaml

@@ -1,0 +1,35 @@
+esphome:
+  name: ${node_name}
+  build_path: ./build/${node_name}
+
+wifi:
+  <<: !include common/wifi.yaml
+
+captive_portal:
+
+# Enable Home Assistant API
+api:
+
+ota:
+  platform: esphome
+  password: !secret ota_password
+
+logger:
+
+# Enable Web server.
+web_server:
+  port: 80
+
+  # Sync time with Home Assistant.
+time:
+  - platform: homeassistant
+    id: homeassistant_time
+
+sensor:
+  - <<: !include common/sensor/uptime.config.yaml
+  - <<: !include common/sensor/wifi_signal.config.yaml
+binary_sensor:
+  - <<: !include common/binary_sensor/connection_status.config.yaml
+
+switch:
+  - <<: !include common/switch/restart_switch.config.yaml

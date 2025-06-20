@@ -1,0 +1,51 @@
+# File: common/particle.yaml
+# Configuration for a Plantower pmsx003 sensor
+# This file is included in all ESPHome YAML files that use a Plantower sensor.
+
+esphome:
+  includes: "include/aqipm.h"
+
+text_sensor:
+  - platform: template
+    name: "PM 2.5 AQI"
+    id: aqi_2_5
+  - platform: template
+    name: "PM 10 AQI"
+    id: aqi_10_0
+
+sensor:
+  - platform: pmsx003
+    type: PMSX003
+    id: pms1
+    uart_id: pms_uart
+    pm_1_0:
+      name: "Particulate Matter <1.0µm Concentration"
+      id: pms1_pm_1_0
+      filters:
+        sliding_window_moving_average:
+          window_size: ${aqi_window_size}
+          send_every: ${aqi_window_size}
+    pm_2_5:
+      name: "Particulate Matter <2.5µm Concentration"
+      id: pms1_pm_2_5
+      filters:
+        sliding_window_moving_average:
+          window_size: ${aqi_window_size}
+          send_every: ${aqi_window_size}
+      on_value:
+        then:
+          - text_sensor.template.publish:
+              id: aqi_2_5
+              state: !lambda 'char buffer [10]; sprintf(buffer, "%i", calcAQIpm25(x)); return buffer;'
+    pm_10_0:
+      name: "Particulate Matter <10.0µm Concentration"
+      id: pms1_pm_10_0
+      filters:
+        sliding_window_moving_average:
+          window_size: ${aqi_window_size}
+          send_every: ${aqi_window_size}
+      on_value:
+        then:
+          - text_sensor.template.publish:
+              id: aqi_10_0
+              state: !lambda 'char buffer [10]; sprintf(buffer, "%i", calcAQIpm10(x)); return buffer;'

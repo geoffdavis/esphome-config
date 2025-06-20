@@ -1,0 +1,12 @@
+# MAC: 
+# sn 
+substitutions:
+  name: xmas_tree_outlet
+  friendly_name: "Christmas Tree Outlet"
+
+packages:
+  wifi: !include common/wifi.yaml
+  ipv6: !include common/ipv6.yaml
+  rename: !include common/rename.yaml
+  sensors: !include common/sensors.yaml
+  feit: !include common/feit_outlet.yaml

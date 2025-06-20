@@ -1,0 +1,24 @@
+# MELIFE ESP32 ESP-32S Development Board
+# From: AliExpress. Really touchy about shorts.
+substitutions:
+  name: pruscilla-enclosure
+  old_name: pruscilla_enclosure
+  friendly_name: Pruscilla Enclosure
+  # Address of the onboard Dallas temperature sensor
+  quinled_dallas_address: "0xE53C01A816506928"
+  # Name for the bottom RGBWW light
+  rgbww_bottom_name: "Pruscilla Enc Light"
+  rgbww_bottom_id: enc_light
+  # Name for the top RGBWW light
+  rgbww_top_name: "Shelf Lights"
+  rgbww_top_id: shelf_light
+
+packages:
+  wifi: !include common/wifi.yaml
+  ipv6: !include common/ipv6.yaml
+  sensors: !include common/sensors.yaml
+  esp32: !include common/quinled_deca-esp32.yaml
+  onboard_dallas: !include common/quinled_deca-onboard_dallas.yaml
+  keypad: !include common/quinled_deca-keypad.yaml
+  dualrgbww: !include common/quinled_deca-dualrgbww.yaml
+  #rename: !include common/rename.yaml

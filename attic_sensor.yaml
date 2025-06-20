@@ -1,0 +1,17 @@
+# attic_sensor:
+# Configuration for an ESPHome device that monitors attic temperature and humidity.
+# It uses a DHT11 sensor connected to GPIO0 and includes common features like WiFi
+# connectivity, API, OTA updates, and a web server.
+substitutions:
+  name: attic-sensor
+  old_name: attic_sensor
+  friendly_name: Attic Sensor
+  dht_pin: GPIO0
+
+packages:
+  wifi: !include common/wifi.yaml
+  ipv6: !include common/ipv6.yaml
+  #rename: !include common/rename.yaml
+  sensors: !include common/sensors.yaml
+  sensor_dht: !include common/sensor/dht.yaml
+  esp01: !include common/esp01.yaml

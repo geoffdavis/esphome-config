@@ -1,0 +1,3 @@
+# Uptime sensor.
+- platform: uptime
+  name: ${name} Uptime

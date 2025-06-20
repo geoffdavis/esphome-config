@@ -1,0 +1,188 @@
+---
+substitutions:
+  name: display
+  friendly_name: EPaper Display
+  gpio_spi_clk_pin: "13"
+  gpio_spi_mosi_pin: "14"
+  gpio_cs_pin: "15"
+  gpio_dc_pin: "27"
+  gpio_busy_pin: "25"
+  gpio_reset_pin: "26"
+
+external_components:
+  # Requires 1.90.0-dev or greater
+  - source: github://geoffdavis/esphome@epaper_1p54v2
+    components: [ waveshare_epaper ]
+
+esphome:
+  name: $name
+  platform: ESP32
+  board: mhetesp32devkit
+
+<<: !include "include/common.yaml"
+
+sensor:
+  - platform: homeassistant
+    id: inside_temperature
+    name: "Den Temperature from Home Assistant"
+    entity_id: sensor.den_multisensor_bme280_temperature
+    internal: true
+
+  - platform: homeassistant
+    id: inside_humidity
+    name: "Den Humidity from Home Assistant"
+    entity_id: sensor.den_multisensor_bme280_humidity
+    internal: true
+  
+font:
+  - file: 'fonts/DroidSans.ttf'
+    id: font1
+    size: 12
+    
+  - file: 'fonts/DroidSans.ttf'
+    id: font2
+    size: 48
+    
+  - file: 'fonts/DroidSans.ttf'
+    id: font3
+    size: 16
+    
+  - file: 'fonts/Kanit-Medium.ttf'
+    id: font_medium_20
+    size: 20
+    glyphs:
+      ['&', '@', '!', ',', '.', '"', '%', '+', '-', '_', ':', '°', '0',
+       '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E',
+       'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
+       'T', 'U', 'V', 'W', 'X', 'Y', 'Z', ' ', 'a', 'b', 'c', 'd', 'e', 'f',
+       'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
+       'u', 'v', 'w', 'x', 'y', 'z', '/', 'é']
+
+  - file: 'fonts/Kanit-Regular.ttf'
+    id: font_regular_30
+    size: 30
+    glyphs: 
+      ['&', '@', '!', ',', '.', '"', '%', '+', '-', '_', ':', '°', '0',
+       '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E',
+       'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
+       'T', 'U', 'V', 'W', 'X', 'Y', 'Z', ' ', 'a', 'b', 'c', 'd', 'e', 'f',
+       'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
+       'u', 'v', 'w', 'x', 'y', 'z', '/', 'è']
+
+  - file: 'fonts/Kanit-Regular.ttf'
+    id: font_regular_35
+    size: 35
+    glyphs: 
+      ['!', ',', '.', '"', '%', '-', '_', ':', '°', '/',
+       '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ' ']
+
+  - file: 'fonts/Kanit-Regular.ttf'
+    id: font_regular_45
+    size: 45
+    glyphs: 
+      ['!', ',', '.', '"', '%', '-', '_', ':', '°', '/',
+       '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ' ']
+
+  - file: 'fonts/Kanit-Regular.ttf'
+    id: font_regular_65
+    size: 65
+    glyphs: 
+      ['!', ',', '.', '"', '%', '-', '_', ':', '°', '/',
+       '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ' ']
+
+  - file: 'fonts/materialdesignicons-webfont.ttf'
+    id: icon_font_20
+    size: 20
+    glyphs: [
+      "\U000F0043", # mdi-arrow-bottom-right
+      "\U000F005C"  # mdi-arrow-top-right
+      ]
+
+  - file: 'fonts/materialdesignicons-webfont.ttf'
+    id: icon_font_25
+    size: 25
+    glyphs: [
+      "\U000F058E", # mdi-water-percent
+      "\U000F0D43", # mdi-air-filter
+      "\U000F002A", # mdi-alert-outline
+      "\U000F0594", # mdi-weather-night - clear-night
+      "\U000F0590", # mdi-weather-cloudy
+      "\U000F05D6", # mdi-alert-circle-outline - exeptionnal
+      "\U000F0591", # mdi-weather-fog
+      "\U000F0592", # mdi-weather-hail
+      "\U000F0593", # mdi-weather-lightning
+      "\U000F067E", # mdi-weather-lightning-rainy
+      "\U000F0595", # mdi-weather-partly-cloudy
+      "\U000F0596", # mdi-weather-pouring
+      "\U000F0597", # mdi-weather-rainy
+      "\U000F0598", # mdi-weather-snowy
+      "\U000F067F", # mdi-weather-snowy-rainy
+      "\U000F0599", # mdi-weather-sunny
+      "\U000F059D", # mdi-weather-windy
+      "\U000F059E"  # mdi-weather-windy-variant
+      ]
+
+  - file: 'fonts/materialdesignicons-webfont.ttf'
+    id: icon_font_30
+    size: 30
+    glyphs: [
+      "\U000F050F", # mdi-thermometer
+      "\U000F0D80", # mdi-home-floor-1
+      "\U000F0DD2"  # mdi-home-floor-0
+      ]
+
+  - file: 'fonts/materialdesignicons-webfont.ttf'
+    id: icon_font_35
+    size: 35
+    glyphs: ["\U000F058E"]  # mdi-water-percent
+
+  - file: 'fonts/materialdesignicons-webfont.ttf'
+    id: icon_font_40
+    size: 40
+    glyphs: ["\U000F050F"] # mdi-thermometer
+
+
+spi:
+  clk_pin: $gpio_spi_clk_pin
+  mosi_pin: $gpio_spi_mosi_pin
+  id: epaper_spi
+
+display:
+  - platform: waveshare_epaper
+    id: epaper
+    spi_id: epaper_spi
+    cs_pin: $gpio_cs_pin
+    dc_pin: $gpio_dc_pin
+    busy_pin: $gpio_busy_pin
+    reset_pin: $gpio_reset_pin
+    model: 1.54inv2
+    full_update_every: 300
+    update_interval: 20s
+    lambda: |-
+      //it.fill(COLOR_ON);
+      // Print title in top center.
+      it.printf(it.get_width()/2, 0, id(font1), TextAlign::TOP_CENTER, "Pruscilla 3D Printer");
+
+      // Print time in HH:MM format
+      id(epaper).strftime(0, 60, id(font2), TextAlign::BASELINE_LEFT, "%H:%M", id(current_time).now());
+
+      // Print inside temperature (from homeassistant sensor)
+      if (id(inside_temperature).has_state()) {
+        it.printf(it.get_width(), 23, id(font3), TextAlign::TOP_RIGHT , "%.1f°", id(inside_temperature).state);
+      }
+
+      // Print inside humidity (from homeassistant sensor)
+      if (id(inside_humidity).has_state()) {
+        it.printf(it.get_width(), 60, id(font3), TextAlign::BASELINE_RIGHT , "%.1f%%", id(inside_humidity).state);
+      }
+      
+      // TIME
+      it.line(0,137, 200, 137);
+      it.strftime(0, 163, id(font_medium_20), TextAlign::BASELINE_LEFT, "%A", id(current_time).now());
+      it.strftime(0, 193, id(font_medium_20), TextAlign::BASELINE_LEFT, "%d %b. %y", id(current_time).now());
+      it.strftime(200, 193, id(font_regular_65), TextAlign::BASELINE_RIGHT, "%H:%M", id(current_time).now());
+
+time:
+  - platform: homeassistant
+    id: current_time
+    timezone: America/Los_Angeles

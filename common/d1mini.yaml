@@ -1,0 +1,9 @@
+# File: common/d1mini.yaml
+# Basic configuration for a D1 Mini ESPHome device.
+
+esphome:
+  name: ${name}
+  friendly_name: ${friendly_name}
+
+esp8266:
+  board: d1_mini

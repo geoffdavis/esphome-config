@@ -1,0 +1,111 @@
+# File: common/quinled_deca-keypad.yaml
+# Enable a home-built keypad attached to the QuinLED Deca board, using a PCF8574 I2C expander.
+# The keypad has 6 buttons, each connected to a pin on the PCF8574.
+# The buttons are configured as binary sensors, with click and double-click actions.
+# The i2c bus is set up on GPIO 33 (SDA) and GPIO 13 (SCL).
+
+i2c:
+  - id: bus_a
+    sda: 33
+    scl: 13
+    scan: true
+
+pcf8574:
+  - id: 'pcf8574_hub'
+    address: 0x20
+    pcf8575: false
+
+# Individual inputs
+binary_sensor:
+  - platform: gpio
+    name: "PCF8574 Pin #0"
+    pin:
+      pcf8574: pcf8574_hub
+      # Use pin number 0
+      number: 0
+      # One of INPUT or OUTPUT
+      mode: INPUT
+      inverted: true
+    # Optional variables:
+    icon: "mdi:emoticon-outline"
+    on_click:
+      - logger.log: "Button 0 pressed"
+      - light.turn_on: shelf_light
+    on_double_click:
+      - logger.log: "Button 0 doubleclick"
+      - light.turn_on:
+          id: shelf_light
+          brightness: 100%
+  - platform: gpio
+    name: "PCF8574 Pin #1"
+    pin:
+      pcf8574: pcf8574_hub
+      # Use pin number 1
+      number: 1
+      # One of INPUT or OUTPUT
+      mode: INPUT
+      inverted: true
+    # Optional variables:
+    icon: "mdi:emoticon-outline"
+    on_click:
+      - logger.log: "Button 1 pressed"
+      - light.turn_off: shelf_light
+  - platform: gpio
+    name: "PCF8574 Pin #2"
+    pin:
+      pcf8574: pcf8574_hub
+      # Use pin number 2
+      number: 2
+      # One of INPUT or OUTPUT
+      mode: INPUT
+      inverted: true
+    # Optional variables:
+    icon: "mdi:emoticon-outline"
+    on_click:
+      - logger.log: "Button 2 pressed"
+      - light.turn_on: enc_light
+    on_double_click:
+      - logger.log: "Button 2 doubleclick"
+      - light.turn_on:
+          id: enc_light
+          brightness: 100%
+  - platform: gpio
+    name: "PCF8574 Pin #3"
+    pin:
+      pcf8574: pcf8574_hub
+      # Use pin number 3
+      number: 3
+      # One of INPUT or OUTPUT
+      mode: INPUT
+      inverted: true
+    # Optional variables:
+    icon: "mdi:emoticon-outline"
+    on_click:
+      - logger.log: "Button 3 pressed"
+      - light.turn_off: enc_light
+  - platform: gpio
+    name: "PCF8574 Pin #4"
+    pin:
+      pcf8574: pcf8574_hub
+      # Use pin number 4
+      number: 4
+      # One of INPUT or OUTPUT
+      mode: INPUT
+      inverted: true
+    # Optional variables:
+    icon: "mdi:emoticon-outline"
+    on_click:
+      - logger.log: "Button 4 pressed"
+  - platform: gpio
+    name: "PCF8574 Pin #5"
+    pin:
+      pcf8574: pcf8574_hub
+      # Use pin number 5
+      number: 5
+      # One of INPUT or OUTPUT
+      mode: INPUT
+      inverted: true
+    # Optional variables:
+    icon: "mdi:emoticon-outline"
+    on_click:
+      - logger.log: "Button 5 pressed"

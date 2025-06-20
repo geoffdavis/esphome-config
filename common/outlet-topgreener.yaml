@@ -1,0 +1,121 @@
+# This file is used by both the 10A and 15A TopGreener outlets, with some
+# differences in the sensor configuration.
+# The 10A outlet uses a different current resistor and voltage divider
+# compared to the 15A outlet, which is why we have two separate configurations.
+# The 10A outlet is also smaller and has a different model number.
+#
+# Configuration for TGWF115APM (Big 15A plug)
+# Ref: https://github.com/cbpowell/ESPSense/blob/master/configs/espsense-TopGreener_TGWF115APM.yml
+# Use the following configuration for the 15A outlet (in a "substitutions" section):
+# substitutions:
+#    current_resistor: "0.00228"
+#    voltage_divider: "2120"
+#    wattage_multiplier: "0.001"
+#    voltage: "120.0"
+
+# Configuration for TGWF115PQM (Small 10A plug)
+# Ref: https://github.com/cbpowell/ESPSense/blob/master/configs/espsense-TopGreener_TGWF115PQM.yml
+# Use the following configuration for the 10A outlet (in a "substitutions" section):
+# substitutions:
+#    current_resistor: "0.0019"
+#    voltage_divider: "2150"
+#    wattage_multiplier: "0.001"
+#    voltage: "120.0"
+
+logger:
+  # level: DEBUG
+  baud_rate: 0 # Disable UART logging, we have no physical connections!
+
+external_components:
+  # Pull the esphome component in from this GitHub repo
+  - source: github://cbpowell/ESPSense
+    components: [ espsense ]
+
+# Topgreener electric outlets have a single button on GPIO3
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO3
+      inverted: True
+    name: ${friendly_name} Button
+    on_press:
+      then:
+        - switch.toggle: relay
+  - platform: status
+    name: ${friendly_name} Status
+    # Note that blue LED appears to be tied to relay state internally (electrically)
+
+switch:
+  # Main plug control relay
+  - platform: gpio
+    name: ${friendly_name} Relay
+    pin: GPIO14
+    id: relay
+    restore_mode: ${restore_mode}
+
+status_led:
+  # Use Green LED as ESPHome's built-in status indicator
+  pin:
+    number: GPIO13
+    inverted: False
+
+sensor:
+  - platform: hlw8012
+    sel_pin:
+      number: GPIO12
+      inverted: True
+    cf_pin: GPIO04
+    cf1_pin: GPIO5
+    # Increasing current_res reduces reported wattage
+    current_resistor: "${current_resistor}"
+    # Increasing voltage_div increases reported voltage
+    voltage_divider: "${voltage_divider}"
+    current:
+      name: "${name} Amperage"
+      unit_of_measurement: A
+      filters:
+        # - calibrate_linear:
+        #   # Map X (from sensor) to Y (true value)
+        #   # At least 2 data points required
+        #   - 0.0 -> 0.0
+        #   - 1.0 -> 1.0 #load was on
+    voltage:
+      name: "${name} Voltage"
+      unit_of_measurement: V
+      filters:
+        # - calibrate_linear:
+        #   # Map X (from sensor) to Y (true value)
+        #   # At least 2 data points required
+        #   - 0.0 -> 0.0
+        #   - 1.0 -> 1.0 #load was on
+    power:
+      id: "wattage"
+      name: "${name} Wattage"
+      unit_of_measurement: W
+      filters:
+        # Moving average filter to try and reduce a periodic drop of ~1-2W
+        # Unsure of cause, may be a better solution!
+        - sliding_window_moving_average:
+            window_size: 2
+            send_every: 1
+        # - calibrate_linear:
+        #   # Map X (from sensor) to Y (true value)
+        #   # At least 2 data points required
+        #   - 0.0 -> 0.0
+        #   - 1.0 -> 1.0 #load was on
+    change_mode_every: 8
+    update_interval: 3s # Longer interval gives better accuracy
+
+  - platform: total_daily_energy
+    name: "${name} Total Daily Energy"
+    power_id: "wattage"
+    filters:
+      # Multiplication factor from W to kW is 0.001
+      - multiply: ${wattage_multiplier}
+    unit_of_measurement: kWh
+
+espsense:
+  plugs:
+    - name: ${name}
+      power_sensor: wattage
+      voltage: ${voltage}

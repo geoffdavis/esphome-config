@@ -1,0 +1,82 @@
+# Configuration for Sonoff S31 (Small 10A plug)
+# Ref: https://www.esphome-devices.com/devices/Sonoff-S31/
+
+esphome:
+  name: ${name}
+
+
+esp8266:
+  board: esp01_1m
+
+logger:
+  baud_rate: 0 # (UART logging interferes with cse7766)
+
+uart:
+  rx_pin: RX
+  baud_rate: 4800
+  parity: EVEN
+
+# Topgreener electric outlets have a single button on GPIO3
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO0
+      mode: INPUT_PULLUP
+      inverted: True
+    name: ${friendly_name} Button
+    on_press:
+      then:
+        - switch.toggle: relay
+  - platform: status
+    name: ${friendly_name} Status
+    # Note that blue LED appears to be tied to relay state internally (electrically)
+  - platform: template
+    name: "${friendly_name} Running"
+    lambda: |-
+      if (id(wattage).state > ${idle_wattage}) {
+        return true;
+      } else {
+        return false;
+      }
+
+switch:
+  # Main plug control relay
+  - platform: gpio
+    name: ${friendly_name} Relay
+    pin: GPIO12
+    id: relay
+    restore_mode: ${restore_mode}
+
+status_led:
+  # Green Light
+  pin:
+    number: GPIO13
+
+sensor:
+  - platform: cse7766
+    #update_interval: 5s
+    current:
+      id: amperage
+      name: "${name} Amperage"
+      accuracy_decimals: 1
+      filters:
+        - throttle_average: 5s
+    voltage:
+      name: "${name} Voltage"
+      accuracy_decimals: 1
+      filters:
+        - throttle_average: 5s
+    power:
+      id: wattage
+      name: "${name} Wattage"
+      accuracy_decimals: 1
+      filters:
+        - throttle_average: 5s
+
+  - platform: total_daily_energy
+    name: "${name} Total Daily Energy"
+    power_id: "wattage"
+    filters:
+      # Multiplication factor from W to kW is 0.001
+      - multiply: 0.001
+    unit_of_measurement: kWh

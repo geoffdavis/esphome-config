@@ -1,0 +1,20 @@
+# File: common/wemosd1mini.yaml
+# Configuration defaults for a Wemos D1 Mini board
+# This file is included in all ESPHome YAML files that use a Wemos D1 Mini board.
+
+esphome:
+  name: $name
+  friendly_name: ${friendly_name}
+
+# Configuration for the Wemos D1 Mini board
+# This board is based on the ESP8266 and is commonly used in various projects.
+# The board has more GPIO pins than the ESP-01S, making it suitable for projects
+# that require multiple sensors or actuators.
+# The D1 Mini is a compact board with built-in WiFi capabilities, making it ideal
+# for IoT applications.
+esp8266:
+  #board: esp01_1m
+  board: d1_mini
+
+logger:
+  # Enable logging to the console

@@ -1,0 +1,38 @@
+# Hardware: esp-01s #3 on board #3
+# MAC Addr: ec:fa:bc:61:c8:e0
+substitutions:
+  # This is the name used in the log files and for the device in Home Assistant
+  name: bedroom-west-heatpump
+  # This is the name originally used for the device in Home Assistant, and is
+  # only used for the "rename" package.
+  old_name: bedroom_west_heatpump
+  # This is the friendly name used in Home Assistant for the device
+  # and in the web interface.
+  # It is also used in the climate component.
+  friendly_name: West Bedroom HeatPump
+  # This is the model of the heat pump, by the fanspeeds package
+  model: MFZ-KA09NA
+  # This is the remote temperature sensor used by the heat pump
+  # It is a Home Assistant sensor entity, and is used to set the remote temperature
+  # in the heat pump.
+  remote_temp_sensor: sensor.westbedroom_htg_temperature
+
+packages:
+  # Uncomment the next line to rename the device
+  #rename: !include common/rename.yaml
+
+  # Uncomment the next two lines to use a minimal WiFi configuration
+  # esp01: !include common/esp01.yaml
+  # wifi-minimal: !include common/wifi-minimal.yaml
+
+  # Uncomment the next 5 lines to use a full WiFi configuration
+  # Note: The fanspeeds package is not supported on MFZ-KA09NA
+  # Uncomment the fanspeeds line if you have a different model that supports it
+  # If you do not want to use the fanspeeds package, comment it out.
+  wifi: !include common/wifi.yaml
+  ipv6: !include common/ipv6.yaml
+  sensors: !include common/sensors.yaml
+  esp01: !include common/esp01.yaml
+  heatpump-esp01: !include common/heatpump-esp01.yaml
+  #fanspeeds: !include common/heatpump-fanspeeds.yaml # not supported on MFZ-KA09NA
+  climate: !include common/heatpump-climate.yaml

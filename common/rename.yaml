@@ -1,0 +1,6 @@
+# common/rename.yaml
+# This file is used to rename a device in ESPHome.
+# It is included in the main YAML file for the device.
+# It should be removed after the device is renamed.
+wifi:
+    use_address: ${old_name}.local

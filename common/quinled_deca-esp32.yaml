@@ -1,0 +1,63 @@
+# File: common/quinled_deca-esp32.yaml
+# Configuration for QuinLED Deca, using an ESP32 Devkit board.
+# This file is included in all ESPHome YAML files that use a QuinLED Deca board.
+# It sets up the board, status LED, output channels, and one-wire sensor.
+# The output channels are configured for high-frequency PWM, suitable for LED control.
+# The one-wire sensor is connected to GPIO 32.
+
+esphome:
+  name: ${name}
+  friendly_name: ${friendly_name}
+
+esp32:
+  board: mhetesp32devkit
+
+logger:
+
+status_led:
+  pin: 2
+
+output:
+  - platform: ledc
+    pin: 16
+    frequency: 40000Hz
+    id: LED_channel_T1
+  - platform: ledc
+    pin: 17
+    frequency: 40000Hz
+    id: LED_channel_T2
+  - platform: ledc
+    pin: 18
+    frequency: 40000Hz
+    id: LED_channel_T3
+  - platform: ledc
+    pin: 19
+    frequency: 40000Hz
+    id: LED_channel_T4
+  - platform: ledc
+    pin: 21
+    frequency: 40000Hz
+    id: LED_channel_T5
+  - platform: ledc
+    pin: 25
+    frequency: 40000Hz
+    id: LED_channel_B1
+  - platform: ledc
+    pin: 26
+    frequency: 40000Hz
+    id: LED_channel_B2
+  - platform: ledc
+    pin: 27
+    frequency: 40000Hz
+    id: LED_channel_B3
+  - platform: ledc
+    pin: 14
+    frequency: 40000Hz
+    id: LED_channel_B4
+  - platform: ledc
+    pin: 12
+    frequency: 40000Hz
+    id: LED_channel_B5
+one_wire:
+  - platform: gpio
+    pin: 32

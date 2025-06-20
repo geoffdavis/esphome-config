@@ -1,0 +1,21 @@
+# Defaults for wifi, api, and OTA connectivity
+# This file is included in all ESPHome YAML files.
+
+# Configure the WiFi connection
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  domain: !secret wifi_domain
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "${friendly_name} ESP"
+    password: !secret fallback_password
+
+# Enable Over-The-Air (OTA) updates
+# This allows the device to be updated wirelessly
+# The OTA password is used for secure updates
+# The password is stored in secrets.yaml for security
+ota:
+  platform: esphome
+  password: !secret ota_password

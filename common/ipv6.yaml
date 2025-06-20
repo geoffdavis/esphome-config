@@ -1,0 +1,9 @@
+# File: common/ipv6.yaml
+# This file contains the configuration for enabling IPv6 support in ESPHome.
+
+network:
+  # Enable IPv6 support
+  # This allows the device to communicate over IPv6 networks
+  # The minimum number of IPv6 addresses is set to 2 (link-local and routable)
+  enable_ipv6: true
+  min_ipv6_addr_count: 2

@@ -1,0 +1,13 @@
+# File: common/sensor/dht.yaml
+# Configuration for a DHT11 sensor connected to a GPIO pin.
+# This file is included in various ESPHome configurations to standardize DHT sensor setup.
+
+sensor:
+  # DHT11 on pin GPIO0
+  - platform: dht
+    pin: ${dht_pin}
+    temperature:
+      name: ${friendly_name} Temperature
+    humidity:
+      name: ${friendly_name} Humidity
+    model: DHT11

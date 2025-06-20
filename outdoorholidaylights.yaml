@@ -1,0 +1,12 @@
+# SN 6990
+# MAC Address: 60:01:94:d9:7b:4e
+substitutions:
+  name: outdoorholidaylights
+  friendly_name: "Outdoor Holiday Lights"
+
+packages:
+  wifi: !include common/wifi.yaml
+  ipv6: !include common/ipv6.yaml
+  #rename: !include common/rename.yaml
+  sensors: !include common/sensors.yaml
+  feit: !include common/feit_outlet.yaml

@@ -1,0 +1,9 @@
+# File: common/sensor/pir.yaml
+# This file contains the configuration for a PIR motion sensor connected to a GPIO pin.
+# It is included in various ESPHome configurations to standardize PIR sensor setup.
+
+binary_sensor:
+  - platform: gpio
+    pin: ${pir_pin}
+    name: ${friendly_name} Motion
+    device_class: motion

@@ -1,0 +1,45 @@
+# File: common/quinled_deca-dualrgbww.yaml
+# Configuration for QuinLED Deca with dual RGBWW lights connected to the board.
+#
+# Wiring of the lights is the same for both the top and bottom lights:
+# - Red: LED channel 1
+# - Green: LED channel 2
+# - Blue: LED channel 3
+# - Cold White: LED channel 5
+# - Warm White: LED channel 4
+
+light:
+  #- platform: monochromatic
+  #  name: "Pruscilla Light"
+  #  output: pwm_mono_out
+  - platform: rgbww
+    name: "Pruscilla Enc Light"
+    id: enc_light
+    red: LED_channel_B1
+    green: LED_channel_B2
+    blue: LED_channel_B3
+    cold_white: LED_channel_B5
+    warm_white: LED_channel_B4
+    cold_white_color_temperature: 6536 K
+    warm_white_color_temperature: 2000 K
+    color_interlock: true
+    effects:
+    - random
+    - flicker
+    - strobe
+
+  - platform: rgbww
+    id: shelf_light
+    name: "Shelf Lights"
+    red: LED_channel_T1
+    green: LED_channel_T2
+    blue: LED_channel_T3
+    cold_white: LED_channel_T5
+    warm_white: LED_channel_T4
+    cold_white_color_temperature: 6536 K
+    warm_white_color_temperature: 2000 K
+    color_interlock: true
+    effects:
+    - random
+    - flicker
+    - strobe

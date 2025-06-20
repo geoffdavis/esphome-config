@@ -1,0 +1,23 @@
+# Notes:
+#
+# D0 to Passive IR sensor
+# A0 to TEMT6000 ambient light sensor
+# D2 to DHT22
+
+substitutions:
+  name: upstairs-bath-multisensor
+  old_name: upstairs_bath_multisensor
+  friendly_name: Upstairs Bath
+  dht_pin: D2
+  temt6000_pin: A0
+  pir_pin: D0
+
+packages:
+  wifi: !include common/wifi.yaml
+  ipv6: !include common/ipv6.yaml
+  rename: !include common/rename.yaml
+  d1mini: !include common/d1mini.yaml
+  sensors: !include common/sensors.yaml
+  sensor_dht: !include common/sensor/dht22.yaml
+  sensor_temt6000: !include common/sensor/temt6000.yaml
+  sensor_pir: !include common/sensor/pir.yaml

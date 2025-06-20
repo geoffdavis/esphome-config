@@ -1,0 +1,13 @@
+# MAC: 60:01:94:d9:cc:3f
+# sn 3135
+substitutions:
+  name: mpmd-outlet
+  old_name: mpmd_outlet
+  friendly_name: "MPMD Outlet"
+
+packages:
+  wifi: !include common/wifi.yaml
+  ipv6: !include common/ipv6.yaml
+  rename: !include common/rename.yaml
+  sensors: !include common/sensors.yaml
+  feit: !include common/feit_outlet.yaml

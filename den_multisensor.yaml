@@ -1,0 +1,33 @@
+# Hardware: NodeMCU board #?
+# Mac Addr: 98:f4:ab:xx:xx:xx
+substitutions:
+  name: den-multisensor
+  friendly_name: Den Multisensor
+  # BME280 on i2c bus pins
+  # VIN - BROWN - 3.3V
+  # GND - YELLOW - GND
+  # SCL - ORANGE - GPIO4
+  # SDA - RED - GPIO5
+  bme280_i2c_id: bus_a
+  bme280_i2c_sda: GPIO5
+  bme280_i2c_scl: GPIO4
+  temt6000_pin: A0
+  pir_pin: GPIO1
+
+packages:
+  # Include the common NodeMCU v2 configuration.
+  nodemcuv2: !include common/nodemcuv2.yaml
+  # Include the common WiFi configuration.
+  wifi: !include common/wifi.yaml
+  # Include the common IPv6 configuration.
+  ipv6: !include common/ipv6.yaml
+  # Include the common sensors configuration.
+  sensors: !include common/sensors.yaml
+  # Include the common BME280 sensor configuration.
+  sensor_bme280: !include common/sensor/bme280.yaml
+  # Include the common TEMT6000 sensor configuration.
+  sensor_temt6000: !include common/sensor/temt6000.yaml
+  # Include the common PIR sensor configuration.
+  sensor_pir: !include common/sensor/pir.yaml
+  # Include the common RGB LED configuration for ESP8266 devices.
+  rgb_led: !include common/rgb-led.yaml

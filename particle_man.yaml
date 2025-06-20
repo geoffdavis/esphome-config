@@ -1,0 +1,22 @@
+substitutions:
+  name: particle-man
+  old_name: particle_man
+  friendly_name: Particle Man
+  aqi_window_size: "60"
+  aqi_send_every: "30"
+  # PMS5003 on D3/D4
+  pms_uart_tx: D3
+  pms_uart_rx: D4
+  display_i2c_sda: D2
+  display_i2c_scl: D1
+  display_reset_pin: D0
+  display_address: "0x3C"
+
+packages:
+  wemosd1mini: !include common/particle-d1mini32.yaml
+  wifi: !include common/wifi.yaml
+  ipv6: !include common/ipv6.yaml
+  sensors: !include common/sensors.yaml
+  particle_pmsx003: !include common/particle-pmsx003.yaml
+  display: !include common/particle-display.yaml
+  rename: !include common/rename.yaml

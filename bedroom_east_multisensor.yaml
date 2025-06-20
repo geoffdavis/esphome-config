@@ -1,0 +1,134 @@
+# Hardware: NodeMCU board #2
+# Mac Addr: 98:f4:ab:xx:xx:xx
+substitutions:
+  name: bedroom_east_multisensor
+  friendly_name: East Bedroom Multisensor
+
+
+esphome:
+  name: ${name}
+  platform: ESP8266
+  board: nodemcuv2
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  domain: .home.geoffdavis.com
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: ${friendly_name}
+    password: !secret fallback_password
+
+captive_portal:
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+  - platform: esphome
+    password: !secret ota_password
+
+# Enable Web server.
+web_server:
+  port: 80
+
+# Sync time with Home Assistant.
+time:
+  - platform: homeassistant
+    id: homeassistant_time
+
+# Text sensors with general information.
+text_sensor:
+  # Expose ESPHome version as sensor.
+  - platform: version
+    name: ${friendly_name} ESPHome Version
+  # Expose WiFi information as sensors.
+  - platform: wifi_info
+    ip_address:
+      name: ${friendly_name} IP
+    ssid:
+      name: ${friendly_name} SSID
+    bssid:
+      name: ${friendly_name} BSSID
+
+i2c:
+  - id: bus_a
+    sda: GPIO5
+    scl: GPIO4
+    scan: True
+
+# Sensors with general information.
+sensor:
+  # Uptime sensor.
+  - platform: uptime
+    name: ${friendly_name} Uptime
+
+  # WiFi Signal sensor.
+  - platform: wifi_signal
+    name: ${friendly_name} WiFi Signal
+    update_interval: 60s
+
+    # TEMT6000 on A0
+  - platform: adc
+    pin: A0
+    name: "${friendly_name} TEMT6000 Illuminance"
+    unit_of_measurement: lx
+    filters:
+      - lambda: |-
+          return (x/10000.0) * 2000000.0;
+
+  # BME280 on i2c bus_a pins
+  # VIN - BROWN - 3.3V
+  # GND - YELLOW - GND
+  # SCL - ORANGE - GPIO4
+  # SDA - RED - GPIO5
+  - platform: bme280_i2c
+    i2c_id: bus_a
+    address: 0x76
+    temperature:
+      name: "${friendly_name} BME280 Temperature"
+    pressure:
+      name: "${friendly_name} BME280 Pressure"
+    humidity:
+      name: "${friendly_name} BME280 Humidity"
+
+binary_sensor:
+  # PIR Sensor on GPIO1
+  # (-) - YELLOW - GND
+  # DATA - ORANGE - GPIO1
+  # (+) - RED - VIN
+  - platform: gpio
+    pin: GPIO1
+    name: "${friendly_name} Motion"
+    device_class: motion
+
+output:
+  - platform: esp8266_pwm
+    id: led_pwm_red
+    pin: 
+      number: D5
+      inverted: true
+  - platform: esp8266_pwm
+    id: led_pwm_green
+    pin: 
+      number: D6
+      inverted: true
+  - platform: esp8266_pwm
+    id: led_pwm_blue
+    pin: 
+      number: D7
+      inverted: true
+
+light:
+  - platform: rgb
+    name: "${friendly_name} LED"
+    red: led_pwm_red
+    green: led_pwm_green
+    blue: led_pwm_blue
+    effects:
+      - random
+      - flicker

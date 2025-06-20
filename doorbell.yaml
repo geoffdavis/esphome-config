@@ -1,0 +1,16 @@
+---
+# Hardware: Wemos D1 Mini #??
+# Mac Address: 98:f4:ab:da:4e:4f
+# HW notes: Pin D0 is dead, D1 is the relay board, D5 is the doorbell button.
+substitutions:
+  name: doorbell
+  friendly_name: Doorbell
+  chime_pin: D1
+  button_pin: D5 # D0 is fried.
+
+packages:
+  wemosd1mini: !include common/wemosd1mini.yaml
+  wifi: !include common/wifi.yaml
+  ipv6: !include common/ipv6.yaml
+  sensors: !include common/sensors.yaml
+  doorbell: !include common/doorbell.yaml

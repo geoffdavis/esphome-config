@@ -1,0 +1,25 @@
+# File: common/particle-display.yaml
+# Implement a display for indoor air quality using a SSD1306 OLED display
+# and a Plantower PMSX003 sensor.
+
+font:
+  - file: 'fonts/DroidSans.ttf'
+    id: droidsans
+    size: 10
+
+i2c:
+  sda: ${display_i2c_sda}
+  scl: ${display_i2c_scl}
+  scan: False
+
+display:
+  - platform: ssd1306_i2c
+    model: "SSD1306 64x48"
+    reset_pin: ${display_reset_pin}
+    address: ${display_address}
+    id: indoor_aqi_display
+    lambda: |-
+      it.printf(32, 0, id(droidsans), TextAlign::TOP_CENTER, "Indoor AQI");
+      it.strftime(0,25, id(droidsans), TextAlign::BASELINE_LEFT, "%H:%M", id(homeassistant_time).now());
+      it.printf(0, 35, id(droidsans), TextAlign::BASELINE_LEFT, "2.5: %s (%0.f)", id(aqi_2_5).state.c_str(), id(pms1_pm_2_5).state);
+      it.printf(0, 45, id(droidsans), TextAlign::BASELINE_LEFT, "10: %s (%0.f)", id(aqi_10_0).state.c_str(), id(pms1_pm_10_0).state);
