@@ -37,18 +37,18 @@ binary_sensor:
     pin:
       number: GPIO3
       inverted: True
-    name: ${friendly_name} Button
+    name: Button
     on_press:
       then:
         - switch.toggle: relay
   - platform: status
-    name: ${friendly_name} Status
+    name: Status
     # Note that blue LED appears to be tied to relay state internally (electrically)
 
 switch:
   # Main plug control relay
   - platform: gpio
-    name: ${friendly_name} Relay
+    name: Relay
     pin: GPIO14
     id: relay
     restore_mode: ${restore_mode}
@@ -71,7 +71,7 @@ sensor:
     # Increasing voltage_div increases reported voltage
     voltage_divider: "${voltage_divider}"
     current:
-      name: "${name} Amperage"
+      name: "Amperage"
       unit_of_measurement: A
       filters:
         # - calibrate_linear:
@@ -80,7 +80,7 @@ sensor:
         #   - 0.0 -> 0.0
         #   - 1.0 -> 1.0 #load was on
     voltage:
-      name: "${name} Voltage"
+      name: "Voltage"
       unit_of_measurement: V
       filters:
         # - calibrate_linear:
@@ -90,7 +90,7 @@ sensor:
         #   - 1.0 -> 1.0 #load was on
     power:
       id: "wattage"
-      name: "${name} Wattage"
+      name: "Wattage"
       unit_of_measurement: W
       filters:
         # Moving average filter to try and reduce a periodic drop of ~1-2W
@@ -107,7 +107,7 @@ sensor:
     update_interval: 3s # Longer interval gives better accuracy
 
   - platform: total_daily_energy
-    name: "${name} Total Daily Energy"
+    name: "Total Daily Energy"
     power_id: "wattage"
     filters:
       # Multiplication factor from W to kW is 0.001
