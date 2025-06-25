@@ -15,7 +15,7 @@ substitutions:
 packages:
   wifi: !include common/wifi.yaml
   ipv6: !include common/ipv6.yaml
-  rename: !include common/rename.yaml
+  #rename: !include common/rename.yaml
   d1mini: !include common/d1mini.yaml
   sensors: !include common/sensors.yaml
   sensor_dht: !include common/sensor/dht22.yaml
