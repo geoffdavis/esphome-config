@@ -6,6 +6,10 @@ esphome:
 
 esp8266:
   board: esp01_1m
+  # We want to use the ESP8266 built-in persistent storage.
+  # This allows us to restore the plug state after a power loss.
+  # https://esphome.io/components/esp8266
+  restore_from_flash: True
 
 # Feit electric outlets have a single button on GPIO13
 binary_sensor:
