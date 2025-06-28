@@ -30,4 +30,4 @@ packages:
   # Include the common PIR sensor configuration.
   sensor_pir: !include common/sensor/pir.yaml
   # Include the common RGB LED configuration for ESP8266 devices.
-  rgb_led: !include common/rgb-led.yaml
+  rgb_led: !include common/rgb_led.yaml
