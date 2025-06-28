@@ -1,7 +1,8 @@
 
 substitutions:
-  name: pruscilla-outlet-tg
-  friendly_name: "Pruscilla Outlet"
+  name: voronica-outlet
+  old_name: pruscilla-outlet-tg
+  friendly_name: "Voronica Outlet"
   # Plug state to set upon powerup (or after power loss)
   # See options here: https://esphome.io/components/switch/gpio.html
   restore_mode: RESTORE_DEFAULT_ON
