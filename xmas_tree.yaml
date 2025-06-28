@@ -1,7 +1,8 @@
 # MAC: 
 # sn 
 substitutions:
-  name: xmas_tree_outlet
+  name: xmas-tree-outlet
+  old_name: xmas_tree_outlet
   friendly_name: "Christmas Tree Outlet"
 
 packages:
