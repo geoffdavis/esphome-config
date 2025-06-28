@@ -22,6 +22,12 @@
 #    wattage_multiplier: "0.001"
 #    voltage: "120.0"
 
+esp8266:
+  # We want to use the ESP8266 built-in persistent storage.
+  # This allows us to restore the plug state after a power loss.
+  # https://esphome.io/components/esp8266
+  restore_from_flash: True
+
 logger:
   # level: DEBUG
   baud_rate: 0 # Disable UART logging, we have no physical connections!
