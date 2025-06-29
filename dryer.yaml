@@ -10,6 +10,6 @@ substitutions:
 
 packages:
   wifi: !include common/wifi.yaml
-  ipv6: !include common/ipv6.yaml
+  #ipv6: !include common/ipv6.yaml
   sensors: !include common/sensors.yaml
   sonoff_s31: !include common/sonoff_s31.yaml
