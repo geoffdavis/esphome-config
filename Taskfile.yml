@@ -118,3 +118,11 @@ tasks:
       - for: { var: MINIMAL_DEVICES }
         task: upload-minimal
         vars: { CLI_ARGS: "{{.ITEM}}" }
+
+  renovate:
+    desc: "Run renovate to update dependencies"
+    vars:
+      GH_TOKEN:
+        sh: op read --account CamiAndGeoff 'op://Private/GitHub Personal Access Token/token'
+    cmds:
+      - GITHUB_COM_TOKEN={{.GH_TOKEN}} RENOVATE_TOKEN={{.GH_TOKEN}} ./node_modules/.bin/renovate geoffdavis/esphome

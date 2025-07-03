@@ -31,3 +31,6 @@ __pycache__
 *.tox
 
 /.mise/
+node_modules
+
+/.venv/
