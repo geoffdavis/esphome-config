@@ -119,6 +119,11 @@ tasks:
         task: upload-minimal
         vars: { CLI_ARGS: "{{.ITEM}}" }
 
+  secrets:
+    desc: "Generates secrets.yaml from 1Password"
+    cmds:
+      - ./scripts/generate_secrets.sh
+
   renovate:
     desc: "Run renovate to update dependencies"
     vars:
