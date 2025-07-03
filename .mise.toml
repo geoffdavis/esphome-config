@@ -1,3 +1,5 @@
+min_version = "2024.9.5"
+
 [tools]
 esphome = "latest"
 task = "latest"

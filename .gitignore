@@ -29,3 +29,5 @@ __pycache__
 *.mypy_cache
 *.pylint.d
 *.tox
+
+/.mise/
