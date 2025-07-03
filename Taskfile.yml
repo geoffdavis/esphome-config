@@ -18,7 +18,9 @@ tasks:
 
   build:
     desc: "Builds the firmware for a specific device. Usage: task build -- <device>"
-    deps: [clean]
+    deps:
+      - task: clean
+        vars: { CLI_ARGS: "{{.CLI_ARGS}}" }
     cmds:
       - |
         if ls {{.CLI_ARGS}}-full.yaml >/dev/null 2>&1; then
@@ -29,13 +31,26 @@ tasks:
 
   upload:
     desc: "Uploads the firmware for a specific device. Usage: task upload -- <device>"
+    deps:
+      - task: build
+        vars: { CLI_ARGS: "{{.CLI_ARGS}}" }
     cmds:
-      - |
-        if ls {{.CLI_ARGS}}-full.yaml >/dev/null 2>&1; then
-          esphome upload {{.CLI_ARGS}}-full.yaml
-        else
-          esphome upload {{.CLI_ARGS}}.yaml
-        fi
+      - cmd: |
+          upload_cmd="esphome upload {{.CLI_ARGS}}.yaml"
+          if [ -f "{{.CLI_ARGS}}-full.yaml" ]; then
+            upload_cmd="esphome upload {{.CLI_ARGS}}-full.yaml"
+          fi
+
+          if ! output=$($upload_cmd 2>&1); then
+            if echo "$output" | grep -q "Error resolving IP address" || echo "$output" | grep -q "Network is unreachable"; then
+              echo "Device {{.CLI_ARGS}} offline, skipping."
+            else
+              echo "$output"
+              exit 1
+            fi
+          else
+            echo "$output"
+          fi
 
   build-minimal:
     desc: "Builds the minimal firmware for a specific device. Usage: task build-minimal -- <device>"
@@ -44,8 +59,21 @@ tasks:
 
   upload-minimal:
     desc: "Uploads the minimal firmware for a specific device. Usage: task upload-minimal -- <device>"
+    deps:
+      - task: build-minimal
+        vars: { CLI_ARGS: "{{.CLI_ARGS}}" }
     cmds:
-      - esphome upload {{.CLI_ARGS}}-minimal.yaml
+      - cmd: |
+          if ! output=$(esphome upload {{.CLI_ARGS}}-minimal.yaml 2>&1); then
+            if echo "$output" | grep -q "Error resolving IP address" || echo "$output" | grep -q "Network is unreachable"; then
+              echo "Device {{.CLI_ARGS}} offline, skipping."
+            else
+              echo "$output"
+              exit 1
+            fi
+          else
+            echo "$output"
+          fi
 
   build-all:
     desc: "Builds the firmware for all devices."
@@ -54,12 +82,28 @@ tasks:
         task: build
         vars: { CLI_ARGS: "{{.ITEM}}" }
 
-  upload-all:
-    desc: "Uploads the firmware for all devices."
+  upload-all-two-stage:
+    desc: "Uploads the firmware for all devices in two stages."
     cmds:
       - for: { var: ALL_DEVICES }
-        task: upload
+        task: upload-two-stage
         vars: { CLI_ARGS: "{{.ITEM}}" }
+
+  upload-two-stage:
+    desc: "Uploads the firmware for a single device in two stages."
+    cmds:
+      - task: upload-minimal-if-exists
+        vars: { CLI_ARGS: "{{.CLI_ARGS}}" }
+      - task: upload
+        vars: { CLI_ARGS: "{{.CLI_ARGS}}" }
+
+  upload-minimal-if-exists:
+    desc: "Uploads the minimal firmware for a specific device if it exists."
+    cmds:
+      - |
+        if [ -f {{.CLI_ARGS}}-minimal.yaml ]; then
+          task upload-minimal -- {{.CLI_ARGS}}
+        fi
 
   build-all-minimal:
     desc: "Builds the minimal firmware for all devices."

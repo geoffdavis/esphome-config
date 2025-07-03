@@ -20,5 +20,3 @@ substitutions:
 packages:
   wifi: !include common/wifi-minimal.yaml
   esp01: !include common/esp01.yaml
-
-web_server:
