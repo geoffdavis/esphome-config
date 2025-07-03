@@ -1,0 +1,21 @@
+# Hardware: esp-01s #2
+# MAC Addr: ec:fa:bc:c2:ac:58
+substitutions:
+  # This is the name used in the log files and for the device in Home Assistant
+  name: denheatpump
+  # This is the friendly name used in Home Assistant for the device
+  # and in the web interface.
+  # It is also used in the climate component.
+  friendly_name: Den Heatpump
+  # This is the model of the heat pump, by the fanspeeds package
+  model: MSZ-GL06NA
+  # This is the remote temperature sensor used by the heat pump
+  # It is a Home Assistant sensor entity, and is used to set the remote temperature
+  # in the heat pump.
+  remote_temp_sensor: sensor.den_htg_temperature
+
+packages:
+  wifi: !include common/wifi-minimal.yaml
+  esp01: !include common/esp01.yaml
+
+web_server:

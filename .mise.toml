@@ -1,0 +1,3 @@
+[tools]
+esphome = "latest"
+task = "latest"

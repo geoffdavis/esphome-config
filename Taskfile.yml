@@ -1,0 +1,76 @@
+version: '3'
+
+vars:
+  MINIMAL_DEVICES:
+    sh: "ls *-minimal.yaml | sed 's/-minimal.yaml//'"
+  ALL_DEVICES:
+    sh: "ls *.yaml | sed 's/\\.yaml//' | sed 's/-full//' | sed 's/-minimal//' | sort -u"
+
+tasks:
+  default:
+    cmds:
+      - task -l
+
+  clean:
+    desc: "Removes the build directory for a specific device. Usage: task clean -- <device>"
+    cmds:
+      - rm -rf .esphome/build/{{.CLI_ARGS}}
+
+  build:
+    desc: "Builds the firmware for a specific device. Usage: task build -- <device>"
+    deps: [clean]
+    cmds:
+      - |
+        if ls {{.CLI_ARGS}}-full.yaml >/dev/null 2>&1; then
+          esphome compile {{.CLI_ARGS}}-full.yaml
+        else
+          esphome compile {{.CLI_ARGS}}.yaml
+        fi
+
+  upload:
+    desc: "Uploads the firmware for a specific device. Usage: task upload -- <device>"
+    cmds:
+      - |
+        if ls {{.CLI_ARGS}}-full.yaml >/dev/null 2>&1; then
+          esphome upload {{.CLI_ARGS}}-full.yaml
+        else
+          esphome upload {{.CLI_ARGS}}.yaml
+        fi
+
+  build-minimal:
+    desc: "Builds the minimal firmware for a specific device. Usage: task build-minimal -- <device>"
+    cmds:
+      - esphome compile {{.CLI_ARGS}}-minimal.yaml
+
+  upload-minimal:
+    desc: "Uploads the minimal firmware for a specific device. Usage: task upload-minimal -- <device>"
+    cmds:
+      - esphome upload {{.CLI_ARGS}}-minimal.yaml
+
+  build-all:
+    desc: "Builds the firmware for all devices."
+    cmds:
+      - for: { var: ALL_DEVICES }
+        task: build
+        vars: { CLI_ARGS: "{{.ITEM}}" }
+
+  upload-all:
+    desc: "Uploads the firmware for all devices."
+    cmds:
+      - for: { var: ALL_DEVICES }
+        task: upload
+        vars: { CLI_ARGS: "{{.ITEM}}" }
+
+  build-all-minimal:
+    desc: "Builds the minimal firmware for all devices."
+    cmds:
+      - for: { var: MINIMAL_DEVICES }
+        task: build-minimal
+        vars: { CLI_ARGS: "{{.ITEM}}" }
+
+  upload-all-minimal:
+    desc: "Uploads the minimal firmware for all devices."
+    cmds:
+      - for: { var: MINIMAL_DEVICES }
+        task: upload-minimal
+        vars: { CLI_ARGS: "{{.ITEM}}" }

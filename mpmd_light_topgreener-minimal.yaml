@@ -1,8 +1,7 @@
-
 substitutions:
-  name: hodad-outlet
-  old_name: mpmd-outlet-tg
-  friendly_name: "Hodad Outlet"
+  name: mpmd-light-topgreener
+  old_name: mpmd_light_topgreener
+  friendly_name: "MPMD Light"
   # Plug state to set upon powerup (or after power loss)
   # See options here: https://esphome.io/components/switch/gpio.html
   restore_mode: RESTORE_DEFAULT_ON
@@ -13,9 +12,7 @@ substitutions:
   voltage: "120.0"
 
 packages:
-  wifi: !include common/wifi.yaml
-  #ipv6: !include common/ipv6.yaml # ESPAsyncUDP does not support IPv6
-  #rename: !include common/rename.yaml
-  sensors: !include common/sensors.yaml
+  wifi: !include common/wifi-minimal.yaml
   esp01: !include common/esp01.yaml
-  topgreener: !include common/outlet-topgreener.yaml
+
+web_server:

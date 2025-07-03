@@ -1,0 +1,7 @@
+# This file contains the packages for the full build.
+wifi: !include common/wifi.yaml
+ipv6: !include common/ipv6.yaml
+sensors: !include common/sensors.yaml
+esp01: !include common/esp01.yaml
+heatpump-esp01: !include common/heatpump-esp01.yaml
+climate: !include common/heatpump-climate.yaml

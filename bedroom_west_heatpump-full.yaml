@@ -18,21 +18,11 @@ substitutions:
   remote_temp_sensor: sensor.westbedroom_htg_temperature
 
 packages:
-  # Uncomment the next line to rename the device
-  #rename: !include common/rename.yaml
-
-  # Uncomment the next two lines to use a minimal WiFi configuration
-  # esp01: !include common/esp01.yaml
-  # wifi-minimal: !include common/wifi-minimal.yaml
-
-  # Uncomment the next 5 lines to use a full WiFi configuration
-  # Note: The fanspeeds package is not supported on MFZ-KA09NA
-  # Uncomment the fanspeeds line if you have a different model that supports it
-  # If you do not want to use the fanspeeds package, comment it out.
   wifi: !include common/wifi.yaml
   ipv6: !include common/ipv6.yaml
   sensors: !include common/sensors.yaml
   esp01: !include common/esp01.yaml
   heatpump-esp01: !include common/heatpump-esp01.yaml
-  #fanspeeds: !include common/heatpump-fanspeeds.yaml # not supported on MFZ-KA09NA
   climate: !include common/heatpump-climate.yaml
+
+web_server:

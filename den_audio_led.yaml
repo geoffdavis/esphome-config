@@ -7,10 +7,6 @@ substitutions:
 esphome:
   name: $name
 
-  includes:
-  - src/audio-reactive-led-strip/audio-reactive-led-strip
-  - src/audio-reactive-led-strip/esphome-music-leds
-
 esp32:
   board: esp32doit-devkit-v1
 
@@ -60,17 +56,17 @@ light:
           name: Scroll with Music
           update_interval: 0s
           lambda: |-
-            ((MusicLeds*) id(music_leds))->ShowFrame(MODE_SCROLL, &it);
+            ((esphome::esphome_music_leds::MusicLeds*) id(music_leds))->ShowFrame(esphome::esphome_music_leds::MODE_SCROLL, &it);
       - addressable_lambda:
           name: Energy with Music
           update_interval: 0s
           lambda: |-
-            ((MusicLeds*) id(music_leds))->ShowFrame(MODE_ENERGY, &it);
+            ((esphome::esphome_music_leds::MusicLeds*) id(music_leds))->ShowFrame(esphome::esphome_music_leds::MODE_ENERGY, &it);
       - addressable_lambda:
           name: Spectrum with Music
           update_interval: 0s
           lambda: |-
-            ((MusicLeds*) id(music_leds))->ShowFrame(MODE_SPECTRUM, &it);
+            ((esphome::esphome_music_leds::MusicLeds*) id(music_leds))->ShowFrame(esphome::esphome_music_leds::MODE_SPECTRUM, &it);
 
 wifi:
   ssid: !secret wifi_ssid
@@ -133,9 +129,7 @@ sensor:
     update_interval: 60s
 
 
-custom_component:
-  - lambda: |-
-      auto my_music_leds = new MusicLeds(${n_pixels}, 0.0025);
-      return {my_music_leds};
-    components:
-      - id: music_leds
+
+esphome-music-leds:
+  id: music_leds
+  n_pixels: ${n_pixels}

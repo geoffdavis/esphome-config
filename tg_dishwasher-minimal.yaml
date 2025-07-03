@@ -1,4 +1,3 @@
-
 substitutions:
   name: tg-dishwasher
   old_name: tg_dishwasher
@@ -13,9 +12,7 @@ substitutions:
   voltage: "120.0"
 
 packages:
-  wifi: !include common/wifi.yaml
-  #ipv6: !include common/ipv6.yaml # ESPAsyncUDP does not support IPv6
-  #rename: !include common/rename.yaml
-  sensors: !include common/sensors.yaml
+  wifi: !include common/wifi-minimal.yaml
   esp01: !include common/esp01.yaml
-  topgreener: !include common/outlet-topgreener.yaml
+
+web_server:

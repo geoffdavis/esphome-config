@@ -1,0 +1,10 @@
+# This file provides the logic for a two-stage OTA build.
+# By default, the "full" stage is used.
+# To build the minimal version for the first flash, you can use:
+#   esphome compile <device>.yaml -s ota_stage minimal
+
+substitutions:
+  ota_stage: "full"
+
+# The web_server is required for OTA updates.
+web_server:

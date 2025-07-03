@@ -1,0 +1,18 @@
+substitutions:
+  name: pruscilla-light-tg
+  old_name: pruscilla_light_tg
+  friendly_name: "Pruscilla Light"
+  # Plug state to set upon powerup (or after power loss)
+  # See options here: https://esphome.io/components/switch/gpio.html
+  restore_mode: RESTORE_DEFAULT_ON
+  # TGWF115PQM (10A) outlet
+  current_resistor: "0.0019"
+  voltage_divider: "2150"
+  wattage_multiplier: "0.001"
+  voltage: "120.0"
+
+packages:
+  wifi: !include common/wifi-minimal.yaml
+  esp01: !include common/esp01.yaml
+
+web_server:

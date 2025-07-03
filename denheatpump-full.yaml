@@ -15,14 +15,11 @@ substitutions:
   remote_temp_sensor: sensor.den_htg_temperature
 
 packages:
-  # Uncomment the next two lines to use a minimal WiFi configuration
-  # esp01: !include common/esp01.yaml
-  # wifi-minimal: !include common/wifi-minimal.yaml
-
-  # Uncomment the next 5 lines to use a full WiFi configuration
   wifi: !include common/wifi.yaml
   ipv6: !include common/ipv6.yaml
   sensors: !include common/sensors.yaml
   heatpump-esp01: !include common/heatpump-esp01.yaml
   fanspeeds: !include common/heatpump-fanspeeds.yaml
   climate: !include common/heatpump-climate.yaml
+
+web_server:

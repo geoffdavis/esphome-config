@@ -32,11 +32,6 @@ logger:
   # level: DEBUG
   baud_rate: 0 # Disable UART logging, we have no physical connections!
 
-external_components:
-  # Pull the esphome component in from this GitHub repo
-  - source: github://cbpowell/ESPSense
-    components: [ espsense ]
-
 # Topgreener electric outlets have a single button on GPIO3
 binary_sensor:
   - platform: gpio
@@ -120,8 +115,3 @@ sensor:
       - multiply: ${wattage_multiplier}
     unit_of_measurement: kWh
 
-espsense:
-  plugs:
-    - name: ${name}
-      power_sensor: wattage
-      voltage: ${voltage}

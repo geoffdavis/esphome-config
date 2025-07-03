@@ -1,8 +1,7 @@
-
 substitutions:
-  name: pruscilla-light-tg
-  old_name: pruscilla_light_tg
-  friendly_name: "Pruscilla Light"
+  name: voronica-outlet
+  old_name: pruscilla-outlet-tg
+  friendly_name: "Voronica Outlet"
   # Plug state to set upon powerup (or after power loss)
   # See options here: https://esphome.io/components/switch/gpio.html
   restore_mode: RESTORE_DEFAULT_ON
@@ -14,8 +13,9 @@ substitutions:
 
 packages:
   wifi: !include common/wifi.yaml
-  #ipv6: !include common/ipv6.yaml # ESPAsyncUDP does not support IPv6
-  #rename: !include common/rename.yaml
+  ipv6: !include common/ipv6.yaml
   sensors: !include common/sensors.yaml
   esp01: !include common/esp01.yaml
   topgreener: !include common/outlet-topgreener.yaml
+
+web_server:
