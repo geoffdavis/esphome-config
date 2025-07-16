@@ -1,0 +1,140 @@
+name: Security Scan
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+env:
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  security-scan:
+    name: Essential Security Checks
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Full history for git-secrets
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install security tools
+      run: |
+        # Install git-secrets
+        git clone https://github.com/awslabs/git-secrets.git /tmp/git-secrets
+        cd /tmp/git-secrets
+        sudo make install
+        
+        # Install Python tools
+        python -m pip install --upgrade pip
+        pip install detect-secrets pre-commit yamllint
+
+    - name: Configure git-secrets
+      run: |
+        # Install git-secrets hooks
+        git secrets --install --force
+        
+        # Register AWS provider patterns
+        git secrets --register-aws
+        
+        # Add ESPHome-specific patterns from .gitsecrets
+        if [[ -f ".gitsecrets" ]]; then
+          echo "Adding ESPHome-specific patterns..."
+          while IFS= read -r pattern; do
+            # Skip comments and empty lines
+            if [[ ! "$pattern" =~ ^[[:space:]]*# ]] && [[ -n "$pattern" ]]; then
+              git secrets --add "$pattern" || echo "Failed to add pattern: $pattern"
+            fi
+          done < .gitsecrets
+        fi
+        
+        # Add allowed patterns
+        git secrets --add --allowed '!secret\s+[A-Za-z0-9_]+'
+        git secrets --add --allowed 'op\s+read\s+["\'"'"']?op://[^"'"'"'\s]+["\'"'"']?'
+        git secrets --add --allowed 'EXAMPLE_[A-Z_]+'
+        git secrets --add --allowed 'YOUR_[A-Z_]+_HERE'
+
+    - name: Run git-secrets scan
+      run: |
+        echo "Running git-secrets scan..."
+        if git secrets --scan-history; then
+          echo "✅ No credential leaks found"
+        else
+          echo "❌ Potential credential leaks detected"
+          exit 1
+        fi
+
+    - name: Run detect-secrets
+      run: |
+        echo "Running detect-secrets scan..."
+        if [ -f .secrets.baseline ]; then
+          detect-secrets scan --baseline .secrets.baseline --force-use-all-plugins
+        else
+          echo "Creating new secrets baseline..."
+          detect-secrets scan --baseline .secrets.baseline --force-use-all-plugins
+        fi
+
+    - name: Run ESPHome credential checks
+      run: |
+        echo "Running ESPHome-specific credential validation..."
+        
+        # Make hooks executable
+        chmod +x .githooks/*.sh
+        
+        # Check for known exposed credentials
+        EXPOSED_CREDENTIALS=(
+          "rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk="
+          "5929ccc1f08289c79aca50ebe0a9b7eb"
+          "1SXRpeXi7AdU"
+        )
+        
+        exit_code=0
+        for cred in "${EXPOSED_CREDENTIALS[@]}"; do
+          if grep -r "$cred" . --exclude-dir=".git" --exclude-dir=".esphome" --exclude=".gitsecrets"; then
+            echo "❌ Found known exposed credential: $cred"
+            exit_code=1
+          fi
+        done
+        
+        # Run ESPHome credential check on all YAML files
+        find . -name "*.yaml" -o -name "*.yml" | grep -v ".esphome/" | while read file; do
+          ./.githooks/esphome-credential-check.sh "$file"
+        done
+        
+        if [ $exit_code -eq 0 ]; then
+          echo "✅ No known exposed credentials found"
+        else
+          echo "❌ Known exposed credentials detected - immediate rotation required"
+          exit 1
+        fi
+
+    - name: Run pre-commit hooks
+      run: |
+        echo "Running pre-commit security hooks..."
+        
+        # Install hooks
+        pre-commit install
+        
+        # Run all hooks on all files
+        pre-commit run --all-files --show-diff-on-failure
+
+    - name: Security scan summary
+      if: always()
+      run: |
+        echo "## 🔒 Security Scan Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 🛡️ Security Measures Active:" >> $GITHUB_STEP_SUMMARY
+        echo "- Git-secrets credential scanning" >> $GITHUB_STEP_SUMMARY
+        echo "- ESPHome-specific pattern detection" >> $GITHUB_STEP_SUMMARY
+        echo "- Known credential exposure detection" >> $GITHUB_STEP_SUMMARY
+        echo "- Pre-commit hook enforcement" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "✅ **Essential security checks completed**" >> $GITHUB_STEP_SUMMARY

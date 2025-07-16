@@ -1,0 +1,78 @@
+# ESPHome Security Pre-commit Configuration
+# Streamlined security hooks for single-user repository
+
+repos:
+  # Essential secret detection
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
+    hooks:
+      - id: detect-secrets
+        name: Detect hardcoded secrets
+        exclude: |
+          (?x)^(
+            \.secrets\.baseline|
+            \.gitsecrets|
+            scripts/setup-security\.sh
+          )$
+
+  # Basic YAML validation
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.35.1
+    hooks:
+      - id: yamllint
+        name: YAML Lint
+        args: ['-d', 'relaxed']
+        files: \.(yaml|yml)$
+
+  # Essential security checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: check-added-large-files
+        args: ['--maxkb=500']
+      - id: check-merge-conflict
+      - id: check-yaml
+        exclude: |
+          (?x)^(
+            .*-full\.yaml|
+            .*-minimal\.yaml
+          )$
+      - id: end-of-file-fixer
+        exclude: |
+          (?x)^(
+            \.esphome/.*|
+            build/.*|
+            fonts/.*\.ttf
+          )$
+      - id: trailing-whitespace
+        exclude: |
+          (?x)^(
+            \.esphome/.*|
+            build/.*|
+            fonts/.*\.ttf
+          )$
+
+  # ESPHome credential validation (essential)
+  - repo: local
+    hooks:
+      - id: esphome-credential-check
+        name: ESPHome credential validation
+        entry: .githooks/esphome_credential_check.py
+        language: script
+        files: \.(yaml|yml)$
+        pass_filenames: true
+
+  # Git-secrets integration (if available)
+  - repo: local
+    hooks:
+      - id: git-secrets-scan
+        name: Git-secrets credential scan
+        entry: .githooks/git_secrets_scan.py
+        language: script
+        files: \.(yaml|yml|sh|py|js|ts|json|md)$
+        pass_filenames: true
+
+# Global configuration
+default_stages: [pre-commit]
+fail_fast: false
+minimum_pre_commit_version: '3.0.0'

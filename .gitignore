@@ -1,38 +1,298 @@
+# =============================================================================
+# ESPHome Configuration .gitignore
+# =============================================================================
+# Essential protection against accidental credential exposure
+
+# =============================================================================
+# SECRETS AND CREDENTIALS
+# =============================================================================
+
+# Primary secrets file
 secrets.yaml
-.esphome
-.DS_Store
-*.db
-*.sqlite3
-*.log
+
+# Alternative secret file patterns
+secrets.*.yaml
+secrets.local.yaml
+*.secrets.yaml
+*-secrets.yaml
+*_secrets.yaml
+
+# Environment files
+.env
+.env.*
+.envrc
+
+# Local configuration files
+config.local.*
+*.local.conf
+*.local.config
+*.local.yaml
+*.local.yml
+
+# =============================================================================
+# ESPHOME-SPECIFIC PATTERNS
+# =============================================================================
+
+# ESPHome build directory and artifacts
+.esphome/
+*.bin
+*.elf
+*.hex
+*.uf2
+firmware*.bin
+*-firmware.bin
+*.firmware
+
+# ESPHome OTA files
+ota_*.bin
+*-ota.bin
+*.ota
+
+# ESPHome logs
+esphome.log
+esphome-*.log
+*.esphome.log
+upload.log
+flash.log
+monitor.log
+serial.log
+
+# Device-specific cache and state files
+.esphome_device_*
+device_*.cache
+*.device.state
+
+# ESPHome configuration backups
+*.yaml.bak
+*.yml.bak
+*.yaml.backup
+*.yml.backup
+*.yaml.old
+*.yml.old
+*.yaml~
+*.yml~
+
+# =============================================================================
+# CERTIFICATES AND KEYS
+# =============================================================================
+
+# SSL/TLS certificates and keys
+*.pem
+*.key
+*.crt
+*.cer
+*.der
+*.p12
+*.pfx
+*.jks
+*.keystore
+
+# SSH keys
+id_rsa
+id_rsa.*
+id_dsa
+id_dsa.*
+id_ecdsa
+id_ecdsa.*
+id_ed25519
+id_ed25519.*
+*.pub
+known_hosts
+authorized_keys
+
+# GPG keys
+*.gpg
+*.asc
+
+# =============================================================================
+# BACKUP AND TEMPORARY FILES
+# =============================================================================
+
+# Various backup file extensions
+*.bak
+*.backup
+*.old
+*.orig
+*.save
+*.swp
+*.swo
+*.tmp
+*.temp
+*~
+#*#
+.#*
+
+# Editor temporary files
+*.kate-swp
+*.un~
+Session.vim
+.netrwhist
+
+# =============================================================================
+# DEVELOPMENT ENVIRONMENT
+# =============================================================================
+
+# IDE configuration files
+.vscode/settings.json
+.vscode/launch.json
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Local development certificates
+localhost.pem
+localhost.key
+dev.pem
+dev.key
+local.crt
+local.key
+
+# =============================================================================
+# ESPHOME WORKFLOW-SPECIFIC PATTERNS
+# =============================================================================
+
+# Device flash dumps and memory images
+*.flash
+*.dump
+flash_*.bin
+memory_*.bin
+eeprom_*.bin
+spiffs_*.bin
+littlefs_*.bin
+
+# Serial communication logs
+serial_*.log
+uart_*.log
+console_*.log
+debug_*.log
+
+# ESPHome compilation artifacts
+.pio/
+.pioenvs/
+.piolibdeps/
+lib_deps_external/
+
+# =============================================================================
+# 1PASSWORD AND SECRETS MANAGEMENT
+# =============================================================================
+
+# 1Password CLI session files and caches
+.op/
+op_session_*
+.onepassword/
+onepassword_session
+
+# Temporary credential files
+creds_*.tmp
+temp_secrets_*
+rotating_*
+new_secrets_*
+old_secrets_*
+
+# =============================================================================
+# PACKAGE MANAGERS AND DEPENDENCIES
+# =============================================================================
+
+# Python
 *.pyc
 *.pyo
 *.pyd
-__pycache__
-*.egg-info
+__pycache__/
+*.egg-info/
 *.egg
-*.zip
-*.tar.gz
-*.rar
-*.tar
-*.gz
-*.7z
-*.swp
-*.bak
-*.tmp
+.pytest_cache/
+.mypy_cache/
+.coverage
+.coverage.*
+.cache
+.venv/
+venv/
+env/
+ENV/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+
+# PlatformIO
+.pio/
+.pioenvs/
+.piolibdeps/
+
+# =============================================================================
+# SYSTEM AND OS FILES
+# =============================================================================
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+
+# =============================================================================
+# DATABASE AND STORAGE FILES
+# =============================================================================
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+*.db3
+*.s3db
+
+# =============================================================================
+# LOGS AND MONITORING
+# =============================================================================
+
+# General log files
+*.log
+logs/
+log/
+
+# Process and lock files
 *.pid
 *.pid.lock
 *.lock
-*.cache
-*.coverage
-*.coverage.*
-*.pytest_cache
-*.mypy_cache
-*.pylint.d
-*.tox
+
+# =============================================================================
+# MISE TOOL VERSION MANAGER
+# =============================================================================
 
 /.mise/
-node_modules
 
-/.venv/
+# =============================================================================
+# SECURITY REPORTS AND TEMPORARY FILES
+# =============================================================================
 
-secrets.yaml
+# Security audit reports
+security-audit-*.txt
+validation-report-*.txt
+1password-diagnostic-*.txt
+rotation-audit-*.txt
+compliance-report-*.txt
+security-health-*.txt
+
+# Secrets baseline for detect-secrets
+.secrets.baseline
+
+# =============================================================================
+# END OF SECURITY PATTERNS
+# =============================================================================

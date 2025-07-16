@@ -11,6 +11,64 @@ tasks:
     cmds:
       - task -l
 
+  # ============================================================================
+  # ESSENTIAL SECURITY VALIDATION
+  # Basic security checks for single-user repository
+  # ============================================================================
+
+  security-validate:
+    desc: "Run essential pre-deployment security validation"
+    cmds:
+      - cmd: |
+          echo "🔍 Running essential security validation..."
+
+          # Check if secrets.yaml exists
+          if [[ ! -f "secrets.yaml" ]]; then
+            echo "⚠️  secrets.yaml not found - generating from 1Password..."
+            task secrets
+          fi
+
+          # Run basic credential checks on YAML files
+          find . -name "*.yaml" -not -path "./.esphome/*" | while read -r file; do
+            ./.githooks/esphome_credential_check.py "$file" || exit 1
+          done
+
+          echo "✅ Essential security validation completed"
+
+  security-scan:
+    desc: "Run basic security scan"
+    cmds:
+      - cmd: |
+          echo "🔍 Running security scan..."
+
+          # Run git-secrets if available
+          if command -v git-secrets >/dev/null 2>&1; then
+            git secrets --scan
+          else
+            echo "⚠️  git-secrets not installed - run: ./scripts/setup-security.sh"
+          fi
+
+          # Run pre-commit hooks if available
+          if command -v pre-commit >/dev/null 2>&1; then
+            pre-commit run --all-files
+          else
+            echo "⚠️  pre-commit not installed - run: ./scripts/setup-security.sh"
+          fi
+
+          echo "✅ Security scan completed"
+
+  test-security:
+    desc: "Run unit tests for Python security scripts"
+    cmds:
+      - cmd: |
+          echo "🧪 Running security script tests..."
+          python3 tests/run_tests.py
+          echo "✅ Security tests completed"
+
+  # ============================================================================
+  # EXISTING TASKS WITH BASIC SECURITY INTEGRATION
+  # ============================================================================
+
   clean:
     desc: "Removes the build directory for a specific device. Usage: task clean -- <device>"
     cmds:
@@ -32,6 +90,7 @@ tasks:
   upload:
     desc: "Uploads the firmware for a specific device. Usage: task upload -- <device>"
     deps:
+      - task: security-validate
       - task: build
         vars: { CLI_ARGS: "{{.CLI_ARGS}}" }
     cmds:
@@ -60,6 +119,7 @@ tasks:
   upload-minimal:
     desc: "Uploads the minimal firmware for a specific device. Usage: task upload-minimal -- <device>"
     deps:
+      - task: security-validate
       - task: build-minimal
         vars: { CLI_ARGS: "{{.CLI_ARGS}}" }
     cmds:
@@ -77,6 +137,8 @@ tasks:
 
   build-all:
     desc: "Builds the firmware for all devices."
+    deps:
+      - security-validate
     cmds:
       - for: { var: ALL_DEVICES }
         task: build
@@ -84,6 +146,8 @@ tasks:
 
   upload-all-two-stage:
     desc: "Uploads the firmware for all devices in two stages."
+    deps:
+      - security-validate
     cmds:
       - for: { var: ALL_DEVICES }
         task: upload-two-stage
@@ -91,6 +155,8 @@ tasks:
 
   upload-two-stage:
     desc: "Uploads the firmware for a single device in two stages."
+    deps:
+      - security-validate
     cmds:
       - task: upload-minimal-if-exists
         vars: { CLI_ARGS: "{{.CLI_ARGS}}" }
@@ -107,6 +173,8 @@ tasks:
 
   build-all-minimal:
     desc: "Builds the minimal firmware for all devices."
+    deps:
+      - security-validate
     cmds:
       - for: { var: MINIMAL_DEVICES }
         task: build-minimal
@@ -114,6 +182,8 @@ tasks:
 
   upload-all-minimal:
     desc: "Uploads the minimal firmware for all devices."
+    deps:
+      - security-validate
     cmds:
       - for: { var: MINIMAL_DEVICES }
         task: upload-minimal
