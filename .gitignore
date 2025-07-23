@@ -190,6 +190,13 @@ rotating_*
 new_secrets_*
 old_secrets_*
 
+# Credential rotation temporary files
+secrets.yaml.transition
+secrets.yaml.recovery
+secrets.yaml.old
+CREDENTIAL_ROTATION_LOG.md
+deployment.log
+
 # =============================================================================
 # PACKAGE MANAGERS AND DEPENDENCIES
 # =============================================================================
