@@ -1,3 +1,4 @@
+---
 # File: common/nodemcuv2.yaml
 # This file contains the basic configuration for a NodeMCU v2 ESPHome device.
 # It includes the board type and basic ESPHome settings.

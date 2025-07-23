@@ -1,3 +1,4 @@
+---
 # Defaults for wifi, api, and OTA connectivity
 # This file is included in all ESPHome YAML files.
 

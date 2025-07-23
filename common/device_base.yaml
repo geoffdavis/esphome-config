@@ -1,3 +1,4 @@
+---
 esphome:
   name: ${node_name}
   build_path: ./build/${node_name}

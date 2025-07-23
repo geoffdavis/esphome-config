@@ -1,3 +1,4 @@
+---
 # This file contains the packages for the minimal build.
 wifi: !include common/wifi-minimal.yaml
 esp01: !include common/esp01.yaml

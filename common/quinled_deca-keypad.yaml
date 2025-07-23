@@ -1,3 +1,4 @@
+---
 # File: common/quinled_deca-keypad.yaml
 # Enable a home-built keypad attached to the QuinLED Deca board, using a PCF8574 I2C expander.
 # The keypad has 6 buttons, each connected to a pin on the PCF8574.

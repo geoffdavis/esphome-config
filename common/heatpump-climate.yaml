@@ -1,3 +1,4 @@
+---
 
 # Configuration defaults the CN105 climate config and remote temperature sensors
 
@@ -63,7 +64,7 @@ climate:
     # Timeout and communication settings
     remote_temperature_timeout: 60min
     update_interval: 2s
-    debounce_delay : 100ms
+    debounce_delay: 100ms
     # Various optional sensors, not all sensors are supported by all heatpumps
     compressor_frequency_sensor:
       name: Compressor Frequency

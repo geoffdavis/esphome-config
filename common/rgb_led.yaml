@@ -1,7 +1,9 @@
+---
 # File: common/rgb_led.yaml
 # Configuration for a single RGB LED connected to GPIO pins using the hardware PWM channels on an ESP8266.
 # This file is included in various ESPHome configurations to standardize RGB LED setup.
-# It sets up a GPIO output for each color channel (red, green, blue) and defines a light component to control the RGB LED.
+# It sets up a GPIO output for each color channel (red, green, blue) and defines a light component to control the
+# RGB LED.
 
 output:
   - platform: esp8266_pwm

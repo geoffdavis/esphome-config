@@ -1,3 +1,4 @@
+---
 # File: common/sensor/dht.yaml
 # Configuration for a DHT11 sensor connected to a GPIO pin.
 # This file is included in various ESPHome configurations to standardize DHT sensor setup.

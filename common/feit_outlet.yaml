@@ -1,3 +1,4 @@
+---
 # Feit electric wifi-switchable double outlet
 # Sold at costco, runs Tuya natively.
 
@@ -9,7 +10,7 @@ esp8266:
   # We want to use the ESP8266 built-in persistent storage.
   # This allows us to restore the plug state after a power loss.
   # https://esphome.io/components/esp8266
-  restore_from_flash: True
+  restore_from_flash: true
 
 # Feit electric outlets have a single button on GPIO13
 binary_sensor:
@@ -39,13 +40,13 @@ output:
     id: feit_red_led
     pin:
       number: GPIO5
-      inverted: True
+      inverted: true
 
 status_led:
   # Blue Light
   pin:
     number: GPIO4
-    inverted: True
+    inverted: true
 
 light:
   - platform: monochromatic

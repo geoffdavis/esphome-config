@@ -101,7 +101,8 @@ tasks:
           fi
 
           if ! output=$($upload_cmd 2>&1); then
-            if echo "$output" | grep -q "Error resolving IP address" || echo "$output" | grep -q "Network is unreachable"; then
+            if echo "$output" | grep -q "Error resolving IP address" || \
+               echo "$output" | grep -q "Network is unreachable"; then
               echo "Device {{.CLI_ARGS}} offline, skipping."
             else
               echo "$output"
@@ -125,7 +126,8 @@ tasks:
     cmds:
       - cmd: |
           if ! output=$(esphome upload {{.CLI_ARGS}}-minimal.yaml 2>&1); then
-            if echo "$output" | grep -q "Error resolving IP address" || echo "$output" | grep -q "Network is unreachable"; then
+            if echo "$output" | grep -q "Error resolving IP address" || \
+               echo "$output" | grep -q "Network is unreachable"; then
               echo "Device {{.CLI_ARGS}} offline, skipping."
             else
               echo "$output"

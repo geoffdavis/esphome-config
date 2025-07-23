@@ -1,3 +1,4 @@
+---
 # Configuration for Sonoff S31 (Small 10A plug)
 # Ref: https://www.esphome-devices.com/devices/Sonoff-S31/
 
@@ -22,7 +23,7 @@ binary_sensor:
     pin:
       number: GPIO0
       mode: INPUT_PULLUP
-      inverted: True
+      inverted: true
     name: ${friendly_name} Button
     on_press:
       then:
@@ -54,7 +55,7 @@ status_led:
 
 sensor:
   - platform: cse7766
-    #update_interval: 5s
+    # update_interval: 5s
     current:
       id: amperage
       name: "${name} Amperage"

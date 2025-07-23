@@ -1,3 +1,4 @@
+---
 # Hardware: NodeMCU board #2
 # Mac Addr: 98:f4:ab:xx:xx:xx
 substitutions:
@@ -60,7 +61,7 @@ i2c:
   - id: bus_a
     sda: GPIO5
     scl: GPIO4
-    scan: True
+    scan: true
 
 # Sensors with general information.
 sensor:

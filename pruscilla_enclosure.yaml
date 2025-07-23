@@ -1,3 +1,4 @@
+---
 # MELIFE ESP32 ESP-32S Development Board
 # From: AliExpress. Really touchy about shorts.
 substitutions:
@@ -21,4 +22,4 @@ packages:
   onboard_dallas: !include common/quinled_deca-onboard_dallas.yaml
   keypad: !include common/quinled_deca-keypad.yaml
   dualrgbww: !include common/quinled_deca-dualrgbww.yaml
-  #rename: !include common/rename.yaml
+  # rename: !include common/rename.yaml

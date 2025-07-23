@@ -1,3 +1,4 @@
+---
 # File: common/particle-d1mini32.yaml
 # Base configuration for a Wemons D1 Mini 32 board with Particle sensor support.
 esphome:
@@ -14,6 +15,6 @@ uart:
   baud_rate: 9600
 
 logger:
-    level: INFO # Set to INFO to see basic operation, WARN to see warnings, or DEBUG for detailed debugging information.
-    logs:
-        pmsx003: INFO  # Set to INFO to see basic operation, WARN to see warnings, or DEBUG for detailed debugging information.
+  level: INFO # Set to INFO to see basic operation, WARN to see warnings, or DEBUG for detailed debugging
+  logs:
+    pmsx003: INFO  # Set to INFO to see basic operation, WARN to see warnings, or DEBUG for detailed debugging

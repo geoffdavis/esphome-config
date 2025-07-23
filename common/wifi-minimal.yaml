@@ -1,3 +1,4 @@
+---
 # Minimal WiFi configuration WITH fallback hotspot for recovery
 # This file provides basic connectivity while maintaining recovery capability
 # CRITICAL: Always includes fallback hotspot to prevent device bricking

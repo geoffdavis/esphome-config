@@ -1,3 +1,4 @@
+---
 # ESP32 #4
 substitutions:
   name: den_audio_led
@@ -11,7 +12,7 @@ esp32:
   board: esp32doit-devkit-v1
 
 esp32_touch:
-  #  setup_mode: True
+  # setup_mode: True
 
 network:
   enable_ipv6: true
@@ -19,32 +20,33 @@ network:
 
 
 binary_sensor:
-- platform: esp32_touch
-  name: Touch Pad on ESP32 ${friendly_name}
-  pin: GPIO32
-  threshold: 1000
-  on_press:
-    then:
-      - light.toggle: LedsStrip
-# PIR Sensor on GPIO34
-- platform: gpio
-  pin: GPIO34
-  name: ${friendly_name} Motion
-  device_class: motion
+  - platform: esp32_touch
+    name: Touch Pad on ESP32 ${friendly_name}
+    pin: GPIO32
+    threshold: 1000
+    on_press:
+      then:
+        - light.toggle: LedsStrip
+  # PIR Sensor on GPIO34
+  - platform: gpio
+    pin: GPIO34
+    name: ${friendly_name} Motion
+    device_class: motion
 
 
 light:
   - platform: fastled_clockless
-  #- platform: fastled_spi
+    # - platform: fastled_spi
     id: LedsStrip
     chipset: NEOPIXEL
-    #chipset: APA102
+    # chipset: APA102
     pin: GPIO21
-    #data_pin: GPIO21
-    #clock_pin: GPIO17
-    # If you change the num_leds, you should change the N_PIXELS defined in music_leds_esphome.h corresponding
+    # data_pin: GPIO21
+    # clock_pin: GPIO17
+    # If you change the num_leds, you should change the N_PIXELS defined in
+    # music_leds_esphome.h corresponding
     num_leds: ${n_pixels}
-    #rgb_order: BGR
+    # rgb_order: BGR
     name: "${friendly_name} Music LEDs"
     effects:
       - addressable_rainbow:
@@ -56,17 +58,20 @@ light:
           name: Scroll with Music
           update_interval: 0s
           lambda: |-
-            ((esphome::esphome_music_leds::MusicLeds*) id(music_leds))->ShowFrame(esphome::esphome_music_leds::MODE_SCROLL, &it);
+            ((esphome::esphome_music_leds::MusicLeds*) id(music_leds))->
+            ShowFrame(esphome::esphome_music_leds::MODE_SCROLL, &it);
       - addressable_lambda:
           name: Energy with Music
           update_interval: 0s
           lambda: |-
-            ((esphome::esphome_music_leds::MusicLeds*) id(music_leds))->ShowFrame(esphome::esphome_music_leds::MODE_ENERGY, &it);
+            ((esphome::esphome_music_leds::MusicLeds*) id(music_leds))->
+            ShowFrame(esphome::esphome_music_leds::MODE_ENERGY, &it);
       - addressable_lambda:
           name: Spectrum with Music
           update_interval: 0s
           lambda: |-
-            ((esphome::esphome_music_leds::MusicLeds*) id(music_leds))->ShowFrame(esphome::esphome_music_leds::MODE_SPECTRUM, &it);
+            ((esphome::esphome_music_leds::MusicLeds*) id(music_leds))->
+            ShowFrame(esphome::esphome_music_leds::MODE_SPECTRUM, &it);
 
 wifi:
   ssid: !secret wifi_ssid
@@ -127,8 +132,6 @@ sensor:
   - platform: wifi_signal
     name: ${friendly_name} WiFi Signal
     update_interval: 60s
-
-
 
 esphome-music-leds:
   id: music_leds

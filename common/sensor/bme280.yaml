@@ -1,3 +1,4 @@
+---
 # File: common/sensor/bme280.yaml
 # This file contains the configuration for a BME280 sensor connected to an I2C bus.
 # It is included in various ESPHome configurations to standardize BME280 sensor setup.
@@ -7,7 +8,7 @@ i2c:
   - id: ${bme280_i2c_id}
     sda: ${bme280_i2c_sda}
     scl: ${bme280_i2c_scl}
-    scan: True
+    scan: true
 
 sensor:
   # BME280 on I2C bus

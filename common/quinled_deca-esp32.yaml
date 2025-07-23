@@ -1,3 +1,4 @@
+---
 # File: common/quinled_deca-esp32.yaml
 # Configuration for QuinLED Deca, using an ESP32 Devkit board.
 # This file is included in all ESPHome YAML files that use a QuinLED Deca board.

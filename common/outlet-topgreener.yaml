@@ -1,11 +1,14 @@
+---
 # This file is used by both the 10A and 15A TopGreener outlets, with some
 # differences in the sensor configuration.
 # The 10A outlet uses a different current resistor and voltage divider
-# compared to the 15A outlet, which is why we have two separate configurations.
+# compared to the 15A outlet, which is why we have two separate
+# configurations.
 # The 10A outlet is also smaller and has a different model number.
 #
 # Configuration for TGWF115APM (Big 15A plug)
-# Ref: https://github.com/cbpowell/ESPSense/blob/master/configs/espsense-TopGreener_TGWF115APM.yml
+# Ref: https://github.com/cbpowell/ESPSense/blob/master/configs/
+# espsense-TopGreener_TGWF115APM.yml
 # Use the following configuration for the 15A outlet (in a "substitutions" section):
 # substitutions:
 #    current_resistor: "0.00228"
@@ -14,7 +17,8 @@
 #    voltage: "120.0"
 
 # Configuration for TGWF115PQM (Small 10A plug)
-# Ref: https://github.com/cbpowell/ESPSense/blob/master/configs/espsense-TopGreener_TGWF115PQM.yml
+# Ref: https://github.com/cbpowell/ESPSense/blob/master/configs/
+# espsense-TopGreener_TGWF115PQM.yml
 # Use the following configuration for the 10A outlet (in a "substitutions" section):
 # substitutions:
 #    current_resistor: "0.0019"
@@ -26,25 +30,27 @@ esp8266:
   # We want to use the ESP8266 built-in persistent storage.
   # This allows us to restore the plug state after a power loss.
   # https://esphome.io/components/esp8266
-  restore_from_flash: True
+  restore_from_flash: true
 
 logger:
   # level: DEBUG
-  baud_rate: 0 # Disable UART logging, we have no physical connections!
+  # Disable UART logging, we have no physical connections!
+  baud_rate: 0
 
 # Topgreener electric outlets have a single button on GPIO3
 binary_sensor:
   - platform: gpio
     pin:
       number: GPIO3
-      inverted: True
+      inverted: true
     name: Button
     on_press:
       then:
         - switch.toggle: relay
   - platform: status
     name: Status
-    # Note that blue LED appears to be tied to relay state internally (electrically)
+    # Note that blue LED appears to be tied to relay state internally
+    # (electrically)
 
 switch:
   # Main plug control relay
@@ -58,13 +64,13 @@ status_led:
   # Use Green LED as ESPHome's built-in status indicator
   pin:
     number: GPIO13
-    inverted: False
+    inverted: false
 
 sensor:
   - platform: hlw8012
     sel_pin:
       number: GPIO12
-      inverted: True
+      inverted: true
     cf_pin: GPIO04
     cf1_pin: GPIO5
     # Increasing current_res reduces reported wattage
@@ -79,7 +85,7 @@ sensor:
         #   # Map X (from sensor) to Y (true value)
         #   # At least 2 data points required
         #   - 0.0 -> 0.0
-        #   - 1.0 -> 1.0 #load was on
+        #   - 1.0 -> 1.0 # load was on
     voltage:
       name: "Voltage"
       unit_of_measurement: V
@@ -88,7 +94,7 @@ sensor:
         #   # Map X (from sensor) to Y (true value)
         #   # At least 2 data points required
         #   - 0.0 -> 0.0
-        #   - 1.0 -> 1.0 #load was on
+        #   - 1.0 -> 1.0 # load was on
     power:
       id: "wattage"
       name: "Wattage"
@@ -103,9 +109,10 @@ sensor:
         #   # Map X (from sensor) to Y (true value)
         #   # At least 2 data points required
         #   - 0.0 -> 0.0
-        #   - 1.0 -> 1.0 #load was on
+        #   - 1.0 -> 1.0 # load was on
     change_mode_every: 8
-    update_interval: 3s # Longer interval gives better accuracy
+    # Longer interval gives better accuracy
+    update_interval: 3s
 
   - platform: total_daily_energy
     name: "Total Daily Energy"

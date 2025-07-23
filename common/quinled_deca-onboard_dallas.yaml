@@ -1,3 +1,4 @@
+---
 # File: common/qunled_deca-onboard_dallas.yaml
 # Enable the onboard Dallas temperature sensor on the QuinLED Deca board.
 

@@ -1,3 +1,4 @@
+---
 # File: common/sensor/dht22.yaml
 # Configuration for a DHT22 sensor connected to a GPIO pin.
 # This file is included in various ESPHome configurations to standardize DHT sensor setup.
@@ -7,7 +8,7 @@ sensor:
   - platform: dht
     pin: ${dht_pin}
     temperature:
-        name: ${friendly_name} Multisensor Temperature
+      name: ${friendly_name} Multisensor Temperature
     humidity:
-        name: ${friendly_name} Multisensor Humidity
+      name: ${friendly_name} Multisensor Humidity
     model: DHT22

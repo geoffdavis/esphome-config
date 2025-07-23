@@ -96,7 +96,7 @@ font:
     glyphs: [
       "\U000F0043", # mdi-arrow-bottom-right
       "\U000F005C"  # mdi-arrow-top-right
-      ]
+    ]
 
   - file: 'fonts/materialdesignicons-webfont.ttf'
     id: icon_font_25
@@ -120,7 +120,7 @@ font:
       "\U000F0599", # mdi-weather-sunny
       "\U000F059D", # mdi-weather-windy
       "\U000F059E"  # mdi-weather-windy-variant
-      ]
+    ]
 
   - file: 'fonts/materialdesignicons-webfont.ttf'
     id: icon_font_30
@@ -129,7 +129,7 @@ font:
       "\U000F050F", # mdi-thermometer
       "\U000F0D80", # mdi-home-floor-1
       "\U000F0DD2"  # mdi-home-floor-0
-      ]
+    ]
 
   - file: 'fonts/materialdesignicons-webfont.ttf'
     id: icon_font_35

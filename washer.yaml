@@ -1,8 +1,9 @@
+---
 # Washing machine power status
 substitutions:
   name: washer
   friendly_name: "Washing Machine"
-    # Plug state to set upon powerup (or after power loss)
+  # Plug state to set upon powerup (or after power loss)
   # See options here: https://esphome.io/components/switch/gpio.html
   restore_mode: RESTORE_DEFAULT_ON
   idle_wattage: "3.8"
@@ -10,6 +11,6 @@ substitutions:
 
 packages:
   wifi: !include common/wifi.yaml
-  #ipv6: !include common/ipv6.yaml
+  # ipv6: !include common/ipv6.yaml
   sensors: !include common/sensors.yaml
   sonoff_s31: !include common/sonoff_s31.yaml

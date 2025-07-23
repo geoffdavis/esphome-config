@@ -1,4 +1,6 @@
-# Configuration defaults for an ESP01_1M board that monitors a Mitsubishi heat pump.
+---
+# Configuration defaults for an ESP01_1M board that monitors a Mitsubishi
+# heat pump.
 
 esphome:
   name: ${name}
@@ -20,47 +22,55 @@ logger:
   # needs the sole hardware UART on the ESP8266
   baud_rate: 0
   # Set the logging level and specify which components to log
-  # Set to INFO to see basic operation, WARN to see warnings, or DEBUG for detailed
-  # debugging information.
+  # Set to INFO to see basic operation, WARN to see warnings, or DEBUG for
+  # detailed debugging information.
   # Adjust the logging level as needed for your debugging purposes.
   # For example, set to DEBUG to see detailed logs for the CN105 component.
   # For production use, you might want to set it to WARN or ERROR.
-  # If you want to see all logs, set level to DEBUG and adjust individual component logs
-  # accordingly.
+  # If you want to see all logs, set level to DEBUG and adjust individual
+  # component logs accordingly.
   # Note: DEBUG level can produce a lot of output, so use it judiciously
   #       especially in production environments.
   #       INFO level is usually sufficient for normal operation.
-  #       WARN level is useful for catching potential issues without overwhelming logs.
+  #       WARN level is useful for catching potential issues without
+  #       overwhelming logs.
   #       ERROR level is for critical issues only.
-  #       Adjust the logs below to control the verbosity of specific components.
-  #       For example, set CYCLE to INFO to see cycle times, or DEBUG for detailed cycle information.
+  #       Adjust the logs below to control the verbosity of specific
+  #       components.
+  #       For example, set CYCLE to INFO to see cycle times, or DEBUG for
+  #       detailed cycle information.
   #       Set climate to WARN to see warnings related to climate control.
-  #       Set sensor to INFO to see sensor readings, or DEBUG for detailed sensor information.
-  #       Set WRITE and READ to WARN to see write/read operations, or DEBUG for detailed
-  #       operations.
-  #       Set Header to INFO to see header information, or DEBUG for detailed header information.
-  #       Set Decoder to DEBUG to see detailed decoding information, or INFO for basic decoding.
-  #       Set CONTROL_WANTED_SETTINGS to INFO to see control settings, or DEBUG for detailed
-  #       control settings.
-  #       Adjust these settings based on your needs and the verbosity you require.
+  #       Set sensor to INFO to see sensor readings, or DEBUG for detailed
+  #       sensor information.
+  #       Set WRITE and READ to WARN to see write/read operations, or DEBUG
+  #       for detailed operations.
+  #       Set Header to INFO to see header information, or DEBUG for detailed
+  #       header information.
+  #       Set Decoder to DEBUG to see detailed decoding information, or INFO
+  #       for basic decoding.
+  #       Set CONTROL_WANTED_SETTINGS to INFO to see control settings, or
+  #       DEBUG for detailed control settings.
+  #       Adjust these settings based on your needs and the verbosity you
+  #       require.
   level: INFO
   logs:
-    EVT_SETS : INFO
-    WIFI : INFO
-    MQTT : INFO
-    WRITE_SETTINGS : INFO
-    SETTINGS : INFO
-    STATUS : INFO
+    EVT_SETS: INFO
+    WIFI: INFO
+    MQTT: INFO
+    WRITE_SETTINGS: INFO
+    SETTINGS: INFO
+    STATUS: INFO
     CN105Climate: INFO
     CN105: INFO
-    CYCLE: WARN # Set this to INFO to see how long your cycle times are taking
+    # Set this to INFO to see how long your cycle times are taking
+    CYCLE: WARN
     climate: WARN
     sensor: INFO
-    chkSum : INFO
-    WRITE : WARN
-    READ : WARN
+    chkSum: INFO
+    WRITE: WARN
+    READ: WARN
     Header: INFO
-    Decoder : INFO
+    Decoder: INFO
     CONTROL_WANTED_SETTINGS: INFO
 #  level: DEBUG
 #  logs:
