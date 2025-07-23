@@ -1,7 +1,7 @@
 # ESPHome Credential Deployment Status Report
 
-**Date**: 2025-07-16 15:58 PST  
-**Process**: Two-Stage Credential Deployment  
+**Date**: 2025-07-16 15:58 PST
+**Process**: Two-Stage Credential Deployment
 **Status**: Partially Completed - Offline Devices Require Manual Deployment
 
 ## Summary
@@ -40,7 +40,7 @@ All 24 devices failed deployment during Stage 1 with exit codes 1-2, indicating:
 
 **ESP32 Devices** (direct deployment):
 - `esp32heatpump`
-- `den_audio_led` 
+- `den_audio_led`
 - `pruscilla_enclosure`
 - `particle_man`
 

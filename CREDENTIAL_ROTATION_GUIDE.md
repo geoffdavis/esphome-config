@@ -27,7 +27,7 @@ Before starting the rotation process, ensure you have:
 Verify prerequisites:
 ```bash
 # Check 1Password access
-op account list 
+op account list
 
 # Check ESPHome
 esphome version
@@ -301,7 +301,7 @@ cat >> CREDENTIAL_ROTATION_LOG.md << EOF
 **Reason**: Exposed credentials in public repository
 **Rotated Credentials**:
 - API Encryption Key
-- OTA Password  
+- OTA Password
 - Fallback Hotspot Password
 
 **Process Used**: Two-stage deployment
@@ -349,10 +349,10 @@ op signin
 op account list
 
 # Test vault access
-op vault list 
+op vault list
 
 # Test item access
-op item get "ESPHome" --vault="Automation" 
+op item get "ESPHome" --vault="Automation"
 ```
 
 ### Security Hook False Positives
@@ -392,7 +392,7 @@ echo "⚠️  ROLLBACK COMPLETED - Investigate issues before retry"
 ### Regular Rotation Schedule
 
 - **API Keys**: Every 90 days or immediately after exposure
-- **OTA Passwords**: Every 90 days or immediately after exposure  
+- **OTA Passwords**: Every 90 days or immediately after exposure
 - **Fallback Passwords**: Every 180 days or immediately after exposure
 - **WiFi Credentials**: As needed or after exposure
 

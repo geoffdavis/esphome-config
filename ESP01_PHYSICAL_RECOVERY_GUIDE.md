@@ -13,7 +13,7 @@ The ESP01 devices are completely bricked and require **PHYSICAL RECOVERY**. Here
 
 The following devices need physical recovery:
 - `attic_sensor` (ESP01)
-- `bedroom_east_heatpump` (ESP01) 
+- `bedroom_east_heatpump` (ESP01)
 - `bedroom_west_heatpump` (ESP01)
 - `denheatpump` (ESP01)
 - `hodad_outlet` (ESP01)
@@ -44,7 +44,7 @@ ESP01 Pin Layout:
 
 Connections to USB-Serial:
 - VCC → 3.3V
-- GND → GND  
+- GND → GND
 - TXD → RX
 - RXD → TX
 - GPIO0 → GND (for flash mode)

@@ -2,9 +2,9 @@
 
 ## Deployment Summary
 
-**Date**: 2025-01-17  
-**Objective**: Deploy new secure credentials to all 24 ESPHome devices  
-**Method**: Two-stage deployment with credential rotation support  
+**Date**: 2025-01-17
+**Objective**: Deploy new secure credentials to all 24 ESPHome devices
+**Method**: Two-stage deployment with credential rotation support
 
 ## Results Overview
 
@@ -27,7 +27,7 @@ These devices received new credentials and are fully operational:
 
 **Affected Devices**:
 - `attic_sensor`
-- `bedroom_east_heatpump` 
+- `bedroom_east_heatpump`
 - `bedroom_west_heatpump`
 - `denheatpump`
 - `hodad_outlet`
