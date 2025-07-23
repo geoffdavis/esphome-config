@@ -2,28 +2,41 @@
 
 ## Project State Overview
 
-The ESPHome configuration project is in a mature, production-ready state with a comprehensive security framework and automated deployment processes. The system manages dozens of IoT devices across multiple hardware platforms with centralized credential management and robust security practices.
+The ESPHome configuration project is in a mature, production-ready state with a comprehensive Python security framework and automated deployment processes. The system manages dozens of IoT devices across multiple hardware platforms with centralized credential management and robust security practices. Recent focus has been on credential rotation capabilities, device recovery procedures, and comprehensive documentation.
 
 ## Recent Major Developments
 
 ### Python Security Framework Migration
-- **Status**: Complete
+- **Status**: Complete and Enhanced
 - **Achievement**: Successfully migrated from mixed bash/Python scripts to unified Python security framework
 - **Impact**: Improved error handling, comprehensive testing, and better 1Password integration
 - **Key Files**: [`scripts/security_lib.py`](scripts/security_lib.py), [`scripts/validate_secrets.py`](scripts/validate_secrets.py)
+- **Documentation**: [`SECURITY_FRAMEWORK.md`](SECURITY_FRAMEWORK.md), [`MIGRATION_GUIDE.md`](MIGRATION_GUIDE.md)
+
+### Advanced Credential Management System
+- **Status**: Production-ready with rotation capabilities
+- **Features**: Automated credential rotation, transition mode deployment, backup/restore
+- **Key Scripts**: [`scripts/rotate_credentials.py`](scripts/rotate_credentials.py), [`scripts/deploy_with_rotation.py`](scripts/deploy_with_rotation.py), [`scripts/track_secret_rotation.py`](scripts/track_secret_rotation.py)
+- **Documentation**: [`CREDENTIAL_ROTATION_GUIDE.md`](CREDENTIAL_ROTATION_GUIDE.md)
+
+### Device Recovery Framework
+- **Status**: Active with comprehensive procedures
+- **Purpose**: Handle device recovery scenarios including ESP01 bricking incidents
+- **Tools**: [`scripts/recover_device.py`](scripts/recover_device.py), recovery network procedures
+- **Documentation**: [`ESP01_RECOVERY_PLAN.md`](ESP01_RECOVERY_PLAN.md), [`ESP01_PHYSICAL_RECOVERY_GUIDE.md`](ESP01_PHYSICAL_RECOVERY_GUIDE.md)
 
 ### Comprehensive Testing Implementation
-- **Status**: Active
-- **Coverage**: Full unit test suite for security framework components
-- **Framework**: Python unittest with mock support for external dependencies
+- **Status**: Active and Expanded
+- **Coverage**: Full unit test suite for security framework components with mock support
+- **Framework**: Python unittest with comprehensive test utilities
 - **Integration**: Pre-commit hooks run tests automatically
-- **Key Files**: [`tests/test_security_lib.py`](tests/test_security_lib.py), [`tests/run_tests.py`](tests/run_tests.py)
+- **Key Files**: [`tests/test_security_lib.py`](tests/test_security_lib.py), [`tests/test_config.py`](tests/test_config.py), [`tests/run_tests.py`](tests/run_tests.py)
 
 ### Two-Stage Deployment System
-- **Status**: Production-ready
+- **Status**: Production-ready with rotation support
 - **Purpose**: Handles ESP01 devices with 1MB flash memory constraints
-- **Process**: Minimal firmware → Full firmware deployment
-- **Automation**: Integrated into Task runner workflows
+- **Process**: Minimal firmware → Full firmware deployment with credential transition support
+- **Automation**: Integrated into Task runner workflows with rotation-aware deployment
 
 ## Current Focus Areas
 

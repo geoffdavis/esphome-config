@@ -67,8 +67,11 @@ _.python.venv = { path = ".venv", create = true }
 | [`validate_1password_structure.py`](scripts/validate_1password_structure.py) | 1Password integration check | Python 3.11 |
 | [`setup_security.py`](scripts/setup_security.py) | Security tool installation | Python 3.11 |
 | [`rotate_credentials.py`](scripts/rotate_credentials.py) | Automated credential rotation | Python 3.11 |
-| [`setup_dev_secrets.py`](scripts/setup_dev_secrets.py) | Development environment | Python 3.11 |
+| [`deploy_with_rotation.py`](scripts/deploy_with_rotation.py) | Deployment with credential rotation | Python 3.11 |
+| [`recover_device.py`](scripts/recover_device.py) | Device recovery procedures | Python 3.11 |
+| [`track_secret_rotation.py`](scripts/track_secret_rotation.py) | Rotation history tracking | Python 3.11 |
 | [`backup_secrets.py`](scripts/backup_secrets.py) | Backup management | Python 3.11 |
+| [`setup_dev_secrets.py`](scripts/setup_dev_secrets.py) | Development environment | Python 3.11 |
 
 ### Testing Framework
 **Unit Testing** ([`tests/`](tests/)):

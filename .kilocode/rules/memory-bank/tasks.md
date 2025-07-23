@@ -110,22 +110,50 @@ This document captures repetitive tasks and their step-by-step workflows for fut
 
 **Steps:**
 1. Run security validation: `task security-validate`
-2. Create backup: `task security-backup`
+2. Create backup: `python3 scripts/backup_secrets.py create`
 3. Generate new credentials: `python3 scripts/rotate_credentials.py`
 4. Update 1Password vaults with new credentials
 5. Regenerate secrets file: `./scripts/generate_secrets.sh`
 6. Validate new credentials: `python3 scripts/validate_secrets.py`
-7. Deploy to test device first
-8. Bulk deploy to all devices: `task upload-all-two-stage`
-9. Verify all devices are accessible
-10. Track rotation: `python3 scripts/track_secret_rotation.py add`
+7. Deploy using rotation-aware deployment: `python3 scripts/deploy_with_rotation.py --all`
+8. Verify all devices are accessible
+9. Track rotation: `python3 scripts/track_secret_rotation.py add`
 
 **Important notes:**
 - Always backup before rotation
-- Test with single device before bulk deployment
-- Use transition mode during deployment if needed
+- Use `deploy_with_rotation.py` for seamless credential transitions
+- Script handles both old and new credentials during deployment
 - Verify 1Password integration is working
 - Document rotation in tracking system
+
+### Device Recovery
+**Last performed:** As needed for device issues
+**Files to modify:**
+- Recovery network configuration
+- Device-specific recovery procedures
+- Recovery deployment scripts
+
+**Steps:**
+1. Identify offline or bricked devices
+2. Check for fallback hotspot: Look for "[Device Name] ESP" networks
+3. If hotspot available:
+   - Connect to fallback hotspot
+   - Access device at http://192.168.4.1
+   - Reconfigure WiFi settings
+4. If no hotspot (ESP01 devices):
+   - Set up recovery network with exact credentials device expects
+   - Wait for device to connect to recovery network
+   - Deploy fixed firmware: `python3 scripts/recover_device.py <device_name>`
+5. For physical recovery:
+   - Use serial connection for firmware flashing
+   - Follow ESP01 physical recovery procedures
+6. Verify device connectivity after recovery
+
+**Important notes:**
+- ESP01 devices may require recovery network setup
+- Always include fallback hotspot in minimal configurations
+- Document recovery procedures for each device type
+- Test recovery procedures periodically
 
 ### Security Framework Setup
 **Last performed:** Initial setup and updates
@@ -149,6 +177,27 @@ This document captures repetitive tasks and their step-by-step workflows for fut
 - Test all security validation steps
 - Verify pre-commit hooks are working
 - Set up development credentials for safe testing
+
+### Backup and Restore Operations
+**Last performed:** Regular maintenance
+**Files to modify:**
+- Backup directory structure
+- Backup manifests and metadata
+- Recovery procedures
+
+**Steps:**
+1. Create backup: `python3 scripts/backup_secrets.py create`
+2. List available backups: `python3 scripts/backup_secrets.py list`
+3. Verify backup integrity: `python3 scripts/backup_secrets.py verify <backup_id>`
+4. Restore from backup: `python3 scripts/backup_secrets.py restore <backup_id>`
+5. Test restored configuration: `task security-validate`
+6. Clean up old backups: `python3 scripts/backup_secrets.py cleanup --days 30`
+
+**Important notes:**
+- Regular backups before major changes
+- Test restore procedures periodically
+- Keep backup retention policy current
+- Document backup and restore procedures
 
 ### Add Security Validation Rule
 **Last performed:** Framework development

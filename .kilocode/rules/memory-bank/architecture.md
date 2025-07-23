@@ -72,6 +72,10 @@ Located in [`scripts/`](scripts/) directory:
 - **Validation**: [`validate_secrets.py`](scripts/validate_secrets.py) - Credential format validation
 - **1Password Integration**: [`validate_1password_structure.py`](scripts/validate_1password_structure.py)
 - **Credential Rotation**: [`rotate_credentials.py`](scripts/rotate_credentials.py)
+- **Deployment with Rotation**: [`deploy_with_rotation.py`](scripts/deploy_with_rotation.py)
+- **Device Recovery**: [`recover_device.py`](scripts/recover_device.py)
+- **Rotation Tracking**: [`track_secret_rotation.py`](scripts/track_secret_rotation.py)
+- **Backup Management**: [`backup_secrets.py`](scripts/backup_secrets.py)
 - **Development Support**: [`setup_dev_secrets.py`](scripts/setup_dev_secrets.py)
 
 ### 3. Security Validation Pipeline
