@@ -27,6 +27,15 @@ repos:
         args: ['-d', 'relaxed']
         files: \.(yaml|yml)$
 
+  # Markdown validation
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.39.0
+    hooks:
+      - id: markdownlint
+        name: Markdown Lint
+        args: ['--config', '.markdownlint.json']
+        files: \.md$
+
   # Essential security checks
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
