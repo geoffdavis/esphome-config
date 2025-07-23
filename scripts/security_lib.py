@@ -380,7 +380,7 @@ class OnePasswordManager:
         credentials = {}
         field_mapping = {
             'wifi_ssid': 'network name',
-            'wifi_password': 'wireless network password',
+            'wifi_password': 'wireless network password',  # pragma: allowlist secret
             'wifi_domain': 'domain name'
         }
 
