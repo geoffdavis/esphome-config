@@ -2,6 +2,99 @@
 
 This document captures repetitive tasks and their step-by-step workflows for future reference.
 
+## Documentation Management Tasks
+
+### Update Unified Documentation
+**Last performed:** Ongoing maintenance
+**Files to modify:**
+- Files in `docs/` directory
+- Cross-references and navigation links
+- Memory Bank integration links
+
+**Steps:**
+1. Identify documentation need or update requirement
+2. Determine appropriate location in `docs/` structure:
+   ```bash
+   docs/getting-started/     # New user guides
+   docs/security/           # Security-related content
+   docs/device-management/  # Device operations
+   docs/architecture/       # System design guides
+   docs/reference/          # Reference and troubleshooting
+   ```
+3. Create or update user-friendly content with step-by-step procedures
+4. Link to Memory Bank for comprehensive technical details:
+   ```markdown
+   For complete technical details, see [System Architecture](.kilocode/rules/memory-bank/architecture.md#section).
+   ```
+5. Update navigation in `docs/README.md`
+6. Verify all Memory Bank links work correctly
+7. Test procedures for accuracy and completeness
+
+**Important notes:**
+- Never duplicate Memory Bank content - always link to it
+- Focus on user-friendly guidance and practical procedures
+- Include troubleshooting for common issues
+- Maintain clear navigation between related topics
+
+### Validate Documentation Integration
+**Last performed:** Regular maintenance
+**Files to modify:**
+- Documentation link validation
+- Cross-reference verification
+- Navigation flow testing
+
+**Steps:**
+1. Validate Memory Bank links are working:
+   ```bash
+   grep -r "\.kilocode/rules/memory-bank/" docs/ | while read line; do
+       file=$(echo "$line" | cut -d: -f1)
+       link=$(echo "$line" | grep -o '\.kilocode/rules/memory-bank/[^)]*')
+       if [ ! -f "$link" ]; then
+           echo "Broken link in $file: $link"
+       fi
+   done
+   ```
+2. Check for potentially unlinked documentation:
+   ```bash
+   find docs/ -name "*.md" -not -name "README.md" | while read file; do
+       basename=$(basename "$file")
+       if ! grep -q "$basename" docs/README.md; then
+           echo "Potentially unlinked file: $file"
+       fi
+   done
+   ```
+3. Verify navigation flow makes sense for different user journeys
+4. Test all procedures documented in guides
+5. Update any outdated command examples or references
+
+**Important notes:**
+- Run validation monthly to catch broken links
+- Test procedures in clean environment before documenting
+- Keep documentation maintenance guidelines current
+- Focus on user experience and clear navigation
+
+### Consolidate Legacy Documentation
+**Last performed:** Major reorganization completed
+**Files to modify:**
+- Legacy documentation files
+- Status reports and historical information
+- Integration with unified structure
+
+**Steps:**
+1. Identify overlapping content with Memory Bank and unified docs
+2. Extract user-friendly procedures for unified documentation
+3. Create appropriate links to Memory Bank for technical details
+4. Move status reports and historical info to `docs/status/`
+5. Archive or delete completely duplicated content after verification
+6. Update all references throughout the project
+7. Verify no important information was lost in consolidation
+
+**Important notes:**
+- Preserve historical context in `docs/status/` directory
+- Don't delete until verifying content is preserved elsewhere
+- Update any scripts or automation that reference moved files
+- Document consolidation decisions for future reference
+
 ## Device Management Tasks
 
 ### Add New Device Configuration

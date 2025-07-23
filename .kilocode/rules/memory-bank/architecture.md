@@ -227,13 +227,47 @@ Captive Portal → Web Interface → Manual Configuration
 ├── common/ (shared components)
 ├── scripts/ (security framework)
 ├── tests/ (validation tests)
+├── docs/ (unified documentation)
 ├── custom_components/ (ESPHome extensions)
 ├── include/ (C++ headers)
 ├── fonts/ (display resources)
 └── packages/ (deployment packages)
 ```
 
-### 2. Common Components Hierarchy
+### 2. Documentation Architecture
+
+```
+docs/
+├── README.md (main documentation index)
+├── DOCUMENTATION_MAINTENANCE.md (maintenance guidelines)
+├── getting-started/ (new user guides)
+│   ├── quick-start.md
+│   ├── development-setup.md
+│   └── first-device.md
+├── security/ (security-related documentation)
+│   ├── overview.md
+│   ├── credential-rotation.md
+│   ├── troubleshooting.md
+│   └── migration-notes.md
+├── device-management/ (device operations)
+│   ├── device-types.md
+│   ├── two-stage-deployment.md
+│   ├── recovery-procedures.md
+│   └── common-tasks.md
+├── architecture/ (system design guides)
+│   ├── system-overview.md
+│   ├── file-structure.md
+│   └── integration-points.md
+├── reference/ (complete reference)
+│   ├── task-commands.md
+│   ├── troubleshooting.md
+│   └── memory-bank-guide.md
+└── status/ (status reports and historical info)
+    ├── README.md
+    └── [various status and migration documents]
+```
+
+### 3. Common Components Hierarchy
 
 ```
 common/
@@ -250,6 +284,27 @@ common/
 └── Device-Specific
     ├── heatpump-*.yaml
     └── outlet-*.yaml
+```
+
+### 4. Memory Bank Integration Pattern
+
+```
+Documentation Integration Architecture:
+├── Memory Bank (.kilocode/rules/memory-bank/)
+│   ├── Authoritative technical information
+│   ├── Complete system architecture
+│   ├── Detailed procedures and workflows
+│   └── Current project context
+├── Unified Documentation (docs/)
+│   ├── User-friendly guides and tutorials
+│   ├── Topic-based organization
+│   ├── Links to Memory Bank for details
+│   └── Troubleshooting and reference
+└── Integration Pattern
+    ├── No duplication of information
+    ├── Single source of truth in Memory Bank
+    ├── User-accessible guides in docs/
+    └── Clear navigation between systems
 ```
 
 ## Integration Architecture
@@ -275,6 +330,14 @@ common/
 - **Pre-commit**: Quality gates and security validation
 - **Renovate**: Automated dependency updates
 
+### 4. Documentation Integration
+
+- **Memory Bank System**: Authoritative technical documentation
+- **Unified Documentation**: User-friendly guides with Memory Bank links
+- **Topic Organization**: Logical grouping by user needs and workflows
+- **Maintenance Guidelines**: Automated documentation maintenance procedures
+- **Cross-Reference System**: Clear navigation between related topics
+
 ## Scalability Considerations
 
 ### 1. Device Management
@@ -295,5 +358,6 @@ common/
 
 - **Shared Components**: Changes propagate to all using devices
 - **Automated Testing**: Continuous validation of security framework
-- **Documentation Integration**: Self-documenting configuration patterns
+- **Documentation Integration**: Memory Bank system with unified user guides
 - **Version Management**: Consistent tool versions across environments
+- **Knowledge Management**: Comprehensive documentation with clear maintenance procedures
