@@ -147,11 +147,11 @@ test_[a-z_]+
    api:
      encryption:
        key: !secret api_key
-   
+
    # ❌ Incorrect
    api:
      encryption:
-       key: "rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk="
+       key: "rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk="  # pragma: allowlist secret
    ```
 
 2. **Enable API encryption** with proper key management
@@ -163,10 +163,10 @@ test_[a-z_]+
 1. **Use 1Password CLI** for credential retrieval:
    ```bash
    # ✅ Correct
-   API_KEY=$(op read "op://Automation/ESPHome/api_key" --account="CamiAndGeoff")
-   
+   API_KEY=$(op read "op://Automation/ESPHome/api_key" --account="$OP_ACCOUNT")
+
    # ❌ Incorrect
-   API_KEY="rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk="
+   API_KEY="rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk="  # pragma: allowlist secret
    ```
 
 2. **Never commit secrets.yaml** (already in .gitignore)
