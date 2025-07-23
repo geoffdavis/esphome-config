@@ -164,4 +164,3 @@ void VisualEffect::visualize_spectrum(float * mel_data, CRGB * physic_leds){
   _gauss02->process(_leds[2],_leds_num/2);
   mirror(physic_leds);
 }
-

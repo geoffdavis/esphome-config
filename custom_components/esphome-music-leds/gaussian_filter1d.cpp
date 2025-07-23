@@ -56,4 +56,3 @@ void gaussian_filter1d::process(float * data, int num){
     }
     delete [] origin;
 }
-

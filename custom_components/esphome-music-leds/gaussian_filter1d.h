@@ -21,4 +21,3 @@ class gaussian_filter1d{
         void process(float * data, int num);
         void process(uint8_t * data, int num);
 };
-

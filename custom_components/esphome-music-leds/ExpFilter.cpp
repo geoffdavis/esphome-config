@@ -56,6 +56,3 @@ void ExpFilter::update(uint8_t * data){
         data[i] = m_val[i];
     }
 }
-
-
-

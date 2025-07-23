@@ -188,5 +188,3 @@ void FFT::t2mel(float * y_data, float * mel_data){
 
   _mel_smoothing->update(mel_data);
 }
-
-

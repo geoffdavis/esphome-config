@@ -12,10 +12,10 @@ from typing import List
 
 class GitSecretsScanner:
     """Wrapper for git-secrets scanning functionality"""
-    
+
     def __init__(self):
         self.git_secrets_available = shutil.which('git-secrets') is not None
-        
+
     def scan_files(self, file_paths: List[str]) -> int:
         """
         Scan files using git-secrets
@@ -24,17 +24,17 @@ class GitSecretsScanner:
         if not self.git_secrets_available:
             print("WARNING: git-secrets not found, skipping scan")
             return 0
-            
+
         try:
             # Run git secrets --scan with the provided files
             cmd = ['git', 'secrets', '--scan'] + file_paths
             result = subprocess.run(cmd, check=False)
             return result.returncode
-            
+
         except subprocess.SubprocessError as e:
             print(f"ERROR: Failed to run git-secrets: {e}")
             return 1
-            
+
     def scan_history(self) -> int:
         """
         Scan git history using git-secrets
@@ -43,15 +43,15 @@ class GitSecretsScanner:
         if not self.git_secrets_available:
             print("WARNING: git-secrets not found, skipping history scan")
             return 0
-            
+
         try:
             result = subprocess.run(['git', 'secrets', '--scan-history'], check=False)
             return result.returncode
-            
+
         except subprocess.SubprocessError as e:
             print(f"ERROR: Failed to run git-secrets history scan: {e}")
             return 1
-            
+
     def is_available(self) -> bool:
         """Check if git-secrets is available"""
         return self.git_secrets_available
@@ -60,7 +60,7 @@ class GitSecretsScanner:
 def main() -> int:
     """Main entry point"""
     scanner = GitSecretsScanner()
-    
+
     if len(sys.argv) < 2:
         # No files provided, scan history
         return scanner.scan_history()

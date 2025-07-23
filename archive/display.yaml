@@ -33,20 +33,20 @@ sensor:
     name: "Den Humidity from Home Assistant"
     entity_id: sensor.den_multisensor_bme280_humidity
     internal: true
-  
+
 font:
   - file: 'fonts/DroidSans.ttf'
     id: font1
     size: 12
-    
+
   - file: 'fonts/DroidSans.ttf'
     id: font2
     size: 48
-    
+
   - file: 'fonts/DroidSans.ttf'
     id: font3
     size: 16
-    
+
   - file: 'fonts/Kanit-Medium.ttf'
     id: font_medium_20
     size: 20
@@ -61,7 +61,7 @@ font:
   - file: 'fonts/Kanit-Regular.ttf'
     id: font_regular_30
     size: 30
-    glyphs: 
+    glyphs:
       ['&', '@', '!', ',', '.', '"', '%', '+', '-', '_', ':', '°', '0',
        '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E',
        'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
@@ -72,21 +72,21 @@ font:
   - file: 'fonts/Kanit-Regular.ttf'
     id: font_regular_35
     size: 35
-    glyphs: 
+    glyphs:
       ['!', ',', '.', '"', '%', '-', '_', ':', '°', '/',
        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ' ']
 
   - file: 'fonts/Kanit-Regular.ttf'
     id: font_regular_45
     size: 45
-    glyphs: 
+    glyphs:
       ['!', ',', '.', '"', '%', '-', '_', ':', '°', '/',
        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ' ']
 
   - file: 'fonts/Kanit-Regular.ttf'
     id: font_regular_65
     size: 65
-    glyphs: 
+    glyphs:
       ['!', ',', '.', '"', '%', '-', '_', ':', '°', '/',
        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ' ']
 
@@ -175,7 +175,7 @@ display:
       if (id(inside_humidity).has_state()) {
         it.printf(it.get_width(), 60, id(font3), TextAlign::BASELINE_RIGHT , "%.1f%%", id(inside_humidity).state);
       }
-      
+
       // TIME
       it.line(0,137, 200, 137);
       it.strftime(0, 163, id(font_medium_20), TextAlign::BASELINE_LEFT, "%A", id(current_time).now());

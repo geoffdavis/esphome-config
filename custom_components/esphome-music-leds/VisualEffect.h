@@ -29,5 +29,3 @@ class VisualEffect{
         void visualize_spectrum(float * mel_data, CRGB * physic_leds);
         ~VisualEffect();
 };
-
-

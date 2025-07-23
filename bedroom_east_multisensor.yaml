@@ -110,17 +110,17 @@ binary_sensor:
 output:
   - platform: esp8266_pwm
     id: led_pwm_red
-    pin: 
+    pin:
       number: D5
       inverted: true
   - platform: esp8266_pwm
     id: led_pwm_green
-    pin: 
+    pin:
       number: D6
       inverted: true
   - platform: esp8266_pwm
     id: led_pwm_blue
-    pin: 
+    pin:
       number: D7
       inverted: true
 

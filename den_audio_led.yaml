@@ -31,7 +31,7 @@ binary_sensor:
   pin: GPIO34
   name: ${friendly_name} Motion
   device_class: motion
-      
+
 
 light:
   - platform: fastled_clockless

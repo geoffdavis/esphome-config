@@ -37,5 +37,3 @@ class FFT{
         void hamming(float *real);
         void t2mel(float * y_data, float * mel_data);
 };
-
-

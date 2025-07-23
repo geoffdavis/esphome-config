@@ -24,5 +24,3 @@ class ExpFilter{
         void update0(float * data);
         float * value();
 };
-
-
