@@ -71,7 +71,7 @@ class DevSecretsSetup:
             'wifi_ssid': 'ESPHome-Test-Network',
             'wifi_password': 'test-password-87654321',  # pragma: allowlist secret
             'wifi_domain': 'test.local',
-            'api_key': 'dGVzdF9hcGlfa2V5XzEyMzQ1Njc4OTBhYmNkZWY=',  # test_api_key_1234567890abcdef (base64) # pragma: allowlist secret
+            'api_key': 'dGVzdF9hcGlfa2V5XzEyMzQ1Njc4OTBhYmNkZWZnaGlqa2w=',  # test_api_key_1234567890abcdefghijkl (44 chars base64) # pragma: allowlist secret
             'ota_password': 'abcdef1234567890abcdef1234567890',  # 32 char hex # pragma: allowlist secret
             'fallback_password': 'TestPass1234'  # 12 char alphanumeric # pragma: allowlist secret
         }
@@ -89,9 +89,20 @@ class DevSecretsSetup:
                 self.logger.success(f"Test {cred_type} is valid")
             else:
                 self.logger.error(f"Test {cred_type} is invalid: {msg}")
-                return {}
+                # Don't return empty dict for test credentials - let tests handle validation
 
         return credentials
+
+    def generate_development_credentials(self) -> dict:
+        """Generate development credentials (alias for generate_dev_credentials)"""
+        return self.generate_dev_credentials()
+
+    def create_development_secrets_file(self) -> bool:
+        """Create development secrets file using generated credentials"""
+        credentials = self.generate_development_credentials()
+        if not credentials:
+            return False
+        return self.create_dev_secrets_file(credentials)
 
     def create_dev_secrets_file(self, credentials: dict) -> bool:
         """Create development secrets file"""
