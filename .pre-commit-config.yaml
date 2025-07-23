@@ -12,7 +12,10 @@ repos:
           (?x)^(
             \.secrets\.baseline|
             \.gitsecrets|
-            scripts/setup-security\.sh
+            scripts/setup-security\.sh|
+            scripts/setup_security\.py|
+            tests/.*\.py|
+            dev/.*
           )$
 
   # Basic YAML validation
@@ -52,25 +55,51 @@ repos:
             fonts/.*\.ttf
           )$
 
-  # ESPHome credential validation (essential)
+  # Python security framework validation
   - repo: local
     hooks:
-      - id: esphome-credential-check
-        name: ESPHome credential validation
+      - id: esphome-secrets-validation
+        name: ESPHome secrets validation (Python)
+        entry: python3 scripts/validate_secrets.py
+        language: system
+        files: ^(secrets\.yaml|.*\.yaml|.*\.yml)$
+        pass_filenames: false
+        always_run: false
+
+      - id: esphome-1password-validation
+        name: ESPHome 1Password structure validation
+        entry: python3 scripts/validate_1password_structure.py
+        language: system
+        files: ^(secrets\.yaml|\.env)$
+        pass_filenames: false
+        always_run: false
+
+      - id: python-security-tests
+        name: Run Python security framework tests
+        entry: python3 tests/run_tests.py --pattern test_security_lib.py
+        language: system
+        files: ^(scripts/.*\.py|tests/.*\.py)$
+        pass_filenames: false
+        always_run: false
+
+  # Legacy credential validation (fallback)
+  - repo: local
+    hooks:
+      - id: esphome-credential-check-legacy
+        name: ESPHome credential validation (legacy)
         entry: .githooks/esphome_credential_check.py
         language: script
         files: \.(yaml|yml)$
         pass_filenames: true
+        stages: [manual]
 
-  # Git-secrets integration (if available)
-  - repo: local
-    hooks:
-      - id: git-secrets-scan
-        name: Git-secrets credential scan
+      - id: git-secrets-scan-legacy
+        name: Git-secrets credential scan (legacy)
         entry: .githooks/git_secrets_scan.py
         language: script
         files: \.(yaml|yml|sh|py|js|ts|json|md)$
         pass_filenames: true
+        stages: [manual]
 
 # Global configuration
 default_stages: [pre-commit]

@@ -1,0 +1,298 @@
+# Common Tasks and Workflows
+
+This document captures repetitive tasks and their step-by-step workflows for future reference.
+
+## Device Management Tasks
+
+### Add New Device Configuration
+**Last performed:** Ongoing
+**Files to modify:**
+- Create new device YAML file (e.g., `new_device.yaml`)
+- Update device-specific substitutions
+- Select appropriate common packages
+
+**Steps:**
+1. Create device configuration file with descriptive name
+2. Define substitutions section with device-specific parameters:
+   ```yaml
+   substitutions:
+     name: device-name
+     friendly_name: Device Name
+     # Hardware-specific pin assignments
+   ```
+3. Include appropriate packages based on hardware platform:
+   - ESP32: `nodemcuv2.yaml` or `esp32_device_base.yaml`
+   - ESP8266: `nodemcuv2.yaml` or `wemosd1mini.yaml`
+   - ESP01: `esp01.yaml`
+4. Add connectivity packages:
+   - Full devices: `wifi.yaml`, `ipv6.yaml`
+   - ESP01 minimal: `wifi-minimal.yaml`
+5. Include sensor packages as needed:
+   - `sensor/bme280.yaml`, `sensor/dht.yaml`, etc.
+6. Test configuration: `task build -- device-name`
+7. Deploy: `task upload -- device-name` or `task upload-two-stage -- device-name`
+
+**Important notes:**
+- Use consistent naming conventions (lowercase with hyphens)
+- Always include fallback hotspot for recovery
+- Test with minimal configuration first for ESP01 devices
+- Document hardware connections in comments
+
+### Add New Sensor Type
+**Last performed:** As needed
+**Files to modify:**
+- Create new sensor package in `common/sensor/`
+- Update device configurations to include new sensor
+- Test with representative devices
+
+**Steps:**
+1. Create sensor configuration file in `common/sensor/sensor_name.yaml`
+2. Define sensor platform and configuration:
+   ```yaml
+   sensor:
+     - platform: sensor_type
+       name: "${friendly_name} Sensor Name"
+       # Sensor-specific configuration
+   ```
+3. Use substitution variables for pin assignments and device-specific settings
+4. Add any required I2C or SPI bus configurations
+5. Include sensor in test device configuration
+6. Validate sensor readings and entity creation in Home Assistant
+7. Document sensor wiring and requirements in comments
+8. Update relevant device configurations to include new sensor
+
+**Important notes:**
+- Use substitution variables for hardware-specific settings
+- Test sensor accuracy and update intervals
+- Ensure sensor names follow consistent patterns
+- Add appropriate filters for noisy sensors
+
+### ESP01 Two-Stage Deployment
+**Last performed:** Regular maintenance
+**Files to modify:**
+- `device-minimal.yaml` (stage 1)
+- `device-full.yaml` (stage 2)
+- Ensure both configurations are synchronized
+
+**Steps:**
+1. Create minimal configuration with essential services only:
+   ```yaml
+   packages:
+     wifi: !include common/wifi-minimal.yaml
+     esp01: !include common/esp01.yaml
+   ```
+2. Create full configuration with all desired features:
+   ```yaml
+   packages:
+     wifi: !include common/wifi.yaml
+     ipv6: !include common/ipv6.yaml
+     sensors: !include common/sensors.yaml
+     esp01: !include common/esp01.yaml
+   ```
+3. Deploy using two-stage process: `task upload-two-stage -- device-name`
+4. Verify device connectivity after each stage
+5. Monitor memory usage and optimize if needed
+
+**Important notes:**
+- Always maintain recovery capability in minimal configuration
+- Test OTA functionality before full deployment
+- Keep configurations synchronized between stages
+- Monitor device stability after full deployment
+
+## Security Management Tasks
+
+### Credential Rotation
+**Last performed:** As needed for security
+**Files to modify:**
+- 1Password vaults (Automation and Shared)
+- `secrets.yaml` (regenerated)
+- Deployment validation
+
+**Steps:**
+1. Run security validation: `task security-validate`
+2. Create backup: `task security-backup`
+3. Generate new credentials: `python3 scripts/rotate_credentials.py`
+4. Update 1Password vaults with new credentials
+5. Regenerate secrets file: `./scripts/generate_secrets.sh`
+6. Validate new credentials: `python3 scripts/validate_secrets.py`
+7. Deploy to test device first
+8. Bulk deploy to all devices: `task upload-all-two-stage`
+9. Verify all devices are accessible
+10. Track rotation: `python3 scripts/track_secret_rotation.py add`
+
+**Important notes:**
+- Always backup before rotation
+- Test with single device before bulk deployment
+- Use transition mode during deployment if needed
+- Verify 1Password integration is working
+- Document rotation in tracking system
+
+### Security Framework Setup
+**Last performed:** Initial setup and updates
+**Files to modify:**
+- Pre-commit hooks configuration
+- Security tool installation
+- Development environment setup
+
+**Steps:**
+1. Install security framework: `python3 scripts/setup_security.py`
+2. Configure 1Password CLI and authentication
+3. Set up environment variables in `.env` file
+4. Install pre-commit hooks: `pre-commit install`
+5. Run initial security scan: `task security-scan`
+6. Set up development environment: `python3 scripts/setup_dev_secrets.py`
+7. Run security tests: `task test-security`
+8. Validate complete setup: `task security-validate`
+
+**Important notes:**
+- Ensure 1Password CLI is authenticated
+- Test all security validation steps
+- Verify pre-commit hooks are working
+- Set up development credentials for safe testing
+
+### Add Security Validation Rule
+**Last performed:** Framework development
+**Files to modify:**
+- `scripts/security_lib.py` (core validation logic)
+- `scripts/validate_secrets.py` (validation script)
+- `tests/test_security_lib.py` (unit tests)
+
+**Steps:**
+1. Identify new security requirement or vulnerability
+2. Add validation logic to appropriate class in `security_lib.py`
+3. Update validation script to use new validation
+4. Add comprehensive unit tests for new validation
+5. Test validation with known good and bad examples
+6. Update documentation with new validation requirements
+7. Run full test suite: `python3 tests/run_tests.py`
+8. Test integration with pre-commit hooks
+
+**Important notes:**
+- Always add unit tests for new validation logic
+- Test both positive and negative cases
+- Document validation requirements clearly
+- Ensure validation integrates with existing workflow
+
+## Development Environment Tasks
+
+### Set Up New Development Environment
+**Last performed:** New developer onboarding
+**Files to modify:**
+- Local environment setup
+- Tool installation and configuration
+- Development credentials
+
+**Steps:**
+1. Install Mise: Follow installation guide
+2. Clone repository and navigate to project directory
+3. Install project tools: `mise install`
+4. Set up security framework: `python3 scripts/setup_security.py`
+5. Configure 1Password CLI access
+6. Set up development environment: `python3 scripts/setup_dev_secrets.py`
+7. Install pre-commit hooks: `pre-commit install`
+8. Run initial validation: `task security-validate`
+9. Test device build: `task build -- test_device`
+10. Verify all tools and workflows are working
+
+**Important notes:**
+- Use development credentials for testing
+- Verify all security tools are working
+- Test build and deployment processes
+- Document any environment-specific issues
+
+### Update Development Tools
+**Last performed:** Regular maintenance
+**Files to modify:**
+- `.mise.toml` (tool versions)
+- `requirements.txt` (Python dependencies)
+- `package.json` (Node.js dependencies)
+
+**Steps:**
+1. Check for tool updates: `mise outdated`
+2. Update tool versions in `.mise.toml`
+3. Install updated tools: `mise install`
+4. Update Python dependencies: `pip install -r requirements.txt --upgrade`
+5. Update Node.js dependencies: `npm update`
+6. Run tests to ensure compatibility: `task test-security`
+7. Test build process: `task build-all`
+8. Update documentation if needed
+9. Commit tool version updates
+
+**Important notes:**
+- Test thoroughly after updates
+- Check for breaking changes in tool updates
+- Update documentation for any workflow changes
+- Coordinate updates across development team
+
+## Maintenance Tasks
+
+### Bulk Device Updates
+**Last performed:** Regular maintenance
+**Files to modify:**
+- Multiple device configurations
+- Common component updates
+
+**Steps:**
+1. Run security validation: `task security-validate`
+2. Test changes with single device first
+3. Create backup of current configurations
+4. Run bulk build: `task build-all`
+5. Deploy to all devices: `task upload-all-two-stage`
+6. Monitor deployment progress and handle offline devices
+7. Verify device functionality after updates
+8. Document any issues or failures
+9. Update device inventory and status
+
+**Important notes:**
+- Always test with single device first
+- Handle offline devices gracefully
+- Monitor device health after updates
+- Keep deployment logs for troubleshooting
+
+### Common Component Updates
+**Last performed:** Feature additions and improvements
+**Files to modify:**
+- Files in `common/` directory
+- Device configurations using updated components
+- Testing and validation
+
+**Steps:**
+1. Identify component requiring updates
+2. Create backup of current component
+3. Update component configuration
+4. Test with representative devices
+5. Validate sensor readings and functionality
+6. Update documentation and comments
+7. Deploy to test devices first
+8. Roll out to production devices
+9. Monitor for issues and rollback if needed
+
+**Important notes:**
+- Test with multiple device types
+- Verify backward compatibility
+- Update component documentation
+- Monitor device performance after changes
+
+### Security Audit and Cleanup
+**Last performed:** Regular security maintenance
+**Files to modify:**
+- Security configurations
+- Credential validation
+- Audit documentation
+
+**Steps:**
+1. Run comprehensive security scan: `task security-scan`
+2. Review credential rotation history
+3. Check for exposed credentials in all files
+4. Validate 1Password integration and access
+5. Review and update security documentation
+6. Test security validation pipeline
+7. Update security tools and dependencies
+8. Document findings and recommendations
+9. Plan and execute any necessary security improvements
+
+**Important notes:**
+- Document all security findings
+- Update security procedures as needed
+- Test all security tools and validations
+- Coordinate security updates with deployments
