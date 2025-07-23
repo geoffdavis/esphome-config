@@ -23,7 +23,7 @@ from security_lib import (
 
 class DevSecretsSetup:
     """Development secrets setup and management"""
-    
+
     def __init__(self):
         self.logger = SecurityLogger("dev_secrets")
         self.generator = CredentialGenerator()
@@ -31,11 +31,11 @@ class DevSecretsSetup:
         self.file_handler = SecureFileHandler()
         self.dev_secrets_file = "secrets.dev.yaml"
         self.test_secrets_file = "secrets.test.yaml"
-    
+
     def generate_dev_credentials(self) -> dict:
         """Generate development credentials"""
         self.logger.info("Generating development credentials...")
-        
+
         credentials = {
             'wifi_ssid': 'ESPHome-Dev-Network',
             'wifi_password': 'dev-password-12345678',
@@ -44,7 +44,7 @@ class DevSecretsSetup:
             'ota_password': self.generator.generate_ota_password(),
             'fallback_password': self.generator.generate_fallback_password()
         }
-        
+
         # Validate generated credentials
         for cred_type in ['api_key', 'ota_password', 'fallback_password']:
             if cred_type == 'api_key':
@@ -53,19 +53,19 @@ class DevSecretsSetup:
                 valid, msg = self.validator.validate_ota_password(credentials[cred_type])
             elif cred_type == 'fallback_password':
                 valid, msg = self.validator.validate_fallback_password(credentials[cred_type])
-            
+
             if valid:
                 self.logger.success(f"Generated valid {cred_type}")
             else:
                 self.logger.error(f"Generated invalid {cred_type}: {msg}")
                 return {}
-        
+
         return credentials
-    
+
     def generate_test_credentials(self) -> dict:
         """Generate test credentials for unit testing"""
         self.logger.info("Generating test credentials...")
-        
+
         # Use fixed test credentials for reproducible tests
         credentials = {
             'wifi_ssid': 'ESPHome-Test-Network',
@@ -75,7 +75,7 @@ class DevSecretsSetup:
             'ota_password': 'abcdef1234567890abcdef1234567890',  # 32 char hex
             'fallback_password': 'TestPass1234'  # 12 char alphanumeric
         }
-        
+
         # Validate test credentials
         for cred_type in ['api_key', 'ota_password', 'fallback_password']:
             if cred_type == 'api_key':
@@ -84,19 +84,19 @@ class DevSecretsSetup:
                 valid, msg = self.validator.validate_ota_password(credentials[cred_type])
             elif cred_type == 'fallback_password':
                 valid, msg = self.validator.validate_fallback_password(credentials[cred_type])
-            
+
             if valid:
                 self.logger.success(f"Test {cred_type} is valid")
             else:
                 self.logger.error(f"Test {cred_type} is invalid: {msg}")
                 return {}
-        
+
         return credentials
-    
+
     def create_dev_secrets_file(self, credentials: dict) -> bool:
         """Create development secrets file"""
         self.logger.info(f"Creating {self.dev_secrets_file}...")
-        
+
         content = f"""# ESPHome Development Secrets
 # This file contains development credentials for local testing
 # DO NOT USE IN PRODUCTION - FOR DEVELOPMENT ONLY
@@ -117,7 +117,7 @@ fallback_password: "{credentials['fallback_password']}"
 # - Never commit secrets.yaml to version control
 # - For production, use: ./scripts/generate_secrets.sh
 """
-        
+
         try:
             with open(self.dev_secrets_file, 'w') as f:
                 f.write(content)
@@ -126,11 +126,11 @@ fallback_password: "{credentials['fallback_password']}"
         except Exception as e:
             self.logger.error(f"Failed to create {self.dev_secrets_file}: {e}")
             return False
-    
+
     def create_test_secrets_file(self, credentials: dict) -> bool:
         """Create test secrets file for unit testing"""
         self.logger.info(f"Creating {self.test_secrets_file}...")
-        
+
         content = f"""# ESPHome Test Secrets
 # This file contains fixed test credentials for unit testing
 # DO NOT USE IN PRODUCTION - FOR TESTING ONLY
@@ -150,7 +150,7 @@ fallback_password: "{credentials['fallback_password']}"
 # - Used by test suites to validate credential handling
 # - Safe to commit to version control (test credentials only)
 """
-        
+
         try:
             with open(self.test_secrets_file, 'w') as f:
                 f.write(content)
@@ -159,12 +159,12 @@ fallback_password: "{credentials['fallback_password']}"
         except Exception as e:
             self.logger.error(f"Failed to create {self.test_secrets_file}: {e}")
             return False
-    
+
     def create_dev_env_file(self) -> bool:
         """Create development .env file"""
         dev_env_file = ".env.dev"
         self.logger.info(f"Creating {dev_env_file}...")
-        
+
         content = """# ESPHome Development Environment Variables
 # Copy this to .env for development use
 
@@ -180,7 +180,7 @@ ESPHOME_SKIP_VALIDATION=false
 ESPHOME_TEST_MODE=false
 ESPHOME_USE_TEST_CREDENTIALS=false
 """
-        
+
         try:
             with open(dev_env_file, 'w') as f:
                 f.write(content)
@@ -189,54 +189,54 @@ ESPHOME_USE_TEST_CREDENTIALS=false
         except Exception as e:
             self.logger.error(f"Failed to create {dev_env_file}: {e}")
             return False
-    
+
     def update_gitignore(self) -> bool:
         """Update .gitignore to exclude development files"""
         gitignore_path = Path(".gitignore")
-        
+
         dev_entries = [
             "# Development secrets",
             "secrets.dev.yaml",
             ".env.dev",
             ".env",
             "",
-            "# Test artifacts", 
+            "# Test artifacts",
             "test_*.yaml",
             "*.test.yaml",
             ""
         ]
-        
+
         try:
             # Read existing .gitignore
             existing_content = ""
             if gitignore_path.exists():
                 with open(gitignore_path, 'r') as f:
                     existing_content = f.read()
-            
+
             # Check if dev entries already exist
             needs_update = False
             for entry in dev_entries:
                 if entry.strip() and entry not in existing_content:
                     needs_update = True
                     break
-            
+
             if needs_update:
                 with open(gitignore_path, 'a') as f:
                     f.write('\n'.join(dev_entries))
                 self.logger.success("Updated .gitignore with development entries")
             else:
                 self.logger.info(".gitignore already contains development entries")
-            
+
             return True
         except Exception as e:
             self.logger.error(f"Failed to update .gitignore: {e}")
             return False
-    
+
     def create_dev_readme(self) -> bool:
         """Create development README"""
         readme_file = "DEV_SECRETS_README.md"
         self.logger.info(f"Creating {readme_file}...")
-        
+
         content = f"""# ESPHome Development Secrets
 
 This directory contains development and test credentials for ESPHome development.
@@ -294,7 +294,7 @@ All generated credentials are validated for format and security:
 - `python3 scripts/validate_secrets.py` - Validate current secrets
 - `python3 scripts/validate_1password_structure.py` - Validate 1Password setup
 """
-        
+
         try:
             with open(readme_file, 'w') as f:
                 f.write(content)
@@ -303,13 +303,13 @@ All generated credentials are validated for format and security:
         except Exception as e:
             self.logger.error(f"Failed to create {readme_file}: {e}")
             return False
-    
+
     def run_setup(self, include_test: bool = True) -> bool:
         """Run complete development secrets setup"""
         self.logger.header("ESPHome Development Secrets Setup")
-        
+
         success = True
-        
+
         # Generate and create development credentials
         dev_credentials = self.generate_dev_credentials()
         if dev_credentials:
@@ -317,7 +317,7 @@ All generated credentials are validated for format and security:
                 success = False
         else:
             success = False
-        
+
         # Generate and create test credentials if requested
         if include_test:
             test_credentials = self.generate_test_credentials()
@@ -326,17 +326,17 @@ All generated credentials are validated for format and security:
                     success = False
             else:
                 success = False
-        
+
         # Create supporting files
         if not self.create_dev_env_file():
             success = False
-        
+
         if not self.update_gitignore():
             success = False
-        
+
         if not self.create_dev_readme():
             success = False
-        
+
         # Print results
         print()
         print("=" * 50)
@@ -361,7 +361,7 @@ All generated credentials are validated for format and security:
         else:
             self.logger.error("Development secrets setup failed!")
             print("=" * 50)
-        
+
         return success
 
 
@@ -397,15 +397,15 @@ Files created:
 For production use, always use: ./scripts/generate_secrets.sh
         """)
         return
-    
+
     include_test = True
     if len(sys.argv) > 1:
         if '--no-test' in sys.argv or '--dev-only' in sys.argv:
             include_test = False
-    
+
     setup = DevSecretsSetup()
     success = setup.run_setup(include_test=include_test)
-    
+
     sys.exit(0 if success else 1)
 
 
