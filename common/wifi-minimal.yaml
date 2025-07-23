@@ -1,5 +1,6 @@
-# Defaults for wifi, api, and OTA connectivity
-# This file is included in all ESPHome YAML files.
+# Minimal WiFi configuration WITH fallback hotspot for recovery
+# This file provides basic connectivity while maintaining recovery capability
+# CRITICAL: Always includes fallback hotspot to prevent device bricking
 
 # Configure the WiFi connection
 wifi:
@@ -7,11 +8,29 @@ wifi:
   password: !secret wifi_password
   domain: !secret wifi_domain
 
+  # CRITICAL: Always include fallback hotspot for recovery
+  # This prevents devices from becoming inaccessible if WiFi fails
+  ap:
+    ssid: "${friendly_name} Recovery"
+    password: !secret fallback_password
+
+# Enable captive portal for recovery access
+# This allows access to the device even if the WiFi connection fails
+captive_portal:
 
 # Enable Over-The-Air (OTA) updates
 # This allows the device to be updated wirelessly
 # The OTA password is used for secure updates
-# The password is stored in secrets.yaml for security
 ota:
   platform: esphome
   password: !secret ota_password
+
+# Enable API for recovery access
+api:
+  encryption:
+    key: !secret api_key
+
+# Enable basic web server for recovery
+web_server:
+  port: 80
+  version: 3
