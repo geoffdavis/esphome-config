@@ -1,216 +1,174 @@
 # ESPHome Device Configurations
 
-This repository contains YAML configuration files for various ESPHome-based devices in your home automation setup. Each YAML file defines the configuration for a specific device, such as sensors, outlets, heat pumps, and more.
+This repository contains YAML configuration files for various ESPHome-based devices in your home automation setup, with a comprehensive Python security framework and automated deployment system.
 
-## Repository Structure
+## 📚 Documentation
 
-- Top-level YAML files: Individual device configurations (e.g., `bedroom_east_heatpump.yaml`, `den_multisensor.yaml`).
-- `archive/`: Archived or legacy configurations.
-- `common/`: Shared YAML includes for device templates, sensors, and components.
-- `config/`: Additional configuration files.
-- `fonts/`: Font files for display components.
-- `include/`: C++ header files for custom ESPHome components.
-- `src/`: Source code and advanced custom components.
-- `scripts/`: Python security framework and automation scripts.
-- `tests/`: Unit tests for the security framework.
+**Complete documentation is available in the [`docs/`](docs/) directory.**
 
-## Using `secrets.yaml`
+### Quick Links
+- **[📖 Complete Documentation](docs/README.md)** - Main documentation index
+- **[🚀 Quick Start Guide](docs/getting-started/quick-start.md)** - Get up and running in minutes
+- **[🔒 Security Overview](docs/security/overview.md)** - Security framework and credential management
+- **[🔧 Device Management](docs/device-management/recovery-procedures.md)** - Device deployment and recovery
+- **[📋 Task Commands](docs/reference/task-commands.md)** - Complete command reference
 
-The `secrets.yaml` file stores sensitive information such as Wi-Fi credentials, API keys, and passwords. This file is referenced by device configuration files to keep sensitive data out of version control.
+## 🚀 Quick Start
 
-**Important:**
-
-- Do **not** commit your `secrets.yaml` to public repositories.
-- Example entries in `secrets.yaml`:
-
-  ```yaml
-  wifi_ssid: "YourWiFiSSID"
-  wifi_password: "YourWiFiPassword"  # pragma: allowlist secret
-  ota_password: "YourOTAPassword"  # pragma: allowlist secret
-  api_key: "YourAPIKey"  # pragma: allowlist secret
-  ```
-
-- Reference secrets in your YAML configs using `!secret`, e.g.:
-
-  ```yaml
-  wifi:
-    ssid: !secret wifi_ssid
-    password: !secret wifi_password
-  ```
-
-## Security Framework
-
-This repository includes a comprehensive Python-based security framework to protect your ESPHome configurations and credentials.
-
-### Quick Security Setup
-
+### 1. Initial Setup
 ```bash
-# Set up security tools and hooks
+# Install project tools
+mise install
+
+# Set up security framework
 python3 scripts/setup_security.py
 
-# Validate your configuration
+# Configure credentials (choose one)
+echo "OP_ACCOUNT=your-1password-account" > .env  # Production
+task dev-setup                                   # Development
+```
+
+### 2. Deploy Your First Device
+```bash
+# For ESP32/ESP8266 devices
+task upload -- device_name
+
+# For ESP01 devices (memory constrained)
+task upload-two-stage -- device_name
+```
+
+### 3. Validate Security
+```bash
+# Run security validation
 task security-validate
 
 # Run comprehensive security scan
 task security-scan
 ```
 
-### Key Security Features
+## 🏗️ Project Structure
 
-- **Credential Validation**: Ensures secrets meet security requirements
-- **1Password Integration**: Secure credential storage and retrieval
-- **Exposed Credential Detection**: Identifies known compromised credentials
-- **Automated Backup**: Secure backup and restore of configurations
-- **Development Environment**: Safe test credentials for development
-
-### Security Tasks
-
-```bash
-task security-setup              # Set up security tools
-task security-validate           # Essential validation
-task security-scan              # Comprehensive scan
-task security-rotate-credentials # Rotate credentials
-task security-backup           # Create backup
-task dev-setup                 # Development environment
-task test-security             # Run security tests
+```
+├── docs/                           # 📚 Complete documentation
+│   ├── getting-started/           # 🚀 Setup and first steps
+│   ├── security/                  # 🔒 Security framework
+│   ├── device-management/         # 🔧 Device operations
+│   ├── architecture/              # 🏗️ System design
+│   └── reference/                 # 📖 Complete reference
+├── .kilocode/rules/memory-bank/   # 🧠 Authoritative technical docs
+├── common/                        # 📦 Shared device components
+├── scripts/                       # 🔧 Python security framework
+├── tests/                         # 🧪 Security framework tests
+└── *.yaml                         # 📱 Individual device configurations
 ```
 
-### Documentation
+## 🧠 Memory Bank Integration
 
-- **[Security Framework Guide](SECURITY_FRAMEWORK.md)**: Comprehensive documentation
-- **[Migration Guide](MIGRATION_GUIDE.md)**: Migrating from bash to Python scripts
+This project uses a **Memory Bank** system in [`.kilocode/rules/memory-bank/`](.kilocode/rules/memory-bank/) that contains authoritative technical information. The documentation in [`docs/`](docs/) provides user-friendly guides that link to Memory Bank content rather than duplicating it.
 
-## Development Environment with Mise and Task
+**Key Memory Bank Files:**
+- **[System Architecture](.kilocode/rules/memory-bank/architecture.md)** - Complete technical architecture
+- **[Common Tasks](.kilocode/rules/memory-bank/tasks.md)** - Detailed workflow procedures
+- **[Technology Stack](.kilocode/rules/memory-bank/tech.md)** - Tools and dependencies
 
-This project uses [Mise](https://mise.jdx.dev/) to manage project-specific development tools, ensuring consistent versions of `esphome` and `task`. A [Taskfile.yml](https://taskfile.dev/) is provided to automate common development workflows like building and uploading firmware.
+## 🔒 Security Features
 
-### 1. Setup
+- **Python Security Framework**: Comprehensive credential validation and management
+- **1Password Integration**: Secure credential storage and automated retrieval
+- **Automated Validation**: Pre-commit hooks prevent credential exposure
+- **Credential Rotation**: Automated rotation with zero-downtime deployment
+- **Device Recovery**: Fallback hotspots prevent device bricking
 
-1.  **Install Mise:** Follow the instructions on the [Mise website](https://mise.jdx.dev/getting-started.html) to install it.
+## 🔧 Device Support
 
-2.  **Install Project Tools:** Once you've cloned the repository, navigate to the project directory and run:
-    ```sh
-    mise install
-    ```
-    This will automatically install the correct versions of `esphome` and `task` as defined in the `.mise.toml` file.
+### Hardware Platforms
+- **ESP32**: Full-featured devices with ample resources
+- **ESP8266**: Standard IoT devices (NodeMCU, D1 Mini variants)
+- **ESP01**: Memory-constrained devices with two-stage deployment
 
-3.  **Set up security framework:**
-    ```sh
-    python3 scripts/setup_security.py
-    ```
+### Device Types
+- **Environmental Sensors**: Temperature, humidity, pressure, air quality
+- **Control Devices**: Heat pumps, smart outlets, LED controllers
+- **Multi-sensors**: Combined environmental monitoring devices
 
-4.  **Create `secrets.yaml`:** Create or update your `secrets.yaml` file in the root directory with your Wi-Fi and other credentials.
-
-    **For development:** Use the development environment setup:
-    ```sh
-    task dev-setup
-    cp dev/secrets.yaml secrets.yaml  # For development only
-    ```
-
-### 2. Using Task
-
-The `Taskfile.yml` provides several commands to simplify the development process. Here are some of the most common ones:
-
--   **List all available tasks:**
-    ```sh
-    task -l
-    ```
-
--   **Build firmware for a single device:**
-    ```sh
-    task build -- <device-name>
-    ```
-    Example: `task build -- den_multisensor`
-
--   **Upload firmware to a single device:**
-    This will automatically build the firmware first. For devices with a two-stage OTA process (a `-minimal.yaml` and `-full.yaml` file), this command will upload the full firmware.
-    ```sh
-    task upload -- <device-name>
-    ```
-    Example: `task upload -- den_multisensor`
-
--   **Upload firmware in two stages:**
-    For devices with limited flash space, a two-stage upload is required. This first uploads a minimal firmware, then the full version.
-    ```sh
-    task upload-two-stage -- <device-name>
-    ```
-    Example: `task upload-two-stage -- attic_sensor`
-
--   **Build firmware for all devices:**
-    ```sh
-    task build-all
-    ```
-
--   **Upload firmware for all devices:**
-    This will perform a two-stage upload for devices that require it.
-    ```sh
-    task upload-all-two-stage
-    ```
-
--   **Clean build files for a device:**
-    ```sh
-    task clean -- <device-name>
-    ```
-    Example: `task clean -- den_multisensor`
-
-### Security Integration
-
-All upload tasks automatically run security validation to ensure your configuration is secure before deployment:
+## 📋 Common Commands
 
 ```bash
-# These tasks include automatic security validation
-task upload -- <device-name>
+# List all available tasks
+task -l
+
+# Build and deploy single device
+task upload -- device_name
+
+# Deploy all devices (handles ESP01 two-stage automatically)
 task upload-all-two-stage
-task build-all
+
+# Security operations
+task security-validate              # Essential validation
+task security-scan                 # Comprehensive scan
+task security-rotate-credentials   # Rotate credentials
+
+# Development
+task dev-setup                     # Development environment
+task test-security                 # Run security tests
 ```
 
-## Security Best Practices
+## 🆘 Need Help?
 
-### Credential Management
+1. **Getting Started**: See [Quick Start Guide](docs/getting-started/quick-start.md)
+2. **Security Issues**: Check [Security Troubleshooting](docs/security/troubleshooting.md)
+3. **Device Problems**: Review [Recovery Procedures](docs/device-management/recovery-procedures.md)
+4. **Complete Reference**: Browse [Complete Documentation](docs/README.md)
 
-1. **Never commit secrets**: Use `!secret` references in YAML files
-2. **Use 1Password**: Store credentials securely in 1Password vaults
-3. **Regular rotation**: Rotate credentials periodically using the automation tools
-4. **Validate regularly**: Run security scans before deployments
+## 🔄 Integration Points
 
-### Development Workflow
+- **Home Assistant**: Encrypted API communication with automatic entity discovery
+- **1Password**: Secure credential storage with CLI integration
+- **Development Tools**: Mise for tool management, Task for automation
+- **Quality Assurance**: Pre-commit hooks and comprehensive testing
 
-1. **Use development environment**: Set up safe test credentials
-2. **Run tests**: Execute security tests before committing changes
-3. **Pre-commit hooks**: Automatic validation on every commit
-4. **Backup regularly**: Create backups before major changes
+## 📝 Key Features
 
-### Environment Configuration
+### Two-Stage Deployment System
+Handles ESP01 devices with 1MB flash memory constraints:
+1. **Stage 1**: Deploy minimal firmware with essential connectivity
+2. **Stage 2**: Deploy full firmware with all features
 
-Create a `.env` file for 1Password integration:
-```bash
-# .env (create this file)
-OP_ACCOUNT=your-1password-account
-```
+### Comprehensive Security Framework
+- **Credential Validation**: Real-time format and security checking
+- **Exposed Credential Detection**: Prevents known compromised credentials
+- **Development Safety**: Safe test credentials for development work
+- **Automated Rotation**: Coordinated credential updates across all devices
 
-## Notes
+### Robust Device Management
+- **Fallback Hotspots**: Prevent device bricking with recovery access
+- **Bulk Operations**: Deploy to multiple devices with offline handling
+- **Health Monitoring**: Built-in connectivity and performance tracking
 
-- Many device configs use `!include` to share common settings from the `common/` directory.
-- Review each YAML file for device-specific instructions or comments.
-- For custom components, see the `src/` and `include/` directories.
-- **Security**: All sensitive data should use `!secret` references to `secrets.yaml`
-- **Testing**: Use the development environment for safe testing with test credentials
+## 📖 Documentation Structure
 
-## Resources
+The documentation follows a layered approach:
 
-### ESPHome
-- [ESPHome Documentation](https://esphome.io/)
-- [YAML Configuration Guide](https://esphome.io/guides/configuration-types.html)
+1. **[Quick Start](docs/getting-started/quick-start.md)** - Essential setup and first deployment
+2. **[Topic Guides](docs/)** - User-friendly guides for common operations
+3. **[Memory Bank](.kilocode/rules/memory-bank/)** - Complete technical documentation
+4. **[Reference](docs/reference/)** - Comprehensive command and troubleshooting reference
 
-### Security Framework
-- [Security Framework Documentation](SECURITY_FRAMEWORK.md)
-- [Migration Guide](MIGRATION_GUIDE.md)
-- [1Password CLI Documentation](https://developer.1password.com/docs/cli/)
-
-### Development Tools
-- [Mise Documentation](https://mise.jdx.dev/)
-- [Task Documentation](https://taskfile.dev/)
+This structure eliminates duplication while ensuring both accessibility and completeness.
 
 ---
 
-*Last updated: July 16, 2025*
+## Legacy Documentation
+
+The following files have been consolidated into the new documentation structure:
+
+- `SECURITY_FRAMEWORK.md` → [`docs/security/overview.md`](docs/security/overview.md)
+- `CREDENTIAL_ROTATION_GUIDE.md` → [`docs/security/credential-rotation.md`](docs/security/credential-rotation.md)
+- `ESP01_RECOVERY_PLAN.md` → [`docs/device-management/recovery-procedures.md`](docs/device-management/recovery-procedures.md)
+- Status reports → [`docs/status/`](docs/status/)
+
+**For complete, up-to-date documentation, use the [`docs/`](docs/) directory.**
+
+---
+
+*This ESPHome configuration project provides a secure, scalable, and maintainable approach to managing IoT devices with comprehensive documentation and robust automation.*

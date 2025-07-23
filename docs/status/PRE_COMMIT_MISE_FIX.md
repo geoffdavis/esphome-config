@@ -54,7 +54,7 @@ Modified `.pre-commit-config.yaml` to use the wrapper script with `language: scr
 
 Updated all three Python security framework hooks:
 - `esphome-secrets-validation`
-- `esphome-1password-validation` 
+- `esphome-1password-validation`
 - `python-security-tests`
 
 ## Key Benefits

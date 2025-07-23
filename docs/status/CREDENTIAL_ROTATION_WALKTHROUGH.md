@@ -234,7 +234,7 @@ TEST_DEVICE="bedroom_east_multisensor"
 
 if [[ -f "$TEST_DEVICE.yaml" ]]; then
     echo "Testing OTA update with new credentials on $TEST_DEVICE..."
-    
+
     if task upload -- "$TEST_DEVICE"; then
         echo "✅ OTA update successful with new credentials"
     else
