@@ -8,9 +8,9 @@ This guide provides step-by-step procedures for rotating exposed ESPHome credent
 
 The following credentials have been exposed and must be rotated immediately:
 
-- **API Encryption Key**: `rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk=`
-- **OTA Password**: `5929ccc1f08289c79aca50ebe0a9b7eb`
-- **Fallback Hotspot Password**: `1SXRpeXi7AdU`
+- **API Encryption Key**: `rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk=` # pragma: allowlist secret
+- **OTA Password**: `5929ccc1f08289c79aca50ebe0a9b7eb` # pragma: allowlist secret
+- **Fallback Hotspot Password**: `1SXRpeXi7AdU` # pragma: allowlist secret
 
 These credentials are detected by the security hooks in [`.githooks/esphome-credential-check.sh`](.githooks/esphome-credential-check.sh:30-43) and must not appear in any configuration files.
 
@@ -140,13 +140,13 @@ wifi_password: $(op read "op://Shared/Home IoT/wireless network password" )
 wifi_domain: $(op read "op://Shared/Home IoT/domain name" )
 
 # OLD API key (for transition)
-api_key: "rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk="
+api_key: "rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk=" # pragma: allowlist secret
 
 # OLD OTA password (for transition)
-ota_password: "5929ccc1f08289c79aca50ebe0a9b7eb"
+ota_password: "5929ccc1f08289c79aca50ebe0a9b7eb" # pragma: allowlist secret
 
 # OLD Fallback hotspot password (for transition)
-fallback_password: "1SXRpeXi7AdU"
+fallback_password: "1SXRpeXi7AdU" # pragma: allowlist secret
 EOF
 ```
 
@@ -269,9 +269,9 @@ rm -f secrets.yaml.old
 rm -f secrets.yaml.backup.*
 
 # Verify no old credentials remain in working directory
-grep -r "rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk=" . --exclude-dir=.git || echo "✅ No old API keys found"
-grep -r "5929ccc1f08289c79aca50ebe0a9b7eb" . --exclude-dir=.git || echo "✅ No old OTA passwords found"
-grep -r "1SXRpeXi7AdU" . --exclude-dir=.git || echo "✅ No old fallback passwords found"
+grep -r "rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk=" . --exclude-dir=.git || echo "✅ No old API keys found" # pragma: allowlist secret
+grep -r "5929ccc1f08289c79aca50ebe0a9b7eb" . --exclude-dir=.git || echo "✅ No old OTA passwords found" # pragma: allowlist secret
+grep -r "1SXRpeXi7AdU" . --exclude-dir=.git || echo "✅ No old fallback passwords found" # pragma: allowlist secret
 ```
 
 ### 4.2 Update Security Documentation
@@ -375,9 +375,9 @@ cat > secrets.yaml << EOF
 wifi_ssid: $(op read "op://Shared/Home IoT/network name" )
 wifi_password: $(op read "op://Shared/Home IoT/wireless network password" )
 wifi_domain: $(op read "op://Shared/Home IoT/domain name" )
-api_key: "rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk="
-ota_password: "5929ccc1f08289c79aca50ebe0a9b7eb"
-fallback_password: "1SXRpeXi7AdU"
+api_key: "rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk=" # pragma: allowlist secret
+ota_password: "5929ccc1f08289c79aca50ebe0a9b7eb" # pragma: allowlist secret
+fallback_password: "1SXRpeXi7AdU" # pragma: allowlist secret
 EOF
 
 # 2. Deploy old credentials to restore connectivity

@@ -29,8 +29,8 @@ class DevSecretsSetup:
         self.generator = CredentialGenerator()
         self.validator = CredentialValidator()
         self.file_handler = SecureFileHandler()
-        self.dev_secrets_file = "secrets.dev.yaml"
-        self.test_secrets_file = "secrets.test.yaml"
+        self.dev_secrets_file = "secrets.dev.yaml"  # pragma: allowlist secret
+        self.test_secrets_file = "secrets.test.yaml"  # pragma: allowlist secret
 
     def generate_dev_credentials(self) -> dict:
         """Generate development credentials"""
@@ -38,7 +38,7 @@ class DevSecretsSetup:
 
         credentials = {
             'wifi_ssid': 'ESPHome-Dev-Network',
-            'wifi_password': 'dev-password-12345678',
+            'wifi_password': 'dev-password-12345678',  # pragma: allowlist secret
             'wifi_domain': 'dev.local',
             'api_key': self.generator.generate_api_key(),
             'ota_password': self.generator.generate_ota_password(),
@@ -69,11 +69,11 @@ class DevSecretsSetup:
         # Use fixed test credentials for reproducible tests
         credentials = {
             'wifi_ssid': 'ESPHome-Test-Network',
-            'wifi_password': 'test-password-87654321',
+            'wifi_password': 'test-password-87654321',  # pragma: allowlist secret
             'wifi_domain': 'test.local',
-            'api_key': 'dGVzdF9hcGlfa2V5XzEyMzQ1Njc4OTBhYmNkZWY=',  # test_api_key_1234567890abcdef (base64)
-            'ota_password': 'abcdef1234567890abcdef1234567890',  # 32 char hex
-            'fallback_password': 'TestPass1234'  # 12 char alphanumeric
+            'api_key': 'dGVzdF9hcGlfa2V5XzEyMzQ1Njc4OTBhYmNkZWY=',  # test_api_key_1234567890abcdef (base64) # pragma: allowlist secret
+            'ota_password': 'abcdef1234567890abcdef1234567890',  # 32 char hex # pragma: allowlist secret
+            'fallback_password': 'TestPass1234'  # 12 char alphanumeric # pragma: allowlist secret
         }
 
         # Validate test credentials

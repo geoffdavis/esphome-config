@@ -9,9 +9,9 @@
 The automated credential rotation process was initiated to deploy new credentials to all 24 ESPHome devices. The process successfully:
 
 ✅ **Generated new secure credentials**:
-- API Encryption Key: `QUdFI1iJUufjl00V+seh+sH8bZooCNHqHU4vB46c2Ac=`
-- OTA Password: `55977e01702437af44c5544c565fb451`
-- Fallback Hotspot Password: `65W5W9hiANxw`
+- API Encryption Key: `QUdFI1iJUufjl00V+seh+sH8bZooCNHqHU4vB46c2Ac=` # pragma: allowlist secret
+- OTA Password: `55977e01702437af44c5544c565fb451` # pragma: allowlist secret
+- Fallback Hotspot Password: `65W5W9hiANxw` # pragma: allowlist secret
 
 ✅ **Updated 1Password** with new credentials in the Automation vault
 
@@ -98,7 +98,7 @@ Devices that remain offline will need manual deployment when they become availab
 
 2. **Fallback hotspot access** (if device enters fallback mode):
    - Connect to "[Device Name] ESP" network
-   - Use old fallback password: `1SXRpeXi7AdU`
+   - Use old fallback password: `1SXRpeXi7AdU` # pragma: allowlist secret
    - Access http://192.168.4.1
    - Upload new firmware via web interface
 

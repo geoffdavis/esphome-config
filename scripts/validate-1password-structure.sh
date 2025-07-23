@@ -43,21 +43,21 @@ check_op_cli() {
 # Check account access
 check_account_access() {
     log_info "Checking 1Password account access..."
-    
+
     if [[ -z "$OP_ACCOUNT" ]]; then
         log_error "OP_ACCOUNT environment variable not set"
         log_info "Set with: export OP_ACCOUNT=your-account-name"
         log_info "Or sign in with: op signin"
         return 1
     fi
-    
+
     if ! op account list >/dev/null 2>&1; then
         log_error "Cannot access 1Password account '$OP_ACCOUNT'"
         log_info "Sign in with: op signin"
         log_info "Add account with: op account add --address my.1password.com --email your@email.com"
         return 1
     fi
-    
+
     log_success "Account '$OP_ACCOUNT' is accessible"
     return 0
 }
@@ -66,16 +66,16 @@ check_account_access() {
 check_vault_access() {
     local vault_name="$1"
     local vault_description="$2"
-    
+
     log_info "Checking access to '$vault_name' vault..."
-    
+
     if ! op vault list --account="$OP_ACCOUNT" | grep -q "$vault_name"; then
         log_error "Vault '$vault_name' not found or not accessible"
         log_info "Available vaults:"
         op vault list --account="$OP_ACCOUNT" 2>/dev/null || log_error "Cannot list vaults"
         return 1
     fi
-    
+
     log_success "Vault '$vault_name' ($vault_description) is accessible"
     return 0
 }
@@ -85,9 +85,9 @@ check_item_structure() {
     local vault_name="$1"
     local item_name="$2"
     local expected_fields="$3"
-    
+
     log_info "Checking '$item_name' item in '$vault_name' vault..."
-    
+
     # Check if item exists
     if ! op item get "$item_name" --vault="$vault_name" --account="$OP_ACCOUNT" >/dev/null 2>&1; then
         log_error "Item '$item_name' not found in vault '$vault_name'"
@@ -95,16 +95,16 @@ check_item_structure() {
         op item list --vault="$vault_name" --account="$OP_ACCOUNT" 2>/dev/null || log_error "Cannot list items"
         return 1
     fi
-    
+
     log_success "Item '$item_name' found in vault '$vault_name'"
-    
+
     # Check expected fields
     local missing_fields=0
     IFS=',' read -ra FIELDS <<< "$expected_fields"
     for field in "${FIELDS[@]}"; do
         field=$(echo "$field" | xargs)  # Trim whitespace
         log_info "Checking field '$field'..."
-        
+
         if op item get "$item_name" --vault="$vault_name" --account="$OP_ACCOUNT" --fields="$field" >/dev/null 2>&1; then
             log_success "Field '$field' exists"
         else
@@ -112,7 +112,7 @@ check_item_structure() {
             missing_fields=$((missing_fields + 1))
         fi
     done
-    
+
     return $missing_fields
 }
 
@@ -120,11 +120,11 @@ check_item_structure() {
 validate_field_values() {
     local vault_name="$1"
     local item_name="$2"
-    
+
     log_info "Validating field values in '$item_name'..."
-    
+
     local errors=0
-    
+
     # Validate API key format
     local api_key
     api_key=$(op item get "$item_name" --vault="$vault_name" --account="$OP_ACCOUNT" --fields="api_key" 2>/dev/null || echo "")
@@ -141,7 +141,7 @@ validate_field_values() {
             errors=$((errors + 1))
         fi
     fi
-    
+
     # Validate OTA password format
     local ota_password
     ota_password=$(op item get "$item_name" --vault="$vault_name" --account="$OP_ACCOUNT" --fields="ota_password" 2>/dev/null || echo "")
@@ -158,7 +158,7 @@ validate_field_values() {
             errors=$((errors + 1))
         fi
     fi
-    
+
     # Validate fallback password format
     local fallback_password
     fallback_password=$(op item get "$item_name" --vault="$vault_name" --account="$OP_ACCOUNT" --fields="fallback_password" 2>/dev/null || echo "")
@@ -175,16 +175,16 @@ validate_field_values() {
             errors=$((errors + 1))
         fi
     fi
-    
+
     return $errors
 }
 
 # Test credential generation
 test_credential_generation() {
     log_info "Testing credential generation commands..."
-    
+
     local errors=0
-    
+
     # Test API key generation
     log_info "Testing API key generation..."
     local test_api_key
@@ -195,7 +195,7 @@ test_credential_generation() {
         log_error "API key generation failed"
         errors=$((errors + 1))
     fi
-    
+
     # Test OTA password generation
     log_info "Testing OTA password generation..."
     local test_ota_password
@@ -206,7 +206,7 @@ test_credential_generation() {
         log_error "OTA password generation failed"
         errors=$((errors + 1))
     fi
-    
+
     # Test fallback password generation
     log_info "Testing fallback password generation..."
     local test_fallback_password
@@ -217,51 +217,51 @@ test_credential_generation() {
         log_error "Fallback password generation failed"
         errors=$((errors + 1))
     fi
-    
+
     return $errors
 }
 
 # Test secrets generation script
 test_secrets_generation() {
     log_info "Testing secrets generation script..."
-    
+
     if [[ ! -f "scripts/generate_secrets.sh" ]]; then
         log_error "scripts/generate_secrets.sh not found"
         return 1
     fi
-    
+
     if [[ ! -x "scripts/generate_secrets.sh" ]]; then
         log_warning "scripts/generate_secrets.sh is not executable"
         chmod +x scripts/generate_secrets.sh
         log_info "Made scripts/generate_secrets.sh executable"
     fi
-    
+
     # Backup existing secrets if they exist
     if [[ -f "secrets.yaml" ]]; then
         cp secrets.yaml secrets.yaml.backup.validation
         log_info "Backed up existing secrets.yaml"
     fi
-    
+
     # Test generation
     if ./scripts/generate_secrets.sh >/dev/null 2>&1; then
         log_success "Secrets generation script works correctly"
-        
+
         # Restore backup if it existed
         if [[ -f "secrets.yaml.backup.validation" ]]; then
             mv secrets.yaml.backup.validation secrets.yaml
             log_info "Restored original secrets.yaml"
         fi
-        
+
         return 0
     else
         log_error "Secrets generation script failed"
-        
+
         # Restore backup if it existed
         if [[ -f "secrets.yaml.backup.validation" ]]; then
             mv secrets.yaml.backup.validation secrets.yaml
             log_info "Restored original secrets.yaml"
         fi
-        
+
         return 1
     fi
 }
@@ -272,52 +272,52 @@ main() {
     echo "1Password Structure Validation"
     echo "=================================================="
     echo
-    
+
     local total_errors=0
-    
+
     # Check 1Password CLI
     if ! check_op_cli; then
         exit 1
     fi
-    
+
     # Check account access
     if ! check_account_access; then
         total_errors=$((total_errors + 1))
     fi
-    
+
     # Check vault access
     if ! check_vault_access "Shared" "Home IoT credentials"; then
         total_errors=$((total_errors + 1))
     fi
-    
+
     if ! check_vault_access "Automation" "ESPHome credentials"; then
         total_errors=$((total_errors + 1))
     fi
-    
+
     # Check item structures
     if ! check_item_structure "Shared" "Home IoT" "network name,wireless network password,domain name"; then
         total_errors=$((total_errors + 1))
     fi
-    
+
     if ! check_item_structure "Automation" "ESPHome" "api_key,ota_password,fallback_password"; then
         total_errors=$((total_errors + 1))
     fi
-    
+
     # Validate field values
     if ! validate_field_values "Automation" "ESPHome"; then
         total_errors=$((total_errors + 1))
     fi
-    
+
     # Test credential generation
     if ! test_credential_generation; then
         total_errors=$((total_errors + 1))
     fi
-    
+
     # Test secrets generation script
     if ! test_secrets_generation; then
         total_errors=$((total_errors + 1))
     fi
-    
+
     echo
     echo "=================================================="
     if [[ $total_errors -eq 0 ]]; then

@@ -44,22 +44,22 @@ check_secrets_file() {
 validate_api_key() {
     local api_key
     api_key=$(grep "^api_key:" secrets.yaml | cut -d'"' -f2 2>/dev/null || echo "")
-    
+
     if [[ -z "$api_key" ]]; then
         log_error "API key not found in secrets.yaml"
         return 1
     fi
-    
+
     # Check if it's exactly 44 characters and ends with =
     if [[ ${#api_key} -eq 44 && "$api_key" =~ ^[A-Za-z0-9+/]{43}=$ ]]; then
         log_success "API key format is valid (44 chars, base64)"
-        
+
         # Check if it's the known exposed key
         if [[ "$api_key" == "rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk=" ]]; then
             log_error "API key is the known exposed credential - must be rotated!"
             return 1
         fi
-        
+
         return 0
     else
         log_error "API key format is invalid"
@@ -73,22 +73,22 @@ validate_api_key() {
 validate_ota_password() {
     local ota_password
     ota_password=$(grep "^ota_password:" secrets.yaml | cut -d'"' -f2 2>/dev/null || echo "")
-    
+
     if [[ -z "$ota_password" ]]; then
         log_error "OTA password not found in secrets.yaml"
         return 1
     fi
-    
+
     # Check if it's exactly 32 characters and hexadecimal
     if [[ ${#ota_password} -eq 32 && "$ota_password" =~ ^[a-fA-F0-9]{32}$ ]]; then
         log_success "OTA password format is valid (32 chars, hex)"
-        
+
         # Check if it's the known exposed password
         if [[ "$ota_password" == "5929ccc1f08289c79aca50ebe0a9b7eb" ]]; then
             log_error "OTA password is the known exposed credential - must be rotated!"
             return 1
         fi
-        
+
         return 0
     else
         log_error "OTA password format is invalid"
@@ -102,22 +102,22 @@ validate_ota_password() {
 validate_fallback_password() {
     local fallback_password
     fallback_password=$(grep "^fallback_password:" secrets.yaml | cut -d'"' -f2 2>/dev/null || echo "")
-    
+
     if [[ -z "$fallback_password" ]]; then
         log_error "Fallback password not found in secrets.yaml"
         return 1
     fi
-    
+
     # Check if it's at least 12 characters and alphanumeric
     if [[ ${#fallback_password} -ge 12 && "$fallback_password" =~ ^[A-Za-z0-9]+$ ]]; then
         log_success "Fallback password format is valid (${#fallback_password} chars, alphanumeric)"
-        
+
         # Check if it's the known exposed password
         if [[ "$fallback_password" == "1SXRpeXi7AdU" ]]; then
             log_error "Fallback password is the known exposed credential - must be rotated!"
             return 1
         fi
-        
+
         return 0
     else
         log_error "Fallback password format is invalid"
@@ -133,9 +133,9 @@ validate_wifi_credentials() {
     wifi_ssid=$(grep "^wifi_ssid:" secrets.yaml | cut -d'"' -f2 2>/dev/null || echo "")
     wifi_password=$(grep "^wifi_password:" secrets.yaml | cut -d'"' -f2 2>/dev/null || echo "")
     wifi_domain=$(grep "^wifi_domain:" secrets.yaml | cut -d'"' -f2 2>/dev/null || echo "")
-    
+
     local errors=0
-    
+
     if [[ -z "$wifi_ssid" ]]; then
         log_error "WiFi SSID not found in secrets.yaml"
         errors=$((errors + 1))
@@ -145,7 +145,7 @@ validate_wifi_credentials() {
     else
         log_success "WiFi SSID is valid"
     fi
-    
+
     if [[ -z "$wifi_password" ]]; then
         log_error "WiFi password not found in secrets.yaml"
         errors=$((errors + 1))
@@ -155,7 +155,7 @@ validate_wifi_credentials() {
     else
         log_success "WiFi password is valid"
     fi
-    
+
     if [[ -n "$wifi_domain" ]]; then
         if [[ "$wifi_domain" =~ ^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$ ]]; then
             log_success "WiFi domain is valid"
@@ -165,7 +165,7 @@ validate_wifi_credentials() {
     else
         log_warning "WiFi domain not set (optional)"
     fi
-    
+
     return $errors
 }
 
@@ -175,35 +175,35 @@ validate_1password_integration() {
         log_warning "1Password CLI not found - cannot validate integration"
         return 0
     fi
-    
+
     if [[ -z "$OP_ACCOUNT" ]]; then
         log_error "OP_ACCOUNT environment variable not set"
         log_info "Set with: export OP_ACCOUNT=your-account-name"
         log_info "Or sign in with: op signin"
         return 1
     fi
-    
+
     log_info "Validating 1Password integration..."
-    
+
     # Check if we can access the account
     if ! op account list --account="$OP_ACCOUNT" >/dev/null 2>&1; then
         log_error "Cannot access 1Password account '$OP_ACCOUNT'"
         log_info "Sign in with: op signin"
         return 1
     fi
-    
+
     # Check if we can access the ESPHome item
     if ! op item get "ESPHome" --vault="Automation" --account="$OP_ACCOUNT" >/dev/null 2>&1; then
         log_error "Cannot access ESPHome item in Automation vault"
         return 1
     fi
-    
+
     # Check if we can access the Home IoT item
     if ! op item get "Home IoT" --vault="Shared" --account="$OP_ACCOUNT" >/dev/null 2>&1; then
         log_error "Cannot access Home IoT item in Shared vault"
         return 1
     fi
-    
+
     log_success "1Password integration is working"
     return 0
 }
@@ -211,14 +211,14 @@ validate_1password_integration() {
 # Check for exposed credentials in files
 scan_for_exposed_credentials() {
     log_info "Scanning for exposed credentials in YAML files..."
-    
+
     local found_issues=0
-    
+
     # Known exposed credentials
     local exposed_api_key="rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk="
     local exposed_ota_password="5929ccc1f08289c79aca50ebe0a9b7eb"
     local exposed_fallback_password="1SXRpeXi7AdU"
-    
+
     # Scan all YAML files except secrets.yaml (which we validate separately)
     while IFS= read -r -d '' file; do
         if [[ "$file" != "./secrets.yaml" ]]; then
@@ -226,25 +226,25 @@ scan_for_exposed_credentials() {
                 log_error "Exposed API key found in $file"
                 found_issues=$((found_issues + 1))
             fi
-            
+
             if grep -qF "$exposed_ota_password" "$file"; then
                 log_error "Exposed OTA password found in $file"
                 found_issues=$((found_issues + 1))
             fi
-            
+
             if grep -qF "$exposed_fallback_password" "$file"; then
                 log_error "Exposed fallback password found in $file"
                 found_issues=$((found_issues + 1))
             fi
         fi
     done < <(find . -name "*.yaml" -o -name "*.yml" -print0 2>/dev/null)
-    
+
     if [[ $found_issues -eq 0 ]]; then
         log_success "No exposed credentials found in YAML files"
     else
         log_error "Found $found_issues exposed credential(s) in YAML files"
     fi
-    
+
     return $found_issues
 }
 
@@ -254,41 +254,41 @@ main() {
     echo "ESPHome Secrets Validation"
     echo "=================================================="
     echo
-    
+
     local total_errors=0
-    
+
     # Check if secrets file exists
     if ! check_secrets_file; then
         exit 1
     fi
-    
+
     # Validate credential formats
     if ! validate_api_key; then
         total_errors=$((total_errors + 1))
     fi
-    
+
     if ! validate_ota_password; then
         total_errors=$((total_errors + 1))
     fi
-    
+
     if ! validate_fallback_password; then
         total_errors=$((total_errors + 1))
     fi
-    
+
     if ! validate_wifi_credentials; then
         total_errors=$((total_errors + 1))
     fi
-    
+
     # Validate 1Password integration
     if ! validate_1password_integration; then
         total_errors=$((total_errors + 1))
     fi
-    
+
     # Scan for exposed credentials
     if ! scan_for_exposed_credentials; then
         total_errors=$((total_errors + 1))
     fi
-    
+
     echo
     echo "=================================================="
     if [[ $total_errors -eq 0 ]]; then

@@ -162,9 +162,9 @@ class SecuritySetup:
                 r'\b[a-fA-F0-9]{32}\b',  # OTA passwords
                 r'\b[A-Za-z0-9]{12}\b',  # Fallback passwords
                 # Known exposed credentials
-                'rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk=',
-                '5929ccc1f08289c79aca50ebe0a9b7eb',
-                '1SXRpeXi7AdU'
+                'rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk=',  # pragma: allowlist secret
+                '5929ccc1f08289c79aca50ebe0a9b7eb',  # pragma: allowlist secret
+                '1SXRpeXi7AdU'  # pragma: allowlist secret
             ]
 
             for pattern in patterns:
