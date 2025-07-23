@@ -5,11 +5,13 @@ This guide provides comprehensive procedures for rotating ESPHome credentials us
 ## When to Rotate Credentials
 
 ### Immediate Rotation Required
+
 - **Credential Exposure**: Any credential found in public repositories or logs
 - **Security Breach**: Suspected unauthorized access to devices or systems
 - **Team Changes**: When team members with credential access leave
 
 ### Scheduled Rotation
+
 - **API Keys**: Every 90 days
 - **OTA Passwords**: Every 90 days
 - **Fallback Passwords**: Every 180 days
@@ -20,6 +22,7 @@ This guide provides comprehensive procedures for rotating ESPHome credentials us
 For detailed rotation procedures, see [Credential Rotation Tasks](.kilocode/rules/memory-bank/tasks.md#credential-rotation).
 
 ### Automated Rotation
+
 ```bash
 # Run automated credential rotation
 python3 scripts/rotate_credentials.py
@@ -32,6 +35,7 @@ python3 scripts/track_secret_rotation.py add
 ```
 
 ### Manual Verification
+
 ```bash
 # Validate new credentials
 task security-validate
@@ -51,6 +55,7 @@ The rotation process uses a **two-stage deployment** to ensure zero-downtime upd
 2. **Stage 2**: Final deployment using only new credentials
 
 ### Stage 1: Transition Deployment
+
 ```bash
 # Generate new credentials in 1Password
 python3 scripts/rotate_credentials.py
@@ -60,6 +65,7 @@ python3 scripts/deploy_with_rotation.py --stage transition
 ```
 
 ### Stage 2: Final Deployment
+
 ```bash
 # Switch to new credentials only
 python3 scripts/deploy_with_rotation.py --stage final
@@ -71,16 +77,19 @@ python3 scripts/deploy_with_rotation.py --verify
 ## Credential Types
 
 ### API Encryption Keys
+
 - **Format**: 44-character base64 string ending with `=`
 - **Purpose**: Encrypts communication between Home Assistant and devices
 - **Generation**: `openssl rand -base64 32`
 
 ### OTA Passwords
+
 - **Format**: 32-character hexadecimal string
 - **Purpose**: Secures over-the-air firmware updates
 - **Generation**: `openssl rand -hex 16`
 
 ### Fallback Hotspot Passwords
+
 - **Format**: 12+ character alphanumeric string
 - **Purpose**: Device recovery access when WiFi fails
 - **Generation**: `openssl rand -base64 12 | tr -d "=+/" | cut -c1-12`
@@ -88,6 +97,7 @@ python3 scripts/deploy_with_rotation.py --verify
 ## Device-Specific Considerations
 
 ### ESP01 Devices (Memory Constrained)
+
 ESP01 devices require special handling due to 1MB flash memory limitations:
 
 ```bash
@@ -99,6 +109,7 @@ python3 scripts/deploy_with_rotation.py --device device_name --two-stage
 ```
 
 ### ESP32/ESP8266 Devices
+
 Standard devices can handle direct credential updates:
 
 ```bash
@@ -112,6 +123,7 @@ python3 scripts/deploy_with_rotation.py --device device_name
 ## Backup and Recovery
 
 ### Create Backup Before Rotation
+
 ```bash
 # Create backup of current credentials
 python3 scripts/backup_secrets.py create
@@ -136,6 +148,7 @@ python3 scripts/deploy_with_rotation.py --emergency
 ### Device Not Responding After Rotation
 
 **1. Check Network Connectivity**
+
 ```bash
 # Test basic connectivity
 ping device-name.local
@@ -145,6 +158,7 @@ nmap -sn 192.168.1.0/24 | grep device-name
 ```
 
 **2. Try Fallback Hotspot Access**
+
 - Power cycle the device to trigger fallback mode
 - Look for WiFi network: `[Device Name] ESP`
 - Connect using **old** fallback password initially
@@ -157,6 +171,7 @@ For completely unresponsive ESP01 devices, see [Recovery Procedures](../device-m
 ### 1Password Integration Issues
 
 **Authentication Problems**
+
 ```bash
 # Re-authenticate with 1Password
 op signin
@@ -169,6 +184,7 @@ op read "op://Automation/ESPHome/api_key"
 ```
 
 **Vault Structure Issues**
+
 ```bash
 # Validate 1Password structure
 python3 scripts/validate_1password_structure.py
@@ -181,6 +197,7 @@ op item get "Home IoT" --vault="Shared"
 ### Deployment Failures
 
 **Offline Devices**
+
 ```bash
 # Deploy only to online devices
 python3 scripts/deploy_with_rotation.py --online-only
@@ -190,6 +207,7 @@ python3 scripts/deploy_with_rotation.py --device offline_device_name
 ```
 
 **Partial Deployment Success**
+
 ```bash
 # Check deployment status
 python3 scripts/deploy_with_rotation.py --status
@@ -201,6 +219,7 @@ python3 scripts/deploy_with_rotation.py --retry-failed
 ## Security Validation
 
 ### Pre-Rotation Checks
+
 ```bash
 # Validate current security state
 task security-validate
@@ -213,6 +232,7 @@ python3 scripts/validate_1password_structure.py
 ```
 
 ### Post-Rotation Validation
+
 ```bash
 # Verify new credentials are active
 task security-validate
@@ -227,6 +247,7 @@ echo 'api_key: "old-exposed-key"' | .githooks/esphome_credential_check.py  # pra
 ## Rotation Tracking
 
 ### Track Rotation Events
+
 ```bash
 # Add rotation entry
 python3 scripts/track_secret_rotation.py add
@@ -249,6 +270,7 @@ After successful rotation:
 ## Integration with Existing Workflows
 
 ### Task Runner Integration
+
 ```bash
 # Security validation runs automatically with these tasks
 task upload -- device_name
@@ -268,18 +290,21 @@ git commit -m "Update configuration"
 ## Best Practices
 
 ### Planning
+
 - **Schedule rotations** during maintenance windows
 - **Notify team members** before rotation
 - **Test rotation process** in development environment first
 - **Have rollback plan** ready
 
 ### Execution
+
 - **Create backups** before starting rotation
 - **Monitor device connectivity** throughout process
 - **Verify each stage** before proceeding
 - **Document any issues** encountered
 
 ### Post-Rotation
+
 - **Verify all devices** are accessible and functional
 - **Update documentation** as needed
 - **Schedule next rotation** based on policy

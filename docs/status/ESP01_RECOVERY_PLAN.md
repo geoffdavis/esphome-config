@@ -2,22 +2,25 @@
 
 ## CRITICAL ISSUE IDENTIFIED
 
-The ESP01 devices were bricked during credential deployment because the minimal firmware (`wifi-minimal.yaml`) lacked fallback hotspot capability. When minimal firmware was deployed first, devices lost their recovery mechanism.
+The ESP01 devices were bricked during credential deployment because the minimal
+firmware (`wifi-minimal.yaml`) lacked fallback hotspot capability. When minimal
+firmware was deployed first, devices lost their recovery mechanism.
 
 ## WiFi Credentials the Bricked Devices Are Using
 
 The ESP01 devices with minimal firmware are configured to connect to:
 
-- **SSID**: `PorkNoT`
-- **Password**: `Internet0fBlinds.`
-- **Domain**: `.NoT.Home.GeoffDavis.COM`
+- **SSID**: `YOUR_RECOVERY_SSID`
+- **Password**: `YOUR_RECOVERY_PASSWORD`
+- **Domain**: `YOUR_RECOVERY_DOMAIN`
 
 ## Recovery Method 1: Temporary Recovery Network (RECOMMENDED)
 
-### Setup Recovery WiFi Network:
+### Setup Recovery WiFi Network
+
 1. Create a WiFi hotspot/access point with these **EXACT** credentials:
-   - **Network Name**: `PorkNoT`
-   - **Password**: `Internet0fBlinds.`
+   - **Network Name**: `YOUR_RECOVERY_SSID`
+   - **Password**: `YOUR_RECOVERY_PASSWORD`
 
 2. **Wait for devices to connect** - they should appear on the network
 
@@ -25,7 +28,8 @@ The ESP01 devices with minimal firmware are configured to connect to:
    - Web interface: `http://<device-ip>`
    - ESPHome OTA for firmware updates
 
-### Recovery Deployment Steps:
+### Recovery Deployment Steps
+
 1. Once devices are connected to recovery network
 2. Deploy fixed minimal firmware (now includes fallback hotspot)
 3. Deploy full firmware with new credentials
@@ -33,7 +37,8 @@ The ESP01 devices with minimal firmware are configured to connect to:
 
 ## Recovery Method 2: Physical Recovery (If Network Setup Not Possible)
 
-### ESP01 Physical Recovery Process:
+### ESP01 Physical Recovery Process
+
 For each bricked device:
 
 1. **Power OFF** the device
@@ -42,8 +47,9 @@ For each bricked device:
 4. **Flash recovery firmware** using esptool:
    ```bash
    esptool.py --port /dev/ttyUSB0 --baud 115200 erase_flash
-   esptool.py --port /dev/ttyUSB0 --baud 115200 write_flash 0x0 <device>-recovery.bin
-   ```
+   esptool.py --port /dev/ttyUSB0 --baud 115200 write_flash 0x0 \
+     <device>-recovery.bin
+   ```text
 5. **Disconnect GPIO0** from GND
 6. **Power cycle** the device
 7. Look for recovery hotspot: `"<Device Name> Recovery"`
@@ -91,4 +97,5 @@ The script will:
 
 ## Prevention
 
-The minimal firmware configuration has been permanently fixed to always include fallback hotspot capability, preventing this issue from recurring.
+The minimal firmware configuration has been permanently fixed to always include
+fallback hotspot capability, preventing this issue from recurring.

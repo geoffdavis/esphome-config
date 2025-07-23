@@ -11,6 +11,7 @@ Get your ESPHome configuration project up and running in minutes.
 ## 1. Initial Setup
 
 ### Install Project Tools
+
 ```bash
 # Install Mise (tool version manager)
 curl https://mise.run | sh
@@ -23,6 +24,7 @@ mise install
 ```
 
 ### Set Up Security Framework
+
 ```bash
 # Set up security tools and validation
 python3 scripts/setup_security.py
@@ -34,6 +36,7 @@ python3 scripts/setup_dev_secrets.py
 ## 2. Configure Credentials
 
 ### Option A: Production Setup (1Password)
+
 ```bash
 # Create .env file for 1Password integration
 echo "OP_ACCOUNT=your-1password-account" > .env
@@ -43,6 +46,7 @@ echo "OP_ACCOUNT=your-1password-account" > .env
 ```
 
 ### Option B: Development Setup
+
 ```bash
 # Use development credentials for testing
 task dev-setup
@@ -62,12 +66,14 @@ task build -- den_multisensor
 ## 4. Deploy Your First Device
 
 ### For ESP32/ESP8266 Devices
+
 ```bash
 # Build and upload firmware
 task upload -- device_name
 ```
 
 ### For ESP01 Devices (Memory Constrained)
+
 ```bash
 # Use two-stage deployment
 task upload-two-stage -- device_name
@@ -106,6 +112,7 @@ task upload-all-two-stage
 ### Common Issues
 
 **1Password CLI not working:**
+
 ```bash
 # Sign in to 1Password
 op signin
@@ -115,6 +122,7 @@ op account list
 ```
 
 **Security validation failing:**
+
 ```bash
 # Check for exposed credentials
 task security-scan
@@ -124,15 +132,18 @@ task dev-setup
 ```
 
 **Device not responding:**
+
 - Check device is powered and connected to WiFi
 - Verify network connectivity: `ping device-name.local`
 - Try fallback hotspot access (see [Recovery Procedures](../device-management/recovery-procedures.md))
 
 ## Architecture Overview
 
-For complete system architecture details, see [System Architecture](.kilocode/rules/memory-bank/architecture.md).
+For complete system architecture details, see
+[System Architecture](.kilocode/rules/memory-bank/architecture.md).
 
 Key components:
+
 - **ESPHome**: Firmware framework for IoT devices
 - **1Password**: Secure credential storage
 - **Task Runner**: Build and deployment automation
@@ -140,4 +151,6 @@ Key components:
 
 ---
 
-*Need more detailed information? Check the [Memory Bank](.kilocode/rules/memory-bank/) for comprehensive technical documentation.*
+*Need more detailed information? Check the
+[Memory Bank](.kilocode/rules/memory-bank/) for comprehensive technical
+documentation.*

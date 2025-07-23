@@ -157,6 +157,7 @@ task restore-credentials -- <backup-id>
 ## Maintenance Commands
 
 ### Project Maintenance
+
 ```bash
 # Update project dependencies
 task update-deps
@@ -169,6 +170,7 @@ task validate-config
 ```
 
 ### Tool Management
+
 ```bash
 # Update development tools
 task update-tools
@@ -183,6 +185,7 @@ task install-tools
 ## Device-Specific Commands
 
 ### ESP01 Device Commands
+
 ```bash
 # Deploy minimal firmware first, then full
 task upload-two-stage -- <esp01-device>
@@ -194,6 +197,7 @@ task upload-two-stage -- denheatpump
 ```
 
 ### ESP32/ESP8266 Device Commands
+
 ```bash
 # Direct deployment for capable devices
 task upload -- <device-name>
@@ -207,6 +211,7 @@ task upload -- particle_man
 ## Recovery Commands
 
 ### Device Recovery
+
 ```bash
 # Recover specific device
 task recover-device -- <device-name>
@@ -219,6 +224,7 @@ task emergency-recovery -- <device-name>
 ```
 
 ### Network Recovery
+
 ```bash
 # Set up recovery network
 task setup-recovery-network
@@ -230,6 +236,7 @@ task deploy-recovery -- <device-name>
 ## Monitoring Commands
 
 ### Device Status
+
 ```bash
 # Check device connectivity
 task check-devices
@@ -242,6 +249,7 @@ task device-info -- <device-name>
 ```
 
 ### System Status
+
 ```bash
 # Check system health
 task health-check
@@ -256,6 +264,7 @@ task diagnostics
 ## Advanced Usage
 
 ### Command Chaining
+
 ```bash
 # Chain multiple operations
 task security-validate && task build-all && task upload-all-two-stage
@@ -265,6 +274,7 @@ task build -- device_name && task upload -- device_name
 ```
 
 ### Environment Variables
+
 ```bash
 # Set log level
 ESPHOME_LOGS_LEVEL=DEBUG task upload -- device_name
@@ -277,6 +287,7 @@ DEV_MODE=true task dev-setup
 ```
 
 ### Parallel Operations
+
 ```bash
 # Build multiple devices in parallel (if supported)
 task build -- device1 & task build -- device2 & wait
@@ -287,6 +298,7 @@ task build -- device1 & task build -- device2 & wait
 ## Task Categories
 
 ### Essential Daily Tasks
+
 ```bash
 task security-validate    # Before any deployment
 task upload -- device     # Deploy single device
@@ -295,6 +307,7 @@ task security-scan        # Regular security check
 ```
 
 ### Weekly Maintenance Tasks
+
 ```bash
 task update-deps          # Update dependencies
 task backup-credentials   # Backup current state
@@ -303,6 +316,7 @@ task clean-temp           # Clean temporary files
 ```
 
 ### Emergency Tasks
+
 ```bash
 task emergency-recovery   # Device recovery
 task security-backup     # Emergency backup
@@ -313,9 +327,11 @@ task diagnostics         # System diagnostics
 ## Task Configuration
 
 ### Taskfile Location
+
 The task definitions are in [`Taskfile.yml`](../Taskfile.yml) in the project root.
 
 ### Custom Task Variables
+
 ```bash
 # Override default device
 DEVICE=custom_device task upload
@@ -325,7 +341,9 @@ ESPHOME_BIN=/custom/path/esphome task build -- device
 ```
 
 ### Task Dependencies
+
 Many tasks have automatic dependencies:
+
 - `upload` tasks automatically run `build` first
 - `security-validate` runs before deployment tasks
 - `dev-setup` includes credential generation
@@ -335,6 +353,7 @@ Many tasks have automatic dependencies:
 For detailed task procedures and workflows, see [Common Tasks](.kilocode/rules/memory-bank/tasks.md) in the Memory Bank.
 
 ### Task Categories in Memory Bank
+
 - **[Device Management Tasks](.kilocode/rules/memory-bank/tasks.md#device-management-tasks)**
 - **[Security Management Tasks](.kilocode/rules/memory-bank/tasks.md#security-management-tasks)**
 - **[Development Environment Tasks](.kilocode/rules/memory-bank/tasks.md#development-environment-tasks)**
@@ -343,6 +362,7 @@ For detailed task procedures and workflows, see [Common Tasks](.kilocode/rules/m
 ## Troubleshooting Task Issues
 
 ### Common Task Failures
+
 ```bash
 # Task not found
 task -l  # List available tasks
@@ -355,6 +375,7 @@ task install-tools
 ```
 
 ### Debug Mode
+
 ```bash
 # Verbose task execution
 task --verbose <task-name>
@@ -364,6 +385,7 @@ task --dry-run <task-name>
 ```
 
 ### Environment Issues
+
 ```bash
 # Check environment
 task check-tools

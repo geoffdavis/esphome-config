@@ -5,9 +5,12 @@ This document contains historical information about migrations and changes to th
 ## Python Security Framework Migration
 
 ### Overview
-The ESPHome security framework was migrated from mixed bash/Python scripts to a unified Python-based solution for better maintainability, testing, and integration.
+
+The ESPHome security framework was migrated from mixed bash/Python scripts to a unified Python-based solution
+for better maintainability, testing, and integration.
 
 ### Migration Summary
+
 - **From**: Mixed bash and Python scripts
 - **To**: Unified Python security framework with shared library
 - **Benefits**: Better error handling, comprehensive testing, unified credential validation
@@ -23,6 +26,7 @@ The ESPHome security framework was migrated from mixed bash/Python scripts to a 
 | `rotate_credentials.py` | [`rotate_credentials.py`](../../scripts/rotate_credentials.py) | ✅ Refactored with shared library |
 
 ### New Functionality Added
+
 - **[`track_secret_rotation.py`](../../scripts/track_secret_rotation.py)** - Rotation history tracking
 - **[`setup_dev_secrets.py`](../../scripts/setup_dev_secrets.py)** - Development environment setup
 - **[`backup_secrets.py`](../../scripts/backup_secrets.py)** - Backup and restore functionality
@@ -37,23 +41,30 @@ The ESPHome security framework was migrated from mixed bash/Python scripts to a 
 | `./scripts/validate-secrets.sh` | `python3 scripts/validate_secrets.py` | ✅ Direct Python execution |
 
 ### Migration Benefits
+
 - **Unified Error Handling**: Consistent error messages and logging across all security operations
 - **Comprehensive Testing**: Full unit test coverage with mock support for external dependencies
 - **Better Integration**: Improved integration with ESPHome's Python ecosystem
 - **Enhanced Functionality**: New features like rotation tracking and development environment support
 
 ### Backward Compatibility
-The Python scripts maintain the same command-line interface and exit codes as the original bash scripts, ensuring seamless integration with existing workflows.
+
+The Python scripts maintain the same command-line interface and exit codes as the original bash scripts,
+ensuring seamless integration with existing workflows.
 
 ## Pre-commit Hook Environment Fix
 
 ### Problem
-Pre-commit hooks were failing to access dependencies managed by Mise because they run in isolated environments without automatic Mise configuration sourcing.
+
+Pre-commit hooks were failing to access dependencies managed by Mise because they run in isolated environments
+without automatic Mise configuration sourcing.
 
 ### Solution
+
 Created `.githooks/mise-python-wrapper.sh` to properly source the Mise environment for pre-commit hooks.
 
 ### Implementation
+
 ```bash
 #!/bin/bash
 # Mise Python Wrapper for Pre-commit Hooks
@@ -78,6 +89,7 @@ Updated `.pre-commit-config.yaml` to use the wrapper script with `language: scri
 ```
 
 **After:**
+
 ```yaml
 - id: esphome-secrets-validation
   entry: .githooks/mise-python-wrapper.sh scripts/validate_secrets.py
@@ -85,6 +97,7 @@ Updated `.pre-commit-config.yaml` to use the wrapper script with `language: scri
 ```
 
 ### Results
+
 - ✅ Pre-commit hooks now use the same Python environment as manual script execution
 - ✅ Hooks can access PyYAML and other Mise-managed dependencies
 - ✅ Graceful fallback to system Python if Mise is unavailable
@@ -93,18 +106,21 @@ Updated `.pre-commit-config.yaml` to use the wrapper script with `language: scri
 ## Historical Context
 
 ### Security Framework Evolution
+
 1. **Initial Implementation**: Basic bash scripts for credential validation
 2. **Mixed Approach**: Combination of bash and Python scripts
 3. **Python Migration**: Unified Python framework with shared library
 4. **Environment Integration**: Mise integration for consistent tool management
 
 ### Key Milestones
+
 - **Security Hook Implementation**: Initial credential detection and validation
 - **1Password Integration**: Automated credential retrieval and management
 - **Python Framework**: Unified security library with comprehensive testing
 - **Development Environment**: Safe development credentials and testing utilities
 
 ### Lessons Learned
+
 - **Unified Language**: Using Python throughout improves maintainability and testing
 - **Environment Consistency**: Proper tool environment management is critical for automation
 - **Comprehensive Testing**: Unit tests catch issues early and improve reliability
@@ -113,13 +129,16 @@ Updated `.pre-commit-config.yaml` to use the wrapper script with `language: scri
 ## Current State
 
 ### Active Security Framework
+
 The current security framework consists of:
+
 - **Python Security Library**: [`scripts/security_lib.py`](../../scripts/security_lib.py)
 - **Validation Scripts**: Comprehensive credential and configuration validation
 - **Testing Framework**: Full unit test coverage with mock support
 - **Integration Points**: Task runner and pre-commit hook integration
 
 ### Ongoing Maintenance
+
 - **Regular Updates**: Security patterns and validation rules updated as needed
 - **Testing**: Continuous testing ensures reliability and catches regressions
 - **Documentation**: Comprehensive documentation maintained for all components

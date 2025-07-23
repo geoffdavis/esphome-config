@@ -2,12 +2,15 @@
 
 ## CRITICAL SITUATION CONFIRMED
 
-The ESP01 devices are completely bricked and require **PHYSICAL RECOVERY**. Here's what happened:
+The ESP01 devices are completely bricked and require **PHYSICAL RECOVERY**.
+Here's what happened:
 
-1. ✅ **Minimal firmware deployed successfully** (using old wifi-minimal.yaml without fallback hotspot)
+1. ✅ **Minimal firmware deployed successfully** (using old wifi-minimal.yaml
+   without fallback hotspot)
 2. ❌ **Devices became inaccessible** (no fallback hotspot for recovery)
 3. ❌ **Full firmware deployment failed** (devices unreachable)
-4. ❌ **Devices not visible in UniFi or broadcasting hotspots** (completely bricked)
+4. ❌ **Devices not visible in UniFi or broadcasting hotspots** (completely
+   bricked)
 
 ## Affected ESP01 Devices
 
@@ -25,15 +28,16 @@ The following devices need physical recovery:
 
 ## Physical Recovery Process
 
-### Required Equipment:
+### Required Equipment
 - USB-to-Serial adapter (FTDI or similar)
 - Jumper wires
 - Computer with esptool installed
 
-### Recovery Steps for Each Device:
+### Recovery Steps for Each Device
 
 #### 1. Physical Connection
-```
+
+```text
 ESP01 Pin Layout:
 ┌─────────────┐
 │ RST    VCC  │
@@ -51,11 +55,13 @@ Connections to USB-Serial:
 ```
 
 #### 2. Enter Flash Mode
+
 1. **Connect GPIO0 to GND** (enter flash mode)
 2. **Power on** the device (or press reset if available)
 3. **Verify connection**: `esptool.py --port /dev/ttyUSB0 chip_id`
 
 #### 3. Flash Recovery Firmware
+
 ```bash
 # Erase existing firmware
 esptool.py --port /dev/ttyUSB0 --baud 115200 erase_flash
@@ -65,11 +71,13 @@ esptool.py --port /dev/ttyUSB0 --baud 115200 write_flash 0x0 <device>-recovery.b
 ```
 
 #### 4. Exit Flash Mode
+
 1. **Disconnect GPIO0 from GND**
 2. **Power cycle** the device
 3. **Look for recovery hotspot**: `"<Device Name> Recovery"`
 
 ### Alternative: Use ESPHome Web Flasher
+
 If available, use the ESPHome web flasher tool for easier recovery.
 
 ## Recovery Firmware Creation
@@ -80,7 +88,8 @@ For each device, create recovery firmware with fallback hotspot:
 # Compile recovery firmware (using fixed wifi-minimal.yaml)
 mise exec -- esphome compile <device>-minimal.yaml
 
-# The .bin file will be in .esphome/build/<device>/.pioenvs/esp01_1m/firmware.bin
+# The .bin file will be in:
+# .esphome/build/<device>/.pioenvs/esp01_1m/firmware.bin
 ```
 
 ## Post-Recovery Steps
@@ -99,6 +108,7 @@ Once devices are recovered and broadcasting hotspots:
 ## Recovery Script Usage
 
 After physical recovery, use the automated script:
+
 ```bash
 python3 scripts/recovery_deployment.py <device_name>
 ```
@@ -113,6 +123,7 @@ python3 scripts/recovery_deployment.py <device_name>
 ## Success Indicators
 
 After recovery:
+
 - ✅ Device appears in UniFi controller
 - ✅ Device responds to ping at `<device>.local`
 - ✅ Web interface accessible

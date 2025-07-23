@@ -1,21 +1,29 @@
 # ESPHome Device Configurations
 
-This repository contains YAML configuration files for various ESPHome-based devices in your home automation setup, with a comprehensive Python security framework and automated deployment system.
+This repository contains YAML configuration files for various ESPHome-based
+devices in your home automation setup, with a comprehensive Python security
+framework and automated deployment system.
 
 ## 📚 Documentation
 
 **Complete documentation is available in the [`docs/`](docs/) directory.**
 
 ### Quick Links
+
 - **[📖 Complete Documentation](docs/README.md)** - Main documentation index
-- **[🚀 Quick Start Guide](docs/getting-started/quick-start.md)** - Get up and running in minutes
-- **[🔒 Security Overview](docs/security/overview.md)** - Security framework and credential management
-- **[🔧 Device Management](docs/device-management/recovery-procedures.md)** - Device deployment and recovery
-- **[📋 Task Commands](docs/reference/task-commands.md)** - Complete command reference
+- **[🚀 Quick Start Guide](docs/getting-started/quick-start.md)** - Get up and
+  running in minutes
+- **[🔒 Security Overview](docs/security/overview.md)** - Security framework
+  and credential management
+- **[🔧 Device Management](docs/device-management/recovery-procedures.md)** -
+  Device deployment and recovery
+- **[📋 Task Commands](docs/reference/task-commands.md)** - Complete command
+  reference
 
 ## 🚀 Quick Start
 
 ### 1. Initial Setup
+
 ```bash
 # Install project tools
 mise install
@@ -29,6 +37,7 @@ task dev-setup                                   # Development
 ```
 
 ### 2. Deploy Your First Device
+
 ```bash
 # For ESP32/ESP8266 devices
 task upload -- device_name
@@ -38,6 +47,7 @@ task upload-two-stage -- device_name
 ```
 
 ### 3. Validate Security
+
 ```bash
 # Run security validation
 task security-validate
@@ -48,7 +58,7 @@ task security-scan
 
 ## 🏗️ Project Structure
 
-```
+```text
 ├── docs/                           # 📚 Complete documentation
 │   ├── getting-started/           # 🚀 Setup and first steps
 │   ├── security/                  # 🔒 Security framework
@@ -64,10 +74,16 @@ task security-scan
 
 ## 🧠 Memory Bank Integration
 
-This project uses a **Memory Bank** system in [`.kilocode/rules/memory-bank/`](.kilocode/rules/memory-bank/) that contains authoritative technical information. The documentation in [`docs/`](docs/) provides user-friendly guides that link to Memory Bank content rather than duplicating it.
+This project uses a **Memory Bank** system in
+[`.kilocode/rules/memory-bank/`](.kilocode/rules/memory-bank/) that contains
+authoritative technical information. The documentation in [`docs/`](docs/)
+provides user-friendly guides that link to Memory Bank content rather than
+duplicating it.
 
 **Key Memory Bank Files:**
-- **[System Architecture](.kilocode/rules/memory-bank/architecture.md)** - Complete technical architecture
+
+- **[System Architecture](.kilocode/rules/memory-bank/architecture.md)** -
+  Complete technical architecture
 - **[Common Tasks](.kilocode/rules/memory-bank/tasks.md)** - Detailed workflow procedures
 - **[Technology Stack](.kilocode/rules/memory-bank/tech.md)** - Tools and dependencies
 
@@ -82,11 +98,13 @@ This project uses a **Memory Bank** system in [`.kilocode/rules/memory-bank/`](.
 ## 🔧 Device Support
 
 ### Hardware Platforms
+
 - **ESP32**: Full-featured devices with ample resources
 - **ESP8266**: Standard IoT devices (NodeMCU, D1 Mini variants)
 - **ESP01**: Memory-constrained devices with two-stage deployment
 
 ### Device Types
+
 - **Environmental Sensors**: Temperature, humidity, pressure, air quality
 - **Control Devices**: Heat pumps, smart outlets, LED controllers
 - **Multi-sensors**: Combined environmental monitoring devices
@@ -130,17 +148,21 @@ task test-security                 # Run security tests
 ## 📝 Key Features
 
 ### Two-Stage Deployment System
+
 Handles ESP01 devices with 1MB flash memory constraints:
+
 1. **Stage 1**: Deploy minimal firmware with essential connectivity
 2. **Stage 2**: Deploy full firmware with all features
 
 ### Comprehensive Security Framework
+
 - **Credential Validation**: Real-time format and security checking
 - **Exposed Credential Detection**: Prevents known compromised credentials
 - **Development Safety**: Safe test credentials for development work
 - **Automated Rotation**: Coordinated credential updates across all devices
 
 ### Robust Device Management
+
 - **Fallback Hotspots**: Prevent device bricking with recovery access
 - **Bulk Operations**: Deploy to multiple devices with offline handling
 - **Health Monitoring**: Built-in connectivity and performance tracking
@@ -149,7 +171,8 @@ Handles ESP01 devices with 1MB flash memory constraints:
 
 The documentation follows a layered approach:
 
-1. **[Quick Start](docs/getting-started/quick-start.md)** - Essential setup and first deployment
+1. **[Quick Start](docs/getting-started/quick-start.md)** - Essential setup
+   and first deployment
 2. **[Topic Guides](docs/)** - User-friendly guides for common operations
 3. **[Memory Bank](.kilocode/rules/memory-bank/)** - Complete technical documentation
 4. **[Reference](docs/reference/)** - Comprehensive command and troubleshooting reference
@@ -171,4 +194,6 @@ The following files have been consolidated into the new documentation structure:
 
 ---
 
-*This ESPHome configuration project provides a secure, scalable, and maintainable approach to managing IoT devices with comprehensive documentation and robust automation.*
+*This ESPHome configuration project provides a secure, scalable, and
+maintainable approach to managing IoT devices with comprehensive documentation
+and robust automation.*

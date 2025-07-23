@@ -1,41 +1,51 @@
 # Memory Bank Guide
 
-This guide explains how to use and understand the Memory Bank system that provides authoritative technical information for this project.
+This guide explains how to use and understand the Memory Bank system that provides authoritative technical
+information for this project.
 
 ## What is the Memory Bank?
 
-The Memory Bank is a comprehensive knowledge system located in [`.kilocode/rules/memory-bank/`](.kilocode/rules/memory-bank/) that contains the complete, authoritative technical documentation for this project. It serves as the single source of truth that other documentation references rather than duplicates.
+The Memory Bank is a comprehensive knowledge system located in
+[`.kilocode/rules/memory-bank/`](.kilocode/rules/memory-bank/) that contains the complete, authoritative technical
+documentation for this project. It serves as the single source of truth that other documentation references rather
+than duplicates.
 
 ## Memory Bank Structure
 
 ### Core Files
 
 #### [Brief Overview](.kilocode/rules/memory-bank/brief.md)
+
 - **Purpose**: High-level project summary
 - **Content**: Core requirements, goals, and project scope
 - **Use**: Quick understanding of what this project does
 
 #### [Product Description](.kilocode/rules/memory-bank/product.md)
+
 - **Purpose**: Detailed product information
 - **Content**: Problems solved, user experience goals, success metrics
 - **Use**: Understanding why this project exists and how it should work
 
 #### [Current Context](.kilocode/rules/memory-bank/context.md)
+
 - **Purpose**: Current project state and recent changes
 - **Content**: Active work, recent developments, next steps
 - **Use**: Understanding current focus and recent progress
 
 #### [System Architecture](.kilocode/rules/memory-bank/architecture.md)
+
 - **Purpose**: Complete technical architecture
 - **Content**: System design, component relationships, file organization
 - **Use**: Understanding how the system is built and organized
 
 #### [Technology Stack](.kilocode/rules/memory-bank/tech.md)
+
 - **Purpose**: Technologies, tools, and dependencies
 - **Content**: Development environment, frameworks, tool versions
 - **Use**: Setting up development environment and understanding tech choices
 
 #### [Common Tasks](.kilocode/rules/memory-bank/tasks.md)
+
 - **Purpose**: Detailed workflow procedures
 - **Content**: Step-by-step task documentation, repetitive procedures
 - **Use**: Following established workflows and procedures
@@ -43,7 +53,9 @@ The Memory Bank is a comprehensive knowledge system located in [`.kilocode/rules
 ## How to Use the Memory Bank
 
 ### For Quick Information
+
 Start with the **Brief** and **Product** files:
+
 ```bash
 # Quick project overview
 cat .kilocode/rules/memory-bank/brief.md
@@ -53,7 +65,9 @@ cat .kilocode/rules/memory-bank/product.md
 ```
 
 ### For Technical Details
+
 Refer to **Architecture** and **Tech** files:
+
 ```bash
 # Complete system architecture
 less .kilocode/rules/memory-bank/architecture.md
@@ -63,14 +77,18 @@ less .kilocode/rules/memory-bank/tech.md
 ```
 
 ### For Current Work
+
 Check the **Context** file:
+
 ```bash
 # Current project state
 cat .kilocode/rules/memory-bank/context.md
 ```
 
 ### For Procedures
+
 Use the **Tasks** file:
+
 ```bash
 # Detailed workflow procedures
 less .kilocode/rules/memory-bank/tasks.md
