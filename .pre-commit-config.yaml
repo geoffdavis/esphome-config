@@ -87,7 +87,7 @@ repos:
 
       - id: python-security-tests
         name: Run Python security framework tests
-        entry: .githooks/mise-python-wrapper.sh tests/run_tests.py --pattern test_security_lib.py
+        entry: .githooks/mise-python-wrapper.sh tests/run_tests.py
         language: script
         files: ^(scripts/.*\.py|tests/.*\.py)$
         pass_filenames: false
