@@ -38,7 +38,9 @@ repos:
         exclude: |
           (?x)^(
             .*-full\.yaml|
-            .*-minimal\.yaml
+            .*-minimal\.yaml|
+            .*\.yaml|
+            .*\.yml
           )$
       - id: end-of-file-fixer
         exclude: |
@@ -60,24 +62,24 @@ repos:
     hooks:
       - id: esphome-secrets-validation
         name: ESPHome secrets validation (Python)
-        entry: python3 scripts/validate_secrets.py
-        language: system
+        entry: .githooks/mise-python-wrapper.sh scripts/validate_secrets.py
+        language: script
         files: ^(secrets\.yaml|.*\.yaml|.*\.yml)$
         pass_filenames: false
         always_run: false
 
       - id: esphome-1password-validation
         name: ESPHome 1Password structure validation
-        entry: python3 scripts/validate_1password_structure.py
-        language: system
+        entry: .githooks/mise-python-wrapper.sh scripts/validate_1password_structure.py
+        language: script
         files: ^(secrets\.yaml|\.env)$
         pass_filenames: false
         always_run: false
 
       - id: python-security-tests
         name: Run Python security framework tests
-        entry: python3 tests/run_tests.py --pattern test_security_lib.py
-        language: system
+        entry: .githooks/mise-python-wrapper.sh tests/run_tests.py --pattern test_security_lib.py
+        language: script
         files: ^(scripts/.*\.py|tests/.*\.py)$
         pass_filenames: false
         always_run: false
