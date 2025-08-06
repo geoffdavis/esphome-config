@@ -5,9 +5,19 @@
 esphome:
   name: ${name}
   friendly_name: ${friendly_name}
+  platformio_options:
+    board_build.flash_mode: dio
+    board_build.extra_flags:
+      - "-DARDUINO_USB_CDC_ON_BOOT=0"
+  on_boot:
+    priority: -100
+    then:
+      - switch.turn_on: led_status_automation
+      - logger.log: "LED status automation enabled on boot"
 
 esp32:
   board: esp32-c6-devkitc-1
+  variant: esp32c6
   flash_size: 4MB
   framework:
     type: esp-idf
@@ -91,3 +101,52 @@ logger:
 #    Header: INFO
 #    Decoder : DEBUG
 #    CONTROL_WANTED_SETTINGS: DEBUG
+
+# Blue LED status indicator on GPIO7
+output:
+  - platform: gpio
+    pin: GPIO7
+    id: blue_led_output
+
+light:
+  - platform: binary
+    name: "${friendly_name} Status LED"
+    id: status_led
+    output: blue_led_output
+    restore_mode: RESTORE_DEFAULT_OFF
+
+# Switch to control LED status automation
+switch:
+  - platform: template
+    name: "${friendly_name} LED Status Automation"
+    id: led_status_automation
+    restore_mode: RESTORE_DEFAULT_ON
+    optimistic: true
+    turn_on_action:
+      - logger.log: "LED status automation enabled"
+    turn_off_action:
+      - logger.log: "LED status automation disabled"
+      - light.turn_off: status_led
+
+# Status LED automation to indicate device states
+interval:
+  - interval: 1s
+    then:
+      - if:
+          condition:
+            switch.is_on: led_status_automation
+          then:
+            - logger.log: "LED automation is ON, checking WiFi status"
+            - if:
+                condition:
+                  wifi.connected:
+                then:
+                  # WiFi connected - solid on
+                  - logger.log: "WiFi connected - turning LED ON"
+                  - light.turn_on: status_led
+                else:
+                  # WiFi disconnected - blink
+                  - logger.log: "WiFi disconnected - toggling LED"
+                  - light.toggle: status_led
+          else:
+            - logger.log: "LED automation is OFF - no action"
