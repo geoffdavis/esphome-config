@@ -2,7 +2,7 @@
 """
 ESP01 Device Recovery Script
 
-This script helps recover ESP01 devices that have been bricked due to 
+This script helps recover ESP01 devices that have been bricked due to
 minimal firmware deployment without fallback hotspot capability.
 """
 
@@ -20,14 +20,14 @@ from security_lib import SecurityLogger
 
 class ESP01Recovery:
     """Handles recovery of bricked ESP01 devices"""
-    
+
     def __init__(self):
         self.logger = SecurityLogger("esp01_recovery")
-        
+
     def scan_for_recovery_hotspots(self):
         """Scan for any ESP recovery hotspots that might be available"""
         self.logger.info("Scanning for ESP recovery hotspots...")
-        
+
         try:
             # Use system WiFi scanning
             if sys.platform == "darwin":  # macOS
@@ -37,15 +37,15 @@ class ESP01Recovery:
                     text=True,
                     timeout=30
                 )
-                
+
                 if result.returncode == 0:
                     lines = result.stdout.split('\n')
                     esp_hotspots = []
-                    
+
                     for line in lines:
                         if "ESP" in line or "fallback" in line.lower():
                             esp_hotspots.append(line.strip())
-                    
+
                     if esp_hotspots:
                         self.logger.success(f"Found {len(esp_hotspots)} potential ESP hotspots:")
                         for hotspot in esp_hotspots:
@@ -54,20 +54,20 @@ class ESP01Recovery:
                     else:
                         self.logger.warning("No ESP recovery hotspots found")
                         return []
-                        
+
             else:
                 self.logger.warning("WiFi scanning not implemented for this platform")
                 return []
-                
+
         except Exception as e:
             self.logger.error(f"Failed to scan for hotspots: {e}")
             return []
-    
+
     def list_bricked_devices(self):
         """List devices that are likely bricked based on ESP01 configuration"""
         esp01_devices = [
             "attic_sensor",
-            "bedroom_east_heatpump", 
+            "bedroom_east_heatpump",
             "bedroom_west_heatpump",
             "denheatpump",
             "hodad_outlet",
@@ -77,17 +77,17 @@ class ESP01Recovery:
             "tg_lrtv",
             "voronica_outlet"
         ]
-        
+
         self.logger.info("ESP01 devices that may be bricked:")
         for device in esp01_devices:
             print(f"  - {device}")
-        
+
         return esp01_devices
-    
+
     def create_recovery_firmware(self, device):
         """Create recovery firmware with fallback hotspot enabled"""
         self.logger.info(f"Creating recovery firmware for {device}")
-        
+
         recovery_config = f"""
 # Recovery firmware for {device}
 # This firmware includes fallback hotspot for recovery
@@ -110,7 +110,7 @@ wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
   domain: !secret wifi_domain
-  
+
   # CRITICAL: Always include fallback hotspot for recovery
   ap:
     ssid: "${{friendly_name}} Recovery"
@@ -134,14 +134,14 @@ web_server:
   port: 80
   version: 3
 """
-        
+
         recovery_file = f"{device}-recovery.yaml"
         with open(recovery_file, 'w') as f:
             f.write(recovery_config)
-        
+
         self.logger.success(f"Created recovery firmware: {recovery_file}")
         return recovery_file
-    
+
     def flash_recovery_firmware(self, device):
         """Flash recovery firmware to device (requires physical access)"""
         self.logger.warning("Physical recovery required!")
@@ -152,7 +152,7 @@ PHYSICAL RECOVERY REQUIRED FOR {device.upper()}:
 2. Connect GPIO0 to GND (enter flash mode)
 3. POWER ON the device
 4. Use esptool to flash recovery firmware:
-   
+
    esptool.py --port /dev/ttyUSB0 --baud 115200 erase_flash
    esptool.py --port /dev/ttyUSB0 --baud 115200 write_flash 0x0 {device}-recovery.bin
 
@@ -162,11 +162,11 @@ PHYSICAL RECOVERY REQUIRED FOR {device.upper()}:
 
 ALTERNATIVE: If you have a programmer/flasher tool, use that instead.
 """)
-    
+
     def generate_recovery_plan(self):
         """Generate comprehensive recovery plan"""
         self.logger.header("ESP01 DEVICE RECOVERY PLAN")
-        
+
         print("""
 CRITICAL ISSUE IDENTIFIED:
 - Minimal firmware was deployed WITHOUT fallback hotspot capability
@@ -193,18 +193,18 @@ IMMEDIATE ACTIONS REQUIRED:
    - Flash recovery firmware with fallback hotspot
    - Then deploy proper firmware with new credentials
 """)
-        
+
         # Scan for any available hotspots
         hotspots = self.scan_for_recovery_hotspots()
-        
+
         # List affected devices
         bricked_devices = self.list_bricked_devices()
-        
+
         # Create recovery firmware for each device
         self.logger.info("Creating recovery firmware files...")
         for device in bricked_devices:
             self.create_recovery_firmware(device)
-        
+
         print(f"""
 RECOVERY FIRMWARE CREATED:
 - {len(bricked_devices)} recovery firmware files generated
@@ -222,7 +222,7 @@ def main():
     """Main entry point"""
     print("ESP01 Device Recovery Tool")
     print("=" * 50)
-    
+
     recovery = ESP01Recovery()
     recovery.generate_recovery_plan()
 
