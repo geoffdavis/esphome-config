@@ -6,6 +6,13 @@ The ESPHome configuration project is in a mature, production-ready state with a 
 
 ## Recent Major Developments
 
+### ESP32 M5Stack NanoC6 Platform Migration
+- **Status**: Complete and Production-Ready
+- **Achievement**: Successfully migrated bedroom_east_heatpump from ESP01 to ESP32-C6 platform
+- **Impact**: Eliminated memory constraints, enabled single-stage deployment, improved performance
+- **Key Components**: [`common/heatpump-esp32-nanoc6.yaml`](common/heatpump-esp32-nanoc6.yaml), [`bedroom_east_heatpump.yaml`](bedroom_east_heatpump.yaml)
+- **Documentation**: [`docs/device-management/esp32-nanoc6-deployment-guide.md`](docs/device-management/esp32-nanoc6-deployment-guide.md)
+
 ### Comprehensive Documentation Reorganization
 - **Status**: Complete and Active
 - **Achievement**: Created unified documentation structure with Memory Bank integration
@@ -81,13 +88,13 @@ The ESPHome configuration project is in a mature, production-ready state with a 
 - **Air Quality**: Particulate matter with AQI calculation
 
 ### Control Devices
-- **Heat Pumps**: ESP01-based climate controllers with specialized packages
+- **Heat Pumps**: Multi-platform climate controllers (ESP01 and ESP32-C6) with specialized packages
 - **Smart Outlets**: TopGreener and Sonoff variants
 - **LED Controllers**: Music-reactive systems with FFT processing
 - **Multi-sensors**: Combined environmental monitoring devices
 
 ### Platform Distribution
-- **ESP32**: Full-featured devices with ample resources
+- **ESP32**: Full-featured devices with ample resources, including ESP32-C6 for heat pump controllers
 - **ESP8266**: Standard IoT devices (NodeMCU, D1 Mini)
 - **ESP01**: Memory-constrained devices requiring two-stage deployment
 
@@ -165,14 +172,16 @@ The ESPHome configuration project is in a mature, production-ready state with a 
 ## Next Steps and Priorities
 
 ### Immediate Focus
+- **ESP32 Platform Expansion**: Consider migrating additional ESP01 devices to ESP32 platforms where beneficial
 - **Documentation Maintenance**: Keep unified documentation current with Memory Bank integration
 - **User Experience**: Improve documentation navigation and accessibility
 - **Testing**: Maintain comprehensive test coverage for security framework
 - **Monitoring**: Continue device health and security monitoring
 
 ### Future Enhancements
+- **Platform Migration Strategy**: Develop systematic approach for ESP01 to ESP32 migrations
 - **Documentation Automation**: Further automate documentation maintenance and validation
-- **Device Templates**: Expand common component library
+- **Device Templates**: Expand common component library with ESP32-C6 variants
 - **Monitoring**: Enhanced device health and performance tracking
 - **Security**: Continue improving credential management and validation
 

@@ -26,9 +26,11 @@ The [`common/`](common/) directory contains reusable components organized by fun
 - **Platform Packages**: [`esp01.yaml`](common/esp01.yaml), [`nodemcuv2.yaml`](common/nodemcuv2.yaml), [`esp32_device_base.yaml`](common/esp32_device_base.yaml)
 - **Connectivity Packages**: [`wifi.yaml`](common/wifi.yaml), [`wifi-minimal.yaml`](common/wifi-minimal.yaml), [`ipv6.yaml`](common/ipv6.yaml)
 - **Sensor Packages**: [`sensor/bme280.yaml`](common/sensor/bme280.yaml), [`sensor/dht.yaml`](common/sensor/dht.yaml), [`sensor/pir.yaml`](common/sensor/pir.yaml)
-- **Device-Specific Packages**: [`heatpump-esp01.yaml`](common/heatpump-esp01.yaml), [`outlet-topgreener.yaml`](common/outlet-topgreener.yaml)
+- **Device-Specific Packages**: [`heatpump-esp01.yaml`](common/heatpump-esp01.yaml), [`heatpump-esp32-nanoc6.yaml`](common/heatpump-esp32-nanoc6.yaml), [`outlet-topgreener.yaml`](common/outlet-topgreener.yaml)
 
-### 3. Two-Stage Deployment Architecture
+### 3. Deployment Architecture
+
+#### Two-Stage Deployment (Memory-Constrained Devices)
 
 For memory-constrained ESP01 devices (1MB flash):
 
@@ -44,6 +46,20 @@ Stage 2: Full Deployment
 ├── wifi.yaml (full connectivity features)
 ├── All sensors and components
 └── Web server and advanced features
+```
+
+#### Single-Stage Deployment (ESP32 and Capable Devices)
+
+For ESP32 devices with sufficient memory (4MB+ flash):
+
+```
+Single Deployment
+├── Device.yaml (e.g., bedroom_east_heatpump.yaml)
+├── wifi.yaml (full connectivity features)
+├── ipv6.yaml (IPv6 support)
+├── All sensors and components
+├── Web server and advanced features
+└── No memory constraints
 ```
 
 ## Security Architecture
@@ -131,10 +147,11 @@ packages:
 
 ### 3. Specialized Device Types
 
-**Heat Pump Controllers**: Use ESP01 with specialized climate control packages
-- [`common/heatpump-esp01.yaml`](common/heatpump-esp01.yaml)
-- [`common/heatpump-climate.yaml`](common/heatpump-climate.yaml)
-- [`common/heatpump-fanspeeds.yaml`](common/heatpump-fanspeeds.yaml)
+**Heat Pump Controllers**: Support both ESP01 and ESP32 platforms
+- **ESP01 Platform**: [`common/heatpump-esp01.yaml`](common/heatpump-esp01.yaml) - Memory-constrained, two-stage deployment
+- **ESP32-C6 Platform**: [`common/heatpump-esp32-nanoc6.yaml`](common/heatpump-esp32-nanoc6.yaml) - Full-featured, single deployment
+- **Climate Control**: [`common/heatpump-climate.yaml`](common/heatpump-climate.yaml)
+- **Fan Speed Control**: [`common/heatpump-fanspeeds.yaml`](common/heatpump-fanspeeds.yaml)
 
 **Smart Outlets**: TopGreener and Sonoff variants
 - [`common/outlet-topgreener.yaml`](common/outlet-topgreener.yaml)
@@ -273,7 +290,8 @@ docs/
 common/
 ├── Platform Definitions
 │   ├── esp01.yaml, esp32_device_base.yaml
-│   └── nodemcuv2.yaml, wemosd1mini.yaml
+│   ├── nodemcuv2.yaml, wemosd1mini.yaml
+│   └── heatpump-esp32-nanoc6.yaml (ESP32-C6 heat pump platform)
 ├── Connectivity
 │   ├── wifi.yaml, wifi-minimal.yaml
 │   └── ipv6.yaml
@@ -282,7 +300,9 @@ common/
 │   ├── pir.yaml, temt6000.yaml
 │   └── uptime.config.yaml, wifi_signal.config.yaml
 └── Device-Specific
-    ├── heatpump-*.yaml
+    ├── heatpump-esp01.yaml (ESP01 heat pump platform)
+    ├── heatpump-esp32-nanoc6.yaml (ESP32-C6 heat pump platform)
+    ├── heatpump-climate.yaml, heatpump-fanspeeds.yaml
     └── outlet-*.yaml
 ```
 

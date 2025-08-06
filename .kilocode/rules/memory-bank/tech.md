@@ -14,6 +14,11 @@
 
 ### Hardware Platforms
 - **ESP32**: Full-featured microcontroller with WiFi/Bluetooth
+- **ESP32-C6**: RISC-V based ESP32 variant with enhanced features (M5Stack NanoC6)
+  - **Board**: esp32-c6-devkitc-1 compatible
+  - **Flash**: 4MB (significant upgrade from ESP01's 1MB)
+  - **Framework**: ESP-IDF
+  - **Features**: Native USB, improved WiFi performance, more GPIO pins
 - **ESP8266**: WiFi-enabled microcontroller (NodeMCU, D1 Mini variants)
 - **ESP01**: Memory-constrained ESP8266 variant (1MB flash)
 
