@@ -199,8 +199,8 @@ class SecretsValidator:
         for file_path in yaml_files:
             file_issues = self.scanner.scan_file_for_credentials(file_path)
 
-            # Filter out expected issues from Taskfile.yml (contains detection patterns)
-            if file_path == './Taskfile.yml':
+            # Filter out expected issues from Taskfile.yml only in transition mode
+            if file_path == './Taskfile.yml' and self.transition_mode:
                 filtered_issues = []
                 for issue in file_issues:
                     # Allow old OTA passwords in Taskfile.yml as they're used for detection
@@ -269,6 +269,10 @@ class SecretsValidator:
             print("3. Update 1Password: Ensure credentials are stored correctly")
             print("4. Re-run validation: python3 scripts/validate_secrets.py")
             return False
+
+    def validate_secrets_file(self) -> bool:
+        """Validate secrets file (alias for run_validation)"""
+        return self.run_validation()
 
 
 def main():

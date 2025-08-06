@@ -24,7 +24,7 @@ from security_lib import (
 )
 
 
-class OnePasswordStructureValidator:
+class OnePasswordValidator:
     """Main 1Password structure validation class"""
 
     def __init__(self):
@@ -43,6 +43,14 @@ class OnePasswordStructureValidator:
 
         self.logger.success("1Password CLI found")
         return True
+
+    def check_cli_availability(self) -> bool:
+        """Check CLI availability (alias for check_op_cli)"""
+        try:
+            op_manager = OnePasswordManager()
+            return op_manager.check_cli_available()
+        except ValueError:
+            return False
 
     def check_account_access(self) -> bool:
         """Check account access"""
@@ -371,7 +379,7 @@ For more information, see SECURITY.md
         """)
         return
 
-    validator = OnePasswordStructureValidator()
+    validator = OnePasswordValidator()
     success = validator.run_validation()
 
     sys.exit(0 if success else 1)

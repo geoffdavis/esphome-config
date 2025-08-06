@@ -235,6 +235,44 @@ fallback_password: "{SecurityConfig.EXPOSED_CREDENTIALS['fallback_password']}"
                 self.logger.success(f"Removed temporary file: {file}")
 
 
+class SecurityValidator:
+    """Security validation functionality for credential rotation"""
+
+    def __init__(self):
+        self.logger = SecurityLogger("security_validator")
+        self.scanner = SecurityScanner()
+
+    def test_security_hooks(self) -> bool:
+        """Test security hooks functionality"""
+        return self.scanner.test_security_hooks()
+
+    def scan_for_exposed_credentials(self) -> bool:
+        """Scan for exposed credentials using grep commands"""
+        try:
+            # Check for each exposed credential using grep
+            exposed_creds = [
+                SecurityConfig.EXPOSED_CREDENTIALS['api_key'],
+                SecurityConfig.EXPOSED_CREDENTIALS['ota_password'],
+                SecurityConfig.EXPOSED_CREDENTIALS['fallback_password']
+            ]
+
+            for cred in exposed_creds:
+                result = subprocess.run([
+                    'grep', '-r', cred, '.'
+                ], capture_output=True, text=True)
+
+                # If grep finds matches (returncode 0), credentials are exposed
+                if result.returncode == 0:
+                    return False
+
+            # If no exposed credentials found, return True
+            return True
+        except Exception:
+            # If grep fails, fall back to scanner method
+            issues = self.scanner.scan_for_exposed_credentials()
+            return len(issues) == 0
+
+
 class CredentialRotator:
     """Main credential rotation orchestrator"""
 
@@ -245,6 +283,7 @@ class CredentialRotator:
         self.onepassword = OnePasswordManager()
         self.deployment = DeploymentManager()
         self.scanner = SecurityScanner()
+        self.security = SecurityValidator()
 
         self.new_credentials = {}
 
@@ -339,22 +378,13 @@ class CredentialRotator:
 
         self.logger.success("1Password updated with new credentials")
 
-        # Verify update by checking if we can read the credentials back
-        try:
-            api_key = self.onepassword.get_item_field(
-                SecurityConfig.AUTOMATION_VAULT,
-                SecurityConfig.ESPHOME_ITEM,
-                "api_key"
-            )
-            if api_key == self.new_credentials['api_key']:
-                self.logger.success("1Password credentials verified")
-                return True
-            else:
-                self.logger.error("Failed to verify 1Password update")
-                return False
-        except Exception as e:
-            self.logger.error(f"Failed to verify 1Password update: {e}")
+        # Verify update using the verify_credentials method
+        if not self.onepassword.verify_credentials():
+            self.logger.error("Failed to verify 1Password update")
             return False
+
+        self.logger.success("1Password credentials verified")
+        return True
 
     def execute_two_stage_deployment(self) -> bool:
         """Execute the two-stage deployment process"""
@@ -418,16 +448,13 @@ class CredentialRotator:
         self.logger.info(f"Device connectivity: {successful_devices}/{total_devices} devices accessible")
 
         # Test security hooks
-        if not self.scanner.test_security_hooks():
+        if not self.security.test_security_hooks():
             self.logger.error("Security hook testing failed")
             return False
 
         # Scan for exposed credentials
-        issues = self.scanner.scan_for_exposed_credentials()
-        if issues:
+        if not self.security.scan_for_exposed_credentials():
             self.logger.error("Found exposed credentials in files")
-            for issue in issues:
-                self.logger.error(issue)
             return False
 
         self.logger.success("All verification tests passed")

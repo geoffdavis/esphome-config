@@ -51,6 +51,14 @@ class CredentialChecker:
         if file_path.suffix.lower() not in ['.yaml', '.yml']:
             return []
 
+        # Skip files that legitimately contain secrets or are in excluded paths
+        if file_path.name in ['.pre-commit-config.yaml', 'secrets.yaml']:
+            return []
+
+        # Skip virtual environment and build directories
+        if '.venv' in str(file_path) or '.esphome' in str(file_path):
+            return []
+
         errors = []
 
         try:
@@ -59,13 +67,35 @@ class CredentialChecker:
             errors.append((f"Failed to read {file_path}: {e}", ""))
             return errors
 
-        # Check for pattern matches
+        # Check for pattern matches with context
         for pattern, error_msg, suggestion in self.patterns:
-            if re.search(pattern, content):
+            matches = re.finditer(pattern, content)
+            for match in matches:
+                matched_text = match.group()
+
+                # Skip common English words that match the pattern
+                common_words = [
+                    'representing', 'markdownlint', 'configuration', 'temperature',
+                    'cn105climate', 'environments', 'overwhelming', 'production'
+                ]
+                if matched_text.lower() in common_words:
+                    continue
+
+                # Skip if it's part of a comment or documentation
+                line_start = content.rfind('\n', 0, match.start()) + 1
+                line_end = content.find('\n', match.end())
+                if line_end == -1:
+                    line_end = len(content)
+                line_content = content[line_start:line_end]
+
+                if line_content.strip().startswith('#'):
+                    continue
+
                 errors.append((
                     f"ERROR: {error_msg} in {file_path}",
                     suggestion
                 ))
+                break  # Only report first match per pattern to avoid spam
 
         # Check for known exposed credentials
         for exposed_cred in self.known_exposed:

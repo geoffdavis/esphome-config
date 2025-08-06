@@ -25,7 +25,7 @@ from security_lib import (
 )
 
 
-class SecretRotationTracker:
+class RotationTracker:
     """Tracks and manages secret rotation history"""
 
     def __init__(self):
@@ -69,6 +69,7 @@ class SecretRotationTracker:
             "date": datetime.now().strftime("%Y-%m-%d"),
             "time": datetime.now().strftime("%H:%M:%S"),
             "type": rotation_type,
+            "rotation_type": rotation_type,  # Add for backward compatibility
             "reason": reason,
             "credentials_rotated": credentials_rotated,
             "method": method,
@@ -102,7 +103,7 @@ class SecretRotationTracker:
         self.logger.error("Invalid entry index or failed to save")
         return False
 
-    def get_rotation_stats(self) -> Dict[str, Any]:
+    def get_rotation_statistics(self) -> Dict[str, Any]:
         """Get rotation statistics"""
         history = self.load_rotation_history()
 
@@ -225,10 +226,10 @@ class SecretRotationTracker:
     def generate_markdown_report(self) -> bool:
         """Generate markdown report from rotation history"""
         history = self.load_rotation_history()
-        stats = self.get_rotation_stats()
+        stats = self.get_rotation_statistics()
 
         try:
-            content = "# ESPHome Credential Rotation Log\n\n"
+            content = "# Secret Rotation Report\n\n"
             content += f"**Generated**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
 
             # Statistics section
@@ -323,7 +324,7 @@ class SecretRotationTracker:
                     self.logger.warning(f"{cred_type}: {result['message']}")
 
         # Display statistics
-        stats = self.get_rotation_stats()
+        stats = self.get_rotation_statistics()
         self.logger.info(f"Total rotations performed: {stats['total_rotations']}")
         if stats['last_rotation']:
             self.logger.info(f"Last rotation: {stats['last_rotation']}")
@@ -362,7 +363,7 @@ For more information, see SECURITY.md
             """)
             return
 
-        tracker = SecretRotationTracker()
+        tracker = RotationTracker()
 
         if command == "check":
             success = tracker.run_rotation_check()
@@ -428,7 +429,7 @@ For more information, see SECURITY.md
 
     else:
         # Default: run rotation check
-        tracker = SecretRotationTracker()
+        tracker = RotationTracker()
         success = tracker.run_rotation_check()
         sys.exit(0 if success else 1)
 
