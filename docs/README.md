@@ -26,6 +26,7 @@ Everything related to credential management and security:
 Managing your ESPHome devices:
 
 - **[Device Types](device-management/device-types.md)** - ESP32, ESP8266, and ESP01 differences
+- **[ESP32 NanoC6 Deployment](device-management/esp32-nanoc6-deployment-guide.md)** - ESP32-C6 hardware deployment guide
 - **[Two-Stage Deployment](device-management/two-stage-deployment.md)** - ESP01 deployment process
 - **[Recovery Procedures](device-management/recovery-procedures.md)** - Device recovery and troubleshooting
 - **[Common Tasks](device-management/common-tasks.md)** - Frequently performed operations
