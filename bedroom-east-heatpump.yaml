@@ -25,17 +25,3 @@ packages:
   sensors: !include common/sensors.yaml
   heatpump-esp32-nanoc6: !include common/heatpump-esp32-nanoc6.yaml
   climate: !include common/heatpump-climate.yaml
-
-web_server:
-  port: 80
-  version: 3
-
-# Enable OTA updates
-ota:
-  - platform: esphome
-    password: !secret ota_password
-
-# Enable API
-api:
-  encryption:
-    key: !secret api_key
