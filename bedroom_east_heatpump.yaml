@@ -1,7 +1,7 @@
 ---
 # Hardware: ESP32 M5Stack NanoC6 (upgraded from esp-01s #5 on board #4)
 # Previous MAC Addr: MAC: ec:fa:bc:61:ca:6d (ESP01)
-# New MAC Addr: Will be updated after ESP32 deployment
+# New MAC Addr: 54:32:04:3f:28:d4 # (ESP32 NanoC6)
 substitutions:
   # This is the name used in the log files and for the device in Home Assistant
   name: bedroom-east-heatpump
