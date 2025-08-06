@@ -3,6 +3,7 @@
 ## Core Technologies
 
 ### ESPHome Framework
+
 - **Version**: Latest (managed via requirements.txt)
 - **Purpose**: Primary IoT device firmware framework
 - **Language**: YAML configuration with C++ extensions
@@ -13,6 +14,7 @@
   - Sensor and actuator support
 
 ### Hardware Platforms
+
 - **ESP32**: Full-featured microcontroller with WiFi/Bluetooth
 - **ESP32-C6**: RISC-V based ESP32 variant with enhanced features (M5Stack NanoC6)
   - **Board**: esp32-c6-devkitc-1 compatible
@@ -23,6 +25,7 @@
 - **ESP01**: Memory-constrained ESP8266 variant (1MB flash)
 
 ### Programming Languages
+
 - **Python 3.11**: Security framework and automation scripts
 - **YAML**: Device configuration and shared components
 - **C++**: Custom components and sensor libraries
@@ -31,7 +34,9 @@
 ## Development Environment
 
 ### Tool Version Management
+
 **Mise** ([`.mise.toml`](.mise.toml))
+
 ```toml
 [tools]
 python = "3.11"
@@ -43,13 +48,16 @@ _.python.venv = { path = ".venv", create = true }
 ```
 
 ### Task Automation
+
 **Task Runner** ([`Taskfile.yml`](Taskfile.yml))
+
 - Build automation for device firmware
 - Security validation workflows
 - Deployment orchestration
 - Development environment setup
 
 ### Dependency Management
+
 - **Python**: [`requirements.txt`](requirements.txt) - ESPHome core
 - **Node.js**: [`package.json`](package.json) - Renovate for dependency updates
 - **System**: Mise manages tool versions consistently
@@ -57,7 +65,9 @@ _.python.venv = { path = ".venv", create = true }
 ## Security Framework
 
 ### Python Security Library
+
 **Core Components** ([`scripts/security_lib.py`](scripts/security_lib.py)):
+
 - `SecurityLogger`: Colored logging with structured output
 - `CredentialGenerator`: Secure credential generation
 - `CredentialValidator`: Format and security validation
@@ -66,20 +76,23 @@ _.python.venv = { path = ".venv", create = true }
 - `SecurityScanner`: Exposed credential detection
 
 ### Security Scripts
+
 | Script | Purpose | Technology |
 |--------|---------|------------|
 | [`validate_secrets.py`](scripts/validate_secrets.py) | Credential validation | Python 3.11 |
-| [`validate_1password_structure.py`](scripts/validate_1password_structure.py) | 1Password integration check | Python 3.11 |
+| [`validate_1password_structure.py`](scripts/validate_1password_structure.py) | 1Password integration | Python 3.11 |
 | [`setup_security.py`](scripts/setup_security.py) | Security tool installation | Python 3.11 |
 | [`rotate_credentials.py`](scripts/rotate_credentials.py) | Automated credential rotation | Python 3.11 |
-| [`deploy_with_rotation.py`](scripts/deploy_with_rotation.py) | Deployment with credential rotation | Python 3.11 |
+| [`deploy_with_rotation.py`](scripts/deploy_with_rotation.py) | Deployment with rotation | Python 3.11 |
 | [`recover_device.py`](scripts/recover_device.py) | Device recovery procedures | Python 3.11 |
 | [`track_secret_rotation.py`](scripts/track_secret_rotation.py) | Rotation history tracking | Python 3.11 |
 | [`backup_secrets.py`](scripts/backup_secrets.py) | Backup management | Python 3.11 |
 | [`setup_dev_secrets.py`](scripts/setup_dev_secrets.py) | Development environment | Python 3.11 |
 
 ### Testing Framework
+
 **Unit Testing** ([`tests/`](tests/)):
+
 - **Framework**: Python unittest
 - **Coverage**: Security library components
 - **Mocking**: 1Password CLI and file system operations
@@ -88,13 +101,16 @@ _.python.venv = { path = ".venv", create = true }
 ## Quality Assurance
 
 ### Pre-commit Hooks
+
 **Configuration** ([`.pre-commit-config.yaml`](.pre-commit-config.yaml)):
+
 - **detect-secrets**: Exposed credential detection
 - **yamllint**: YAML format validation
 - **Python security validation**: Custom ESPHome checks
 - **Standard hooks**: File size, merge conflicts, trailing whitespace
 
 ### Code Quality Tools
+
 - **YAML Linting**: yamllint with relaxed configuration
 - **Python Testing**: unittest with mock support
 - **Security Scanning**: Multi-layer credential detection
@@ -103,6 +119,7 @@ _.python.venv = { path = ".venv", create = true }
 ## External Integrations
 
 ### 1Password
+
 - **CLI Version**: Latest (installed via security setup)
 - **Authentication**: Account-based with environment variables
 - **Vault Structure**:
@@ -111,12 +128,14 @@ _.python.venv = { path = ".venv", create = true }
 - **Field Mapping**: Structured credential organization
 
 ### Home Assistant
+
 - **Integration**: ESPHome native integration
 - **Communication**: Encrypted API with rotating keys
 - **Discovery**: Automatic entity registration
 - **Protocol**: TCP/IP over WiFi with fallback hotspot
 
 ### Development Tools
+
 - **Git**: Version control with security hooks
 - **Renovate**: Automated dependency updates
 - **1Password CLI**: Secure credential management
@@ -125,7 +144,9 @@ _.python.venv = { path = ".venv", create = true }
 ## Custom Components
 
 ### Music-Reactive LEDs
+
 **Location**: [`custom_components/esphome-music-leds/`](custom_components/esphome-music-leds/)
+
 - **Language**: C++ with Python ESPHome integration
 - **Features**: FFT processing, visual effects, Gaussian filtering
 - **Files**:
@@ -135,7 +156,9 @@ _.python.venv = { path = ".venv", create = true }
   - [`VisualEffect.cpp/.h`](custom_components/esphome-music-leds/VisualEffect.h): LED effects
 
 ### Air Quality Index Calculation
+
 **Location**: [`include/aqipm.h`](include/aqipm.h)
+
 - **Language**: C++
 - **Purpose**: Calculate AQI from particulate matter readings
 - **Standards**: EPA AQI calculation for PM2.5 and PM10
@@ -144,18 +167,22 @@ _.python.venv = { path = ".venv", create = true }
 ## Configuration Architecture
 
 ### YAML Structure
+
 - **Device Files**: Individual device configurations
 - **Common Components**: Shared templates and packages
 - **Substitutions**: Device-specific parameter injection
 - **Includes**: Hierarchical configuration composition
 
 ### Package System
+
 **Full Packages** ([`common/packages-full.yaml`](common/packages-full.yaml)):
+
 - Complete feature set for capable devices
 - Full WiFi configuration with web server
 - All sensors and monitoring capabilities
 
 **Minimal Packages** ([`common/packages-minimal.yaml`](common/packages-minimal.yaml)):
+
 - Reduced feature set for memory-constrained devices
 - Basic connectivity with recovery capabilities
 - Essential sensors only
@@ -163,19 +190,23 @@ _.python.venv = { path = ".venv", create = true }
 ## Deployment Technologies
 
 ### Two-Stage Deployment
+
 **Stage 1 - Minimal**:
+
 - Basic WiFi connectivity
 - OTA capability
 - Recovery hotspot
 - Minimal memory footprint
 
 **Stage 2 - Full**:
+
 - Complete feature set
 - Web server interface
 - All configured sensors
 - IPv6 support
 
 ### Build Process
+
 1. **Validation**: Security checks and credential validation
 2. **Compilation**: ESPHome firmware generation
 3. **Upload**: OTA or serial deployment
@@ -184,6 +215,7 @@ _.python.venv = { path = ".venv", create = true }
 ## Environment Configuration
 
 ### Development Setup
+
 ```bash
 # Tool installation
 mise install
@@ -196,12 +228,14 @@ python3 scripts/setup_dev_secrets.py
 ```
 
 ### Environment Variables
+
 - **OP_ACCOUNT**: 1Password account identifier
 - **ESPHOME_LOGS_LEVEL**: Logging verbosity (INFO, DEBUG)
 - **Python Virtual Environment**: Managed by Mise
 
 ### File Structure
-```
+
+```text
 ├── .mise.toml              # Tool version management
 ├── Taskfile.yml            # Build automation
 ├── requirements.txt        # Python dependencies
@@ -214,16 +248,19 @@ python3 scripts/setup_dev_secrets.py
 ## Performance Considerations
 
 ### Memory Management
+
 - **ESP01 Constraints**: 1MB flash, limited RAM
 - **Two-stage deployment**: Minimal → Full upgrade path
 - **Component optimization**: Selective feature inclusion
 
 ### Network Efficiency
+
 - **OTA Updates**: Differential firmware updates
 - **API Communication**: Encrypted but lightweight
 - **Fallback Mechanisms**: Hotspot recovery without full reset
 
 ### Build Optimization
+
 - **Parallel Builds**: Task-based concurrent compilation
 - **Incremental Updates**: Only changed devices
 - **Offline Handling**: Graceful skipping of unreachable devices
@@ -231,12 +268,14 @@ python3 scripts/setup_dev_secrets.py
 ## Security Technologies
 
 ### Cryptographic Standards
+
 - **API Keys**: 32-byte base64-encoded (256-bit)
 - **OTA Passwords**: 32-character hexadecimal (128-bit)
 - **Fallback Passwords**: 12+ character alphanumeric
 - **WiFi Security**: WPA2/WPA3 with strong passwords
 
 ### Validation Patterns
+
 - **Regex Validation**: Format compliance checking
 - **Exposed Credential Detection**: Known compromise identification
 - **1Password Integration**: Secure storage validation
@@ -245,12 +284,14 @@ python3 scripts/setup_dev_secrets.py
 ## Monitoring and Observability
 
 ### Built-in Sensors
+
 - **WiFi Signal Strength**: Connection quality monitoring
 - **Uptime Tracking**: Device reliability metrics
 - **Connection Status**: Network connectivity indicators
 - **Device Health**: Temperature and performance monitoring
 
 ### Logging
+
 - **ESPHome Logs**: Device-level debugging and monitoring
 - **Security Logs**: Credential validation and rotation tracking
 - **Build Logs**: Compilation and deployment status

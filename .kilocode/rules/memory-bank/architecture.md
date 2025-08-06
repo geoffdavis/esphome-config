@@ -2,13 +2,15 @@
 
 ## Overview
 
-The ESPHome configuration system follows a hierarchical, component-based architecture that enables scalable device management, secure credential handling, and flexible deployment strategies. The system is designed around three core principles: modularity, security, and maintainability.
+The ESPHome configuration system follows a hierarchical, component-based architecture that enables scalable device
+management, secure credential handling, and flexible deployment strategies. The system is designed around three core
+principles: modularity, security, and maintainability.
 
 ## Core Architecture Patterns
 
 ### 1. Hierarchical Configuration System
 
-```
+```text
 Device Configuration (e.g., den_multisensor.yaml)
 ├── Substitutions (device-specific parameters)
 ├── Packages (shared component includes)
@@ -23,10 +25,14 @@ Device Configuration (e.g., den_multisensor.yaml)
 
 The [`common/`](common/) directory contains reusable components organized by function:
 
-- **Platform Packages**: [`esp01.yaml`](common/esp01.yaml), [`nodemcuv2.yaml`](common/nodemcuv2.yaml), [`esp32_device_base.yaml`](common/esp32_device_base.yaml)
-- **Connectivity Packages**: [`wifi.yaml`](common/wifi.yaml), [`wifi-minimal.yaml`](common/wifi-minimal.yaml), [`ipv6.yaml`](common/ipv6.yaml)
-- **Sensor Packages**: [`sensor/bme280.yaml`](common/sensor/bme280.yaml), [`sensor/dht.yaml`](common/sensor/dht.yaml), [`sensor/pir.yaml`](common/sensor/pir.yaml)
-- **Device-Specific Packages**: [`heatpump-esp01.yaml`](common/heatpump-esp01.yaml), [`heatpump-esp32-nanoc6.yaml`](common/heatpump-esp32-nanoc6.yaml), [`outlet-topgreener.yaml`](common/outlet-topgreener.yaml)
+- **Platform Packages**: [`esp01.yaml`](common/esp01.yaml), [`nodemcuv2.yaml`](common/nodemcuv2.yaml),
+  [`esp32_device_base.yaml`](common/esp32_device_base.yaml)
+- **Connectivity Packages**: [`wifi.yaml`](common/wifi.yaml), [`wifi-minimal.yaml`](common/wifi-minimal.yaml),
+  [`ipv6.yaml`](common/ipv6.yaml)
+- **Sensor Packages**: [`sensor/bme280.yaml`](common/sensor/bme280.yaml), [`sensor/dht.yaml`](common/sensor/dht.yaml),
+  [`sensor/pir.yaml`](common/sensor/pir.yaml)
+- **Device-Specific Packages**: [`heatpump-esp01.yaml`](common/heatpump-esp01.yaml),
+  [`heatpump-esp32-nanoc6.yaml`](common/heatpump-esp32-nanoc6.yaml), [`outlet-topgreener.yaml`](common/outlet-topgreener.yaml)
 
 ### 3. Deployment Architecture
 
@@ -34,7 +40,7 @@ The [`common/`](common/) directory contains reusable components organized by fun
 
 For memory-constrained ESP01 devices (1MB flash):
 
-```
+```text
 Stage 1: Minimal Deployment
 ├── Device-minimal.yaml (e.g., attic_sensor-minimal.yaml)
 ├── wifi-minimal.yaml (basic connectivity)
@@ -52,7 +58,7 @@ Stage 2: Full Deployment
 
 For ESP32 devices with sufficient memory (4MB+ flash):
 
-```
+```text
 Single Deployment
 ├── Device.yaml (e.g., bedroom_east_heatpump.yaml)
 ├── wifi.yaml (full connectivity features)
@@ -66,7 +72,7 @@ Single Deployment
 
 ### 1. Credential Management Layer
 
-```
+```text
 1Password Vaults
 ├── Automation Vault
 │   └── ESPHome Item
@@ -96,7 +102,7 @@ Located in [`scripts/`](scripts/) directory:
 
 ### 3. Security Validation Pipeline
 
-```
+```text
 Pre-commit Hooks
 ├── detect-secrets (exposed credential detection)
 ├── yamllint (YAML format validation)
@@ -129,6 +135,7 @@ packages:
 ### 2. Memory-Constrained ESP01 Devices
 
 Minimal Configuration: [`attic_sensor-minimal.yaml`](attic_sensor-minimal.yaml)
+
 ```yaml
 packages:
   wifi: !include common/wifi-minimal.yaml  # Reduced feature set
@@ -136,6 +143,7 @@ packages:
 ```
 
 Full Configuration: [`attic_sensor-full.yaml`](attic_sensor-full.yaml)
+
 ```yaml
 packages:
   wifi: !include common/wifi.yaml          # Full feature set
@@ -148,16 +156,21 @@ packages:
 ### 3. Specialized Device Types
 
 **Heat Pump Controllers**: Support both ESP01 and ESP32 platforms
-- **ESP01 Platform**: [`common/heatpump-esp01.yaml`](common/heatpump-esp01.yaml) - Memory-constrained, two-stage deployment
-- **ESP32-C6 Platform**: [`common/heatpump-esp32-nanoc6.yaml`](common/heatpump-esp32-nanoc6.yaml) - Full-featured, single deployment
+
+- **ESP01 Platform**: [`common/heatpump-esp01.yaml`](common/heatpump-esp01.yaml) - Memory-constrained,
+  two-stage deployment
+- **ESP32-C6 Platform**: [`common/heatpump-esp32-nanoc6.yaml`](common/heatpump-esp32-nanoc6.yaml) - Full-featured,
+  single deployment
 - **Climate Control**: [`common/heatpump-climate.yaml`](common/heatpump-climate.yaml)
 - **Fan Speed Control**: [`common/heatpump-fanspeeds.yaml`](common/heatpump-fanspeeds.yaml)
 
 **Smart Outlets**: TopGreener and Sonoff variants
+
 - [`common/outlet-topgreener.yaml`](common/outlet-topgreener.yaml)
 - [`common/sonoff_s31.yaml`](common/sonoff_s31.yaml)
 
 **Audio-Reactive LEDs**: Custom FFT processing
+
 - [`custom_components/esphome-music-leds/`](custom_components/esphome-music-leds/)
 
 ## Build and Deployment Architecture
@@ -182,23 +195,27 @@ Device Operations:
 ### 2. Development Environment
 
 **Tool Management**: [`mise.toml`](.mise.toml)
+
 - Python 3.11 (security framework)
 - Task (automation runner)
 - Node.js 22.13.0 (Renovate dependency updates)
 
 **Dependency Management**:
+
 - [`requirements.txt`](requirements.txt): ESPHome core
 - [`package.json`](package.json): Renovate for automated updates
 
 ### 3. Quality Assurance Pipeline
 
 **Pre-commit Integration**: [`.pre-commit-config.yaml`](.pre-commit-config.yaml)
+
 - Secret detection with detect-secrets
 - YAML linting with yamllint
 - Python security framework validation
 - Custom ESPHome credential checking
 
 **Testing Framework**: [`tests/`](tests/)
+
 - [`test_security_lib.py`](tests/test_security_lib.py): Core library tests
 - [`run_tests.py`](tests/run_tests.py): Test runner with environment checking
 - Mock-based testing for 1Password integration
@@ -207,7 +224,7 @@ Device Operations:
 
 ### 1. Credential Flow
 
-```
+```text
 1Password Vaults → generate_secrets.sh → secrets.yaml → Device Configurations
                 ↓
 Security Validation → Pre-commit Hooks → Deployment Pipeline
@@ -215,7 +232,7 @@ Security Validation → Pre-commit Hooks → Deployment Pipeline
 
 ### 2. Device Communication Flow
 
-```
+```text
 ESPHome Device ←→ Home Assistant
      ↓              ↑
 API Encryption   Entity Discovery
@@ -227,7 +244,7 @@ OTA Updates      State Sync
 
 ### 3. Recovery Flow
 
-```
+```text
 Device Boot → WiFi Connection Attempt
      ↓
 Connection Failed → Fallback Hotspot
@@ -239,7 +256,7 @@ Captive Portal → Web Interface → Manual Configuration
 
 ### 1. Root Level Structure
 
-```
+```text
 ├── Device Configurations (*.yaml)
 ├── common/ (shared components)
 ├── scripts/ (security framework)
@@ -253,7 +270,7 @@ Captive Portal → Web Interface → Manual Configuration
 
 ### 2. Documentation Architecture
 
-```
+```text
 docs/
 ├── README.md (main documentation index)
 ├── DOCUMENTATION_MAINTENANCE.md (maintenance guidelines)
@@ -286,7 +303,7 @@ docs/
 
 ### 3. Common Components Hierarchy
 
-```
+```text
 common/
 ├── Platform Definitions
 │   ├── esp01.yaml, esp32_device_base.yaml
@@ -308,7 +325,7 @@ common/
 
 ### 4. Memory Bank Integration Pattern
 
-```
+```text
 Documentation Integration Architecture:
 ├── Memory Bank (.kilocode/rules/memory-bank/)
 │   ├── Authoritative technical information
