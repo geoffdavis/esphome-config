@@ -1,6 +1,7 @@
 ---
-# Hardware: esp-01s #5 on board #4
-# MAC Addr: MAC: ec:fa:bc:61:ca:6d
+# Hardware: ESP32 M5Stack NanoC6 (upgraded from esp-01s #5 on board #4)
+# Previous MAC Addr: MAC: ec:fa:bc:61:ca:6d (ESP01)
+# New MAC Addr: Will be updated after ESP32 deployment
 substitutions:
   # This is the name used in the log files and for the device in Home Assistant
   name: bedroom-east-heatpump
@@ -14,15 +15,27 @@ substitutions:
   # This is the model of the heat pump, by the fanspeeds package
   model: MFZ-KA09NA
   # This is the remote temperature sensor used by the heat pump
-  # It is a Home Assistant sensor entity, and is used to set the remote temperature
-  # in the heat pump.
+  # It is a Home Assistant sensor entity, and is used to set the remote
+  # temperature in the heat pump.
   remote_temp_sensor: sensor.eastbedroom_htg_temperature
 
 packages:
   wifi: !include common/wifi.yaml
   ipv6: !include common/ipv6.yaml
   sensors: !include common/sensors.yaml
-  heatpump-esp01: !include common/heatpump-esp01.yaml
+  heatpump-esp32-nanoc6: !include common/heatpump-esp32-nanoc6.yaml
   climate: !include common/heatpump-climate.yaml
 
 web_server:
+  port: 80
+  version: 3
+
+# Enable OTA updates
+ota:
+  - platform: esphome
+    password: !secret ota_password
+
+# Enable API
+api:
+  encryption:
+    key: !secret api_key
