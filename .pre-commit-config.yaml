@@ -79,7 +79,7 @@ repos:
     hooks:
       - id: esphome-secrets-validation
         name: ESPHome secrets validation (Python)
-        entry: .githooks/mise-python-wrapper.sh scripts/validate_secrets.py
+        entry: .githooks/python-wrapper.sh scripts/validate_secrets.py
         language: script
         files: ^(secrets\.yaml|.*\.yaml|.*\.yml)$
         pass_filenames: false
@@ -87,7 +87,7 @@ repos:
 
       - id: esphome-1password-validation
         name: ESPHome 1Password structure validation
-        entry: .githooks/mise-python-wrapper.sh scripts/validate_1password_structure.py
+        entry: .githooks/python-wrapper.sh scripts/validate_1password_structure.py
         language: script
         files: ^(secrets\.yaml|\.env)$
         pass_filenames: false
@@ -95,7 +95,7 @@ repos:
 
       - id: python-security-tests
         name: Run Python security framework tests
-        entry: .githooks/mise-python-wrapper.sh tests/run_tests.py
+        entry: .githooks/python-wrapper.sh tests/run_tests.py
         language: script
         files: ^(scripts/.*\.py|tests/.*\.py)$
         pass_filenames: false
