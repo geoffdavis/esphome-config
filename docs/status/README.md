@@ -13,12 +13,14 @@ past events and current system state.
 ## Historical Documentation
 
 ### Migration and Setup Records
+
 These documents provide historical context about system changes and migrations:
 
 - **[Python Security Migration](../security/migration-notes.md)** - Migration from bash to Python security scripts
 - **[Pre-commit Mise Fix](PRE_COMMIT_MISE_FIX.md)** - Resolution of pre-commit hook environment issues
 
 ### Recovery Incidents
+
 Documentation of recovery procedures and incidents:
 
 - **[ESP01 Recovery Plan](ESP01_RECOVERY_PLAN.md)** - ESP01 device recovery incident documentation

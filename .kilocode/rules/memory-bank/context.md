@@ -50,26 +50,32 @@ recovery procedures.
 ### Device Recovery Framework
 
 - **Status**: Active with comprehensive procedures
-- **Purpose**: Handle device recovery scenarios including ESP01 bricking incidents
-- **Tools**: [`scripts/recover_device.py`](scripts/recover_device.py), recovery network procedures
+- **Purpose**: Handle device recovery scenarios including ESP01 bricking
+  incidents
+- **Tools**: [`scripts/recover_device.py`](scripts/recover_device.py), recovery
+  network procedures
 - **Documentation**: [`ESP01_RECOVERY_PLAN.md`](ESP01_RECOVERY_PLAN.md),
   [`ESP01_PHYSICAL_RECOVERY_GUIDE.md`](ESP01_PHYSICAL_RECOVERY_GUIDE.md)
 
 ### Comprehensive Testing Implementation
 
 - **Status**: Active and Expanded
-- **Coverage**: Full unit test suite for security framework components with mock support
+- **Coverage**: Full unit test suite for security framework components with
+  mock support
 - **Framework**: Python unittest with comprehensive test utilities
 - **Integration**: Pre-commit hooks run tests automatically
 - **Key Files**: [`tests/test_security_lib.py`](tests/test_security_lib.py),
-  [`tests/test_config.py`](tests/test_config.py), [`tests/run_tests.py`](tests/run_tests.py)
+  [`tests/test_config.py`](tests/test_config.py),
+  [`tests/run_tests.py`](tests/run_tests.py)
 
 ### Two-Stage Deployment System
 
 - **Status**: Production-ready with rotation support
 - **Purpose**: Handles ESP01 devices with 1MB flash memory constraints
-- **Process**: Minimal firmware → Full firmware deployment with credential transition support
-- **Automation**: Integrated into Task runner workflows with rotation-aware deployment
+- **Process**: Minimal firmware → Full firmware deployment with credential
+  transition support
+- **Automation**: Integrated into Task runner workflows with rotation-aware
+  deployment
 
 ## Current Focus Areas
 
@@ -77,8 +83,10 @@ recovery procedures.
 
 - **Active**: Unified documentation system with Memory Bank integration
 - **Structure**: Topic-based organization with user-friendly guides
-- **Integration**: Links to authoritative Memory Bank content without duplication
-- **Maintenance**: Automated documentation maintenance guidelines and procedures
+- **Integration**: Links to authoritative Memory Bank content without
+  duplication
+- **Maintenance**: Automated documentation maintenance guidelines and
+  procedures
 
 ### Security and Credential Management
 
@@ -96,9 +104,11 @@ recovery procedures.
 
 ### Development Experience
 
-- **Environment**: Mise-managed tool versions with Python virtual environments
+- **Environment**: Mise-managed tool versions with Python virtual
+  environments
 - **Automation**: Task runner for all common operations
-- **Documentation**: Comprehensive guides and troubleshooting resources with clear navigation
+- **Documentation**: Comprehensive guides and troubleshooting resources with
+  clear navigation
 - **Safety**: Development credential system for safe testing
 
 ## Active Device Types
@@ -130,12 +140,14 @@ recovery procedures.
 
 - **Challenge**: ESP01 devices with 1MB flash cannot fit full firmware
 - **Solution**: Two-stage deployment system working effectively
-- **Status**: Automated through Task runner, handles offline devices gracefully
+- **Status**: Automated through Task runner, handles offline devices
+  gracefully
 
 ### Credential Security
 
 - **Challenge**: Preventing credential exposure in version control
-- **Solution**: Comprehensive Python security framework with multiple validation layers
+- **Solution**: Comprehensive Python security framework with multiple
+  validation layers
 - **Status**: Zero exposed credentials, automated scanning active
 
 ### Device Recovery
@@ -149,7 +161,8 @@ recovery procedures.
 ### Quality Assurance Pipeline
 
 - **Pre-commit Hooks**: Active and comprehensive
-- **Security Scanning**: Multi-layer validation (detect-secrets, custom checks)
+- **Security Scanning**: Multi-layer validation (detect-secrets, custom
+  checks)
 - **YAML Validation**: Automated linting with relaxed configuration
 - **Python Testing**: Full unit test coverage with CI integration
 

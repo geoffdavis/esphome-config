@@ -79,9 +79,11 @@ fi
 ```
 
 ### Configuration Changes
+
 Updated `.pre-commit-config.yaml` to use the wrapper script with `language: script` instead of `language: system`:
 
 **Before:**
+
 ```yaml
 - id: esphome-secrets-validation
   entry: python3 scripts/validate_secrets.py
@@ -148,9 +150,11 @@ The current security framework consists of:
 
 - **[Security Overview](overview.md)** - Current security framework information
 - **[Credential Rotation Guide](credential-rotation.md)** - Current rotation procedures
-- **[Security Framework Details](.kilocode/rules/memory-bank/architecture.md#security-architecture)** - Complete technical architecture
+- **[Security Framework Details](.kilocode/rules/memory-bank/architecture.md#security-architecture)** - Complete technical
+  architecture
 - **[Development Setup](../getting-started/development-setup.md)** - Setting up the current environment
 
 ---
 
-*For complete technical details about the current security framework, see [Security Architecture](.kilocode/rules/memory-bank/architecture.md#security-architecture) in the Memory Bank.*
+*For complete technical details about the current security framework, see [Security Architecture](.kilocode/rules/memory-bank/architecture.md#security-architecture)
+in the Memory Bank.*

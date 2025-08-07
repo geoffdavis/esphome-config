@@ -1,14 +1,15 @@
 # Memory Bank Guide
 
-This guide explains how to use and understand the Memory Bank system that provides authoritative technical
-information for this project.
+This guide explains how to use and understand the Memory Bank system that
+provides authoritative technical information for this project.
 
 ## What is the Memory Bank?
 
 The Memory Bank is a comprehensive knowledge system located in
-[`.kilocode/rules/memory-bank/`](.kilocode/rules/memory-bank/) that contains the complete, authoritative technical
-documentation for this project. It serves as the single source of truth that other documentation references rather
-than duplicates.
+[`.kilocode/rules/memory-bank/`](.kilocode/rules/memory-bank/) that contains
+the complete, authoritative technical documentation for this project. It
+serves as the single source of truth that other documentation references
+rather than duplicates.
 
 ## Memory Bank Structure
 
@@ -97,21 +98,25 @@ less .kilocode/rules/memory-bank/tasks.md
 ## Integration with Documentation
 
 ### Linking Strategy
+
 The unified documentation system links to Memory Bank content rather than duplicating it:
 
 **Example from Security Overview:**
+
 ```markdown
 ## Security Architecture
 For complete security architecture details, see [System Architecture - Security Architecture](.kilocode/rules/memory-bank/architecture.md#security-architecture).
 ```
 
 **Example from Device Management:**
+
 ```markdown
 ## Common Tasks
 For detailed credential management procedures, see [Credential Management Tasks](.kilocode/rules/memory-bank/tasks.md#credential-rotation).
 ```
 
 ### Content Hierarchy
+
 1. **Unified Documentation**: User-friendly guides with essential information
 2. **Memory Bank**: Complete technical details and authoritative information
 3. **Integration**: Links connect user guides to comprehensive technical details
@@ -119,6 +124,7 @@ For detailed credential management procedures, see [Credential Management Tasks]
 ## Memory Bank Sections
 
 ### Architecture File Sections
+
 - **Overview**: System architecture principles
 - **Core Architecture Patterns**: Hierarchical configuration, package system, deployment
 - **Security Architecture**: Credential management, validation pipeline
@@ -128,12 +134,14 @@ For detailed credential management procedures, see [Credential Management Tasks]
 - **File Organization Patterns**: Project structure and conventions
 
 ### Tasks File Sections
+
 - **Device Management Tasks**: Adding devices, sensors, ESP01 deployment
 - **Security Management Tasks**: Credential rotation, device recovery, security setup
 - **Development Environment Tasks**: Environment setup, tool updates
 - **Maintenance Tasks**: Bulk updates, component updates, security audits
 
 ### Tech File Sections
+
 - **Core Technologies**: ESPHome, hardware platforms, programming languages
 - **Development Environment**: Tool management, task automation, dependencies
 - **Security Framework**: Python security library, scripts, testing
@@ -143,6 +151,7 @@ For detailed credential management procedures, see [Credential Management Tasks]
 ## Finding Information
 
 ### By Topic
+
 | Topic | Primary Location | Supporting Documentation |
 |-------|------------------|-------------------------|
 | **Security** | [Architecture - Security](.kilocode/rules/memory-bank/architecture.md#security-architecture) | [Security Overview](../security/overview.md) |
@@ -152,6 +161,7 @@ For detailed credential management procedures, see [Credential Management Tasks]
 | **Tools** | [Tech - Development Environment](.kilocode/rules/memory-bank/tech.md#development-environment) | [Development Setup](../getting-started/development-setup.md) |
 
 ### By Use Case
+
 | Use Case | Start Here | Then Reference |
 |----------|------------|----------------|
 | **New to Project** | [Brief](.kilocode/rules/memory-bank/brief.md) → [Product](.kilocode/rules/memory-bank/product.md) | [Quick Start](../getting-started/quick-start.md) |
@@ -163,15 +173,20 @@ For detailed credential management procedures, see [Credential Management Tasks]
 ## Memory Bank Maintenance
 
 ### Content Updates
-The Memory Bank is maintained automatically and should not be edited directly. It serves as the authoritative source that other documentation references.
+
+The Memory Bank is maintained automatically and should not be edited directly. It serves as the authoritative source
+that other documentation references.
 
 ### Accessing Updates
+
 When Memory Bank content is updated:
+
 1. **Linked documentation** automatically references the latest content
 2. **No manual updates** needed in referencing documentation
 3. **Single source of truth** ensures consistency
 
 ### Integration Benefits
+
 - **No Duplication**: Information exists in one authoritative location
 - **Always Current**: Links always point to latest information
 - **Comprehensive**: Complete technical details available when needed
@@ -180,18 +195,21 @@ When Memory Bank content is updated:
 ## Best Practices
 
 ### When to Use Memory Bank Directly
+
 - **Comprehensive technical details** needed
 - **Complete procedure documentation** required
 - **Authoritative information** for decision-making
 - **Understanding system architecture** in depth
 
 ### When to Use Unified Documentation
+
 - **Getting started** with the project
 - **Following common procedures** with guidance
 - **Troubleshooting** with step-by-step help
 - **Understanding concepts** before diving into details
 
 ### Navigation Tips
+
 1. **Start with unified docs** for user-friendly guidance
 2. **Follow links to Memory Bank** for complete technical details
 3. **Use Memory Bank sections** to find specific technical information
@@ -200,20 +218,26 @@ When Memory Bank content is updated:
 ## Example Usage Workflows
 
 ### New Developer Onboarding
+
 1. Read [Brief](.kilocode/rules/memory-bank/brief.md) for project overview
 2. Follow [Quick Start Guide](../getting-started/quick-start.md) for setup
-3. Reference [Tech - Development Environment](.kilocode/rules/memory-bank/tech.md#development-environment) for detailed tool information
+3. Reference [Tech - Development Environment](.kilocode/rules/memory-bank/tech.md#development-environment) for
+   detailed tool information
 4. Use [Tasks](.kilocode/rules/memory-bank/tasks.md) for specific procedures
 
 ### Troubleshooting Security Issues
+
 1. Start with [Security Troubleshooting](../security/troubleshooting.md) for common issues
 2. Reference [Architecture - Security](.kilocode/rules/memory-bank/architecture.md#security-architecture) for system understanding
 3. Follow [Tasks - Security Management](.kilocode/rules/memory-bank/tasks.md#security-management-tasks) for detailed procedures
 
 ### Understanding Device Recovery
+
 1. Begin with [Recovery Procedures](../device-management/recovery-procedures.md) for guided steps
-2. Reference [Tasks - Device Recovery](.kilocode/rules/memory-bank/tasks.md#device-recovery) for complete technical procedures
-3. Check [Architecture - Device Patterns](.kilocode/rules/memory-bank/architecture.md#device-architecture-patterns) for device-specific considerations
+2. Reference [Tasks - Device Recovery](.kilocode/rules/memory-bank/tasks.md#device-recovery) for complete technical
+   procedures
+3. Check [Architecture - Device Patterns](.kilocode/rules/memory-bank/architecture.md#device-architecture-patterns) for
+   device-specific considerations
 
 ## Related Documentation
 
@@ -223,4 +247,5 @@ When Memory Bank content is updated:
 
 ---
 
-*The Memory Bank system ensures comprehensive, authoritative technical documentation while maintaining user-friendly access through the unified documentation structure.*
+*The Memory Bank system ensures comprehensive, authoritative technical documentation while maintaining user-friendly
+access through the unified documentation structure.*

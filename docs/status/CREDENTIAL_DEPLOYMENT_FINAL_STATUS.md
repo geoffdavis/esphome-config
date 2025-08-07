@@ -17,6 +17,7 @@
 ## Successfully Deployed Devices (11)
 
 These devices received new credentials and are fully operational:
+
 - Multiple ESP32 devices
 - Devices that were accessible during deployment
 - All devices now use secure, rotated credentials
@@ -26,6 +27,7 @@ These devices received new credentials and are fully operational:
 **Root Cause**: Minimal firmware lacked fallback hotspot capability
 
 **Affected Devices**:
+
 - `attic_sensor`
 - `bedroom_east_heatpump`
 - `bedroom_west_heatpump`

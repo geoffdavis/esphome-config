@@ -230,6 +230,7 @@ docs/reference/
 ## Legacy Documentation Handling
 
 ### Consolidation Process
+
 When consolidating legacy documentation:
 
 1. **Identify overlapping content** with Memory Bank

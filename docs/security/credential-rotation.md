@@ -133,6 +133,7 @@ python3 scripts/backup_secrets.py list
 ```
 
 ### Emergency Rollback
+
 If rotation fails and devices become inaccessible:
 
 ```bash
@@ -260,6 +261,7 @@ python3 scripts/track_secret_rotation.py report
 ```
 
 ### Documentation Updates
+
 After successful rotation:
 
 1. Update any documentation referencing old credentials
@@ -279,6 +281,7 @@ task build-all
 ```
 
 ### Pre-commit Hook Integration
+
 The rotation process integrates with pre-commit hooks to prevent old credential exposure:
 
 ```bash
@@ -319,4 +322,5 @@ git commit -m "Update configuration"
 
 ---
 
-*For comprehensive credential rotation implementation details, see [Credential Management Tasks](.kilocode/rules/memory-bank/tasks.md#credential-rotation) in the Memory Bank.*
+*For comprehensive credential rotation implementation details, see [Credential Management Tasks](.kilocode/rules/memory-bank/tasks.md#credential-rotation)
+in the Memory Bank.*

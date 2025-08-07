@@ -45,6 +45,7 @@ For each bricked device:
 2. **Connect GPIO0 to GND** (enter flash mode)
 3. **Power ON** the device
 4. **Flash recovery firmware** using esptool:
+
    ```bash
    esptool.py --port /dev/ttyUSB0 --baud 115200 erase_flash
    esptool.py --port /dev/ttyUSB0 --baud 115200 write_flash 0x0 \
@@ -57,6 +58,7 @@ For each bricked device:
 ## Affected ESP01 Devices
 
 The following ESP01 devices are likely bricked:
+
 - `attic_sensor`
 - `bedroom_east_heatpump`
 - `bedroom_west_heatpump`
@@ -71,6 +73,7 @@ The following ESP01 devices are likely bricked:
 ## Root Cause Fix Applied
 
 ✅ **Fixed `common/wifi-minimal.yaml`** to include:
+
 - Fallback hotspot configuration
 - Captive portal for recovery
 - API and web server access
@@ -86,11 +89,13 @@ The following ESP01 devices are likely bricked:
 ## Recovery Deployment Script
 
 Use `scripts/deploy_with_rotation.py` once devices are accessible:
+
 ```bash
 python3 scripts/deploy_with_rotation.py --device <device_name>
 ```
 
 The script will:
+
 1. Deploy fixed minimal firmware (with fallback hotspot)
 2. Deploy full firmware with new credentials
 3. Verify connectivity

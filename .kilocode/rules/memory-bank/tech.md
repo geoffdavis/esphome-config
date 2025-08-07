@@ -16,7 +16,8 @@
 ### Hardware Platforms
 
 - **ESP32**: Full-featured microcontroller with WiFi/Bluetooth
-- **ESP32-C6**: RISC-V based ESP32 variant with enhanced features (M5Stack NanoC6)
+- **ESP32-C6**: RISC-V based ESP32 variant with enhanced features
+  (M5Stack NanoC6)
   - **Board**: esp32-c6-devkitc-1 compatible
   - **Flash**: 4MB (significant upgrade from ESP01's 1MB)
   - **Framework**: ESP-IDF
@@ -150,10 +151,14 @@ _.python.venv = { path = ".venv", create = true }
 - **Language**: C++ with Python ESPHome integration
 - **Features**: FFT processing, visual effects, Gaussian filtering
 - **Files**:
-  - [`__init__.py`](custom_components/esphome-music-leds/__init__.py): ESPHome component definition
-  - [`esphome_music_leds.cpp/.h`](custom_components/esphome-music-leds/esphome_music_leds.h): Main component
-  - [`FFT.cpp/.h`](custom_components/esphome-music-leds/FFT.h): Fast Fourier Transform
-  - [`VisualEffect.cpp/.h`](custom_components/esphome-music-leds/VisualEffect.h): LED effects
+  - [`__init__.py`](custom_components/esphome-music-leds/__init__.py):
+    ESPHome component definition
+  - [`esphome_music_leds.cpp/.h`](custom_components/esphome-music-leds/esphome_music_leds.h):
+    Main component
+  - [`FFT.cpp/.h`](custom_components/esphome-music-leds/FFT.h): Fast
+    Fourier Transform
+  - [`VisualEffect.cpp/.h`](custom_components/esphome-music-leds/VisualEffect.h):
+    LED effects
 
 ### Air Quality Index Calculation
 

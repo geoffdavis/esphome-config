@@ -15,6 +15,7 @@ Here's what happened:
 ## Affected ESP01 Devices
 
 The following devices need physical recovery:
+
 - `attic_sensor` (ESP01)
 - `bedroom_east_heatpump` (ESP01)
 - `bedroom_west_heatpump` (ESP01)
@@ -29,6 +30,7 @@ The following devices need physical recovery:
 ## Physical Recovery Process
 
 ### Required Equipment
+
 - USB-to-Serial adapter (FTDI or similar)
 - Jumper wires
 - Computer with esptool installed

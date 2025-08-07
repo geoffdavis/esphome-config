@@ -1,19 +1,25 @@
 # Common Tasks and Workflows
 
-This document captures repetitive tasks and their step-by-step workflows for future reference.
+This document captures repetitive tasks and their step-by-step workflows
+for future reference.
 
 ## Documentation Management Tasks
 
 ### Update Unified Documentation
+
 **Last performed:** Ongoing maintenance
+
 **Files to modify:**
+
 - Files in `docs/` directory
 - Cross-references and navigation links
 - Memory Bank integration links
 
 **Steps:**
+
 1. Identify documentation need or update requirement
 2. Determine appropriate location in `docs/` structure:
+
    ```bash
    docs/getting-started/     # New user guides
    docs/security/           # Security-related content
@@ -21,30 +27,39 @@ This document captures repetitive tasks and their step-by-step workflows for fut
    docs/architecture/       # System design guides
    docs/reference/          # Reference and troubleshooting
    ```
+
 3. Create or update user-friendly content with step-by-step procedures
 4. Link to Memory Bank for comprehensive technical details:
+
    ```markdown
    For complete technical details, see [System Architecture](.kilocode/rules/memory-bank/architecture.md#section).
    ```
+
 5. Update navigation in `docs/README.md`
 6. Verify all Memory Bank links work correctly
 7. Test procedures for accuracy and completeness
 
 **Important notes:**
+
 - Never duplicate Memory Bank content - always link to it
 - Focus on user-friendly guidance and practical procedures
 - Include troubleshooting for common issues
 - Maintain clear navigation between related topics
 
 ### Validate Documentation Integration
+
 **Last performed:** Regular maintenance
+
 **Files to modify:**
+
 - Documentation link validation
 - Cross-reference verification
 - Navigation flow testing
 
 **Steps:**
+
 1. Validate Memory Bank links are working:
+
    ```bash
    grep -r "\.kilocode/rules/memory-bank/" docs/ | while read line; do
        file=$(echo "$line" | cut -d: -f1)
@@ -54,7 +69,9 @@ This document captures repetitive tasks and their step-by-step workflows for fut
        fi
    done
    ```
+
 2. Check for potentially unlinked documentation:
+
    ```bash
    find docs/ -name "*.md" -not -name "README.md" | while read file; do
        basename=$(basename "$file")
@@ -63,24 +80,30 @@ This document captures repetitive tasks and their step-by-step workflows for fut
        fi
    done
    ```
+
 3. Verify navigation flow makes sense for different user journeys
 4. Test all procedures documented in guides
 5. Update any outdated command examples or references
 
 **Important notes:**
+
 - Run validation monthly to catch broken links
 - Test procedures in clean environment before documenting
 - Keep documentation maintenance guidelines current
 - Focus on user experience and clear navigation
 
 ### Consolidate Legacy Documentation
+
 **Last performed:** Major reorganization completed
+
 **Files to modify:**
+
 - Legacy documentation files
 - Status reports and historical information
 - Integration with unified structure
 
 **Steps:**
+
 1. Identify overlapping content with Memory Bank and unified docs
 2. Extract user-friendly procedures for unified documentation
 3. Create appropriate links to Memory Bank for technical details
@@ -90,6 +113,7 @@ This document captures repetitive tasks and their step-by-step workflows for fut
 7. Verify no important information was lost in consolidation
 
 **Important notes:**
+
 - Preserve historical context in `docs/status/` directory
 - Don't delete until verifying content is preserved elsewhere
 - Update any scripts or automation that reference moved files
@@ -98,21 +122,26 @@ This document captures repetitive tasks and their step-by-step workflows for fut
 ## Device Management Tasks
 
 ### Add New Device Configuration
+
 **Last performed:** Ongoing
 **Files to modify:**
+
 - Create new device YAML file (e.g., `new_device.yaml`)
 - Update device-specific substitutions
 - Select appropriate common packages
 
 **Steps:**
+
 1. Create device configuration file with descriptive name
 2. Define substitutions section with device-specific parameters:
+
    ```yaml
    substitutions:
      name: device-name
      friendly_name: Device Name
      # Hardware-specific pin assignments
    ```
+
 3. Include appropriate packages based on hardware platform:
    - ESP32: `nodemcuv2.yaml` or `esp32_device_base.yaml`
    - ESP8266: `nodemcuv2.yaml` or `wemosd1mini.yaml`
@@ -126,27 +155,33 @@ This document captures repetitive tasks and their step-by-step workflows for fut
 7. Deploy: `task upload -- device-name` or `task upload-two-stage -- device-name`
 
 **Important notes:**
+
 - Use consistent naming conventions (lowercase with hyphens)
 - Always include fallback hotspot for recovery
 - Test with minimal configuration first for ESP01 devices
 - Document hardware connections in comments
 
 ### Add New Sensor Type
+
 **Last performed:** As needed
 **Files to modify:**
+
 - Create new sensor package in `common/sensor/`
 - Update device configurations to include new sensor
 - Test with representative devices
 
 **Steps:**
+
 1. Create sensor configuration file in `common/sensor/sensor_name.yaml`
 2. Define sensor platform and configuration:
+
    ```yaml
    sensor:
      - platform: sensor_type
        name: "${friendly_name} Sensor Name"
        # Sensor-specific configuration
    ```
+
 3. Use substitution variables for pin assignments and device-specific settings
 4. Add any required I2C or SPI bus configurations
 5. Include sensor in test device configuration
@@ -155,26 +190,33 @@ This document captures repetitive tasks and their step-by-step workflows for fut
 8. Update relevant device configurations to include new sensor
 
 **Important notes:**
+
 - Use substitution variables for hardware-specific settings
 - Test sensor accuracy and update intervals
 - Ensure sensor names follow consistent patterns
 - Add appropriate filters for noisy sensors
 
 ### ESP01 Two-Stage Deployment
+
 **Last performed:** Regular maintenance
 **Files to modify:**
+
 - `device-minimal.yaml` (stage 1)
 - `device-full.yaml` (stage 2)
 - Ensure both configurations are synchronized
 
 **Steps:**
+
 1. Create minimal configuration with essential services only:
+
    ```yaml
    packages:
      wifi: !include common/wifi-minimal.yaml
      esp01: !include common/esp01.yaml
    ```
+
 2. Create full configuration with all desired features:
+
    ```yaml
    packages:
      wifi: !include common/wifi.yaml
@@ -182,11 +224,13 @@ This document captures repetitive tasks and their step-by-step workflows for fut
      sensors: !include common/sensors.yaml
      esp01: !include common/esp01.yaml
    ```
+
 3. Deploy using two-stage process: `task upload-two-stage -- device-name`
 4. Verify device connectivity after each stage
 5. Monitor memory usage and optimize if needed
 
 **Important notes:**
+
 - Always maintain recovery capability in minimal configuration
 - Test OTA functionality before full deployment
 - Keep configurations synchronized between stages
@@ -195,13 +239,16 @@ This document captures repetitive tasks and their step-by-step workflows for fut
 ## Security Management Tasks
 
 ### Credential Rotation
+
 **Last performed:** As needed for security
 **Files to modify:**
+
 - 1Password vaults (Automation and Shared)
 - `secrets.yaml` (regenerated)
 - Deployment validation
 
 **Steps:**
+
 1. Run security validation: `task security-validate`
 2. Create backup: `python3 scripts/backup_secrets.py create`
 3. Generate new credentials: `python3 scripts/rotate_credentials.py`
@@ -213,6 +260,7 @@ This document captures repetitive tasks and their step-by-step workflows for fut
 9. Track rotation: `python3 scripts/track_secret_rotation.py add`
 
 **Important notes:**
+
 - Always backup before rotation
 - Use `deploy_with_rotation.py` for seamless credential transitions
 - Script handles both old and new credentials during deployment
@@ -220,18 +268,21 @@ This document captures repetitive tasks and their step-by-step workflows for fut
 - Document rotation in tracking system
 
 ### Device Recovery
+
 **Last performed:** As needed for device issues
 **Files to modify:**
+
 - Recovery network configuration
 - Device-specific recovery procedures
 - Recovery deployment scripts
 
 **Steps:**
+
 1. Identify offline or bricked devices
 2. Check for fallback hotspot: Look for "[Device Name] ESP" networks
 3. If hotspot available:
    - Connect to fallback hotspot
-   - Access device at http://192.168.4.1
+   - Access device at <http://192.168.4.1>
    - Reconfigure WiFi settings
 4. If no hotspot (ESP01 devices):
    - Set up recovery network with exact credentials device expects
@@ -243,19 +294,23 @@ This document captures repetitive tasks and their step-by-step workflows for fut
 6. Verify device connectivity after recovery
 
 **Important notes:**
+
 - ESP01 devices may require recovery network setup
 - Always include fallback hotspot in minimal configurations
 - Document recovery procedures for each device type
 - Test recovery procedures periodically
 
 ### Security Framework Setup
+
 **Last performed:** Initial setup and updates
 **Files to modify:**
+
 - Pre-commit hooks configuration
 - Security tool installation
 - Development environment setup
 
 **Steps:**
+
 1. Install security framework: `python3 scripts/setup_security.py`
 2. Configure 1Password CLI and authentication
 3. Set up environment variables in `.env` file
@@ -266,19 +321,23 @@ This document captures repetitive tasks and their step-by-step workflows for fut
 8. Validate complete setup: `task security-validate`
 
 **Important notes:**
+
 - Ensure 1Password CLI is authenticated
 - Test all security validation steps
 - Verify pre-commit hooks are working
 - Set up development credentials for safe testing
 
 ### Backup and Restore Operations
+
 **Last performed:** Regular maintenance
 **Files to modify:**
+
 - Backup directory structure
 - Backup manifests and metadata
 - Recovery procedures
 
 **Steps:**
+
 1. Create backup: `python3 scripts/backup_secrets.py create`
 2. List available backups: `python3 scripts/backup_secrets.py list`
 3. Verify backup integrity: `python3 scripts/backup_secrets.py verify <backup_id>`
@@ -287,19 +346,23 @@ This document captures repetitive tasks and their step-by-step workflows for fut
 6. Clean up old backups: `python3 scripts/backup_secrets.py cleanup --days 30`
 
 **Important notes:**
+
 - Regular backups before major changes
 - Test restore procedures periodically
 - Keep backup retention policy current
 - Document backup and restore procedures
 
 ### Add Security Validation Rule
+
 **Last performed:** Framework development
 **Files to modify:**
+
 - `scripts/security_lib.py` (core validation logic)
 - `scripts/validate_secrets.py` (validation script)
 - `tests/test_security_lib.py` (unit tests)
 
 **Steps:**
+
 1. Identify new security requirement or vulnerability
 2. Add validation logic to appropriate class in `security_lib.py`
 3. Update validation script to use new validation
@@ -310,6 +373,7 @@ This document captures repetitive tasks and their step-by-step workflows for fut
 8. Test integration with pre-commit hooks
 
 **Important notes:**
+
 - Always add unit tests for new validation logic
 - Test both positive and negative cases
 - Document validation requirements clearly
@@ -318,13 +382,16 @@ This document captures repetitive tasks and their step-by-step workflows for fut
 ## Development Environment Tasks
 
 ### Set Up New Development Environment
+
 **Last performed:** New developer onboarding
 **Files to modify:**
+
 - Local environment setup
 - Tool installation and configuration
 - Development credentials
 
 **Steps:**
+
 1. Install Mise: Follow installation guide
 2. Clone repository and navigate to project directory
 3. Install project tools: `mise install`
@@ -337,19 +404,23 @@ This document captures repetitive tasks and their step-by-step workflows for fut
 10. Verify all tools and workflows are working
 
 **Important notes:**
+
 - Use development credentials for testing
 - Verify all security tools are working
 - Test build and deployment processes
 - Document any environment-specific issues
 
 ### Update Development Tools
+
 **Last performed:** Regular maintenance
 **Files to modify:**
+
 - `.mise.toml` (tool versions)
 - `requirements.txt` (Python dependencies)
 - `package.json` (Node.js dependencies)
 
 **Steps:**
+
 1. Check for tool updates: `mise outdated`
 2. Update tool versions in `.mise.toml`
 3. Install updated tools: `mise install`
@@ -361,6 +432,7 @@ This document captures repetitive tasks and their step-by-step workflows for fut
 9. Commit tool version updates
 
 **Important notes:**
+
 - Test thoroughly after updates
 - Check for breaking changes in tool updates
 - Update documentation for any workflow changes
@@ -369,12 +441,15 @@ This document captures repetitive tasks and their step-by-step workflows for fut
 ## Maintenance Tasks
 
 ### Bulk Device Updates
+
 **Last performed:** Regular maintenance
 **Files to modify:**
+
 - Multiple device configurations
 - Common component updates
 
 **Steps:**
+
 1. Run security validation: `task security-validate`
 2. Test changes with single device first
 3. Create backup of current configurations
@@ -386,19 +461,23 @@ This document captures repetitive tasks and their step-by-step workflows for fut
 9. Update device inventory and status
 
 **Important notes:**
+
 - Always test with single device first
 - Handle offline devices gracefully
 - Monitor device health after updates
 - Keep deployment logs for troubleshooting
 
 ### Common Component Updates
+
 **Last performed:** Feature additions and improvements
 **Files to modify:**
+
 - Files in `common/` directory
 - Device configurations using updated components
 - Testing and validation
 
 **Steps:**
+
 1. Identify component requiring updates
 2. Create backup of current component
 3. Update component configuration
@@ -410,19 +489,23 @@ This document captures repetitive tasks and their step-by-step workflows for fut
 9. Monitor for issues and rollback if needed
 
 **Important notes:**
+
 - Test with multiple device types
 - Verify backward compatibility
 - Update component documentation
 - Monitor device performance after changes
 
 ### Security Audit and Cleanup
+
 **Last performed:** Regular security maintenance
 **Files to modify:**
+
 - Security configurations
 - Credential validation
 - Audit documentation
 
 **Steps:**
+
 1. Run comprehensive security scan: `task security-scan`
 2. Review credential rotation history
 3. Check for exposed credentials in all files
@@ -434,6 +517,7 @@ This document captures repetitive tasks and their step-by-step workflows for fut
 9. Plan and execute any necessary security improvements
 
 **Important notes:**
+
 - Document all security findings
 - Update security procedures as needed
 - Test all security tools and validations

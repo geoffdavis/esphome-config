@@ -15,6 +15,7 @@ task --help <task-name>
 ## Build Commands
 
 ### Single Device Build
+
 ```bash
 # Build firmware for a specific device
 task build -- <device-name>
@@ -25,6 +26,7 @@ task build -- attic_sensor
 ```
 
 ### Bulk Build Operations
+
 ```bash
 # Build firmware for all devices
 task build-all
@@ -39,6 +41,7 @@ task clean-all
 ## Deployment Commands
 
 ### Single Device Deployment
+
 ```bash
 # Upload firmware to a device (includes build)
 task upload -- <device-name>
@@ -49,6 +52,7 @@ task upload -- bedroom_east_multisensor
 ```
 
 ### Two-Stage Deployment (ESP01 Devices)
+
 ```bash
 # Two-stage deployment for memory-constrained devices
 task upload-two-stage -- <device-name>
@@ -59,6 +63,7 @@ task upload-two-stage -- bedroom_east_heatpump
 ```
 
 ### Bulk Deployment Operations
+
 ```bash
 # Upload to all devices using two-stage process
 task upload-all-two-stage
@@ -70,6 +75,7 @@ task upload-all
 ## Security Commands
 
 ### Basic Security Operations
+
 ```bash
 # Essential security validation
 task security-validate
@@ -82,6 +88,7 @@ task security-setup
 ```
 
 ### Advanced Security Operations
+
 ```bash
 # Validate 1Password integration
 task security-validate-1password
@@ -105,6 +112,7 @@ task security-backup-restore -- <backup-id>
 ## Development Commands
 
 ### Development Environment
+
 ```bash
 # Set up development environment
 task dev-setup
@@ -117,6 +125,7 @@ task dev-credentials
 ```
 
 ### Testing Commands
+
 ```bash
 # Run security framework tests
 task test-security
@@ -131,6 +140,7 @@ task test -- <test-name>
 ## Credential Management
 
 ### Secret Generation
+
 ```bash
 # Generate secrets from 1Password
 task secrets
@@ -143,6 +153,7 @@ task secrets-dev
 ```
 
 ### Credential Operations
+
 ```bash
 # Rotate all credentials
 task rotate-credentials
