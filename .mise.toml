@@ -5,6 +5,7 @@ python = "3.11"
 task = "latest"
 nodejs = "22.13.0"
 "npm:markdownlint-cli" = "latest"
+gh = "latest"
 
 [env]
 _.python.venv = { path = ".venv", create = true }
