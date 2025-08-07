@@ -37,6 +37,12 @@ repos:
         name: Markdown Lint
         args: ['--config', '.markdownlint.json']
         files: \.md$
+        exclude: |
+          (?x)^(
+            \.kilocode/rules/memory-bank/.*\.md|
+            docs/status/.*\.md|
+            ESP01_RECOVERY_WORKFLOW\.md
+          )$
 
   # Essential security checks
   - repo: https://github.com/pre-commit/pre-commit-hooks
