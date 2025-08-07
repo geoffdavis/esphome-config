@@ -15,17 +15,20 @@ The essential security shell scripts have been converted to Python to provide:
 ## Converted Scripts
 
 ### 1. Setup Security Script
+
 - **From**: `scripts/setup-security.sh`
 - **To**: `scripts/setup_security.py`
 - **Purpose**: Main security setup script that installs and configures git-secrets, pre-commit, and essential hooks
 
 ### 2. ESPHome Credential Check
+
 - **From**: `.githooks/esphome-credential-check.sh`
 - **To**: `.githooks/esphome_credential_check.py`
 - **Purpose**: Validates YAML files for hardcoded credentials and known exposed secrets
 - **Status**: Available for manual use only (removed from CI pipeline due to redundancy)
 
 ### 3. Git-Secrets Scan Wrapper
+
 - **From**: `.githooks/git-secrets-scan.sh`
 - **To**: `.githooks/git_secrets_scan.py`
 - **Purpose**: Python wrapper for git-secrets scanning with graceful fallback
@@ -33,16 +36,19 @@ The essential security shell scripts have been converted to Python to provide:
 ## Key Features
 
 ### Enhanced Error Handling
+
 - Proper exception handling with meaningful error messages
 - Graceful degradation when optional tools are not available
 - Better exit codes and status reporting
 
 ### Improved Pattern Matching
+
 - More robust regex pattern matching
 - Better handling of edge cases
 - Cleaner separation of concerns
 
 ### Testing Support
+
 - Unit tests for credential detection patterns
 - Test coverage for known exposed credentials
 - Automated test runner
@@ -50,6 +56,7 @@ The essential security shell scripts have been converted to Python to provide:
 ## Usage
 
 ### Running Setup
+
 ```bash
 # Python version (recommended)
 python3 scripts/setup_security.py
@@ -59,6 +66,7 @@ python3 scripts/setup_security.py
 ```
 
 ### Running Tests
+
 ```bash
 # Run all security script tests
 task test-security
@@ -68,6 +76,7 @@ python3 tests/run_tests.py
 ```
 
 ### Manual Credential Check
+
 ```bash
 # Check specific files
 ./.githooks/esphome_credential_check.py device1.yaml device2.yaml
@@ -79,6 +88,7 @@ find . -name "*.yaml" -not -path "./.esphome/*" -exec ./.githooks/esphome_creden
 ## Integration
 
 ### Taskfile.yml Integration
+
 The Python scripts are integrated into the existing Taskfile.yml:
 
 - `security-validate`: Uses Python credential checker
@@ -86,6 +96,7 @@ The Python scripts are integrated into the existing Taskfile.yml:
 - All existing tasks continue to work with Python scripts
 
 ### Pre-commit Integration
+
 The `.pre-commit-config.yaml` has been updated to use Python scripts:
 
 ```yaml
@@ -109,6 +120,7 @@ The `.pre-commit-config.yaml` has been updated to use Python scripts:
 ## Testing
 
 ### Unit Tests
+
 Located in `tests/test_esphome_credential_check.py`:
 
 - Tests for API key detection
@@ -119,6 +131,7 @@ Located in `tests/test_esphome_credential_check.py`:
 - Tests for multiple file handling
 
 ### Running Tests
+
 ```bash
 # Via Taskfile
 task test-security
@@ -133,10 +146,12 @@ python3 -m unittest tests.test_esphome_credential_check
 ## Dependencies
 
 ### Required
+
 - Python 3.6+
 - Standard library modules only (no external dependencies for core functionality)
 
 ### Optional
+
 - `git-secrets` (for git-secrets integration)
 - `pre-commit` (for pre-commit hooks)
 - `detect-secrets` (for secrets baseline)
@@ -144,28 +159,33 @@ python3 -m unittest tests.test_esphome_credential_check
 ## Migration Benefits
 
 ### Maintainability
+
 - Cleaner, more readable code structure
 - Better separation of concerns
 - Easier to extend and modify
 
 ### Testing
+
 - Comprehensive unit test coverage
 - Automated testing in CI/CD pipelines
 - Better validation of security patterns
 
 ### Error Handling
+
 - More informative error messages
 - Better handling of edge cases
 - Graceful degradation when tools are missing
 
 ### Integration
+
 - Better integration with Python-based ESPHome ecosystem
 - Consistent with project's primary language
 - Easier to extend with additional Python-based security tools
 
 ## Backward Compatibility
 
-The original shell scripts are preserved for reference but are no longer used by default. The Python scripts maintain the same command-line interface and exit codes for seamless integration.
+The original shell scripts are preserved for reference but are no longer used by default. The Python scripts
+maintain the same command-line interface and exit codes for seamless integration.
 
 ## Future Enhancements
 
@@ -186,7 +206,9 @@ Potential improvements for the Python implementation:
 3. **Missing Dependencies**: Install optional tools as needed
 
 ### Debug Mode
+
 Set environment variable for verbose output:
+
 ```bash
 export DEBUG=1
 python3 scripts/setup_security.py
@@ -201,4 +223,5 @@ For issues or questions about the Python security scripts:
 3. Run tests to validate functionality
 4. Check integration with existing workflow
 
-The Python implementation maintains the same practical, single-user focused approach while providing better maintainability and testing capabilities.
+The Python implementation maintains the same practical, single-user focused approach while providing better
+maintainability and testing capabilities.

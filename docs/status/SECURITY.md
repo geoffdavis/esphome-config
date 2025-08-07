@@ -1,6 +1,7 @@
 # ESPHome Security Implementation
 
-This document describes the streamlined security implementation for this single-user ESPHome repository, focused on preventing accidental credential exposure.
+This document describes the streamlined security implementation for this single-user ESPHome repository, focused
+on preventing accidental credential exposure.
 
 ## Quick Start
 
@@ -13,6 +14,7 @@ Run the setup script to install and configure security tools:
 ```
 
 This will:
+
 - Install git-secrets and pre-commit
 - Configure ESPHome-specific credential patterns
 - Set up essential validation hooks
@@ -40,6 +42,7 @@ pre-commit install
 ### 1. Pre-commit Hooks
 
 Essential hooks that run before each commit:
+
 - **detect-secrets**: Scans for hardcoded secrets
 - **yamllint**: Validates YAML structure
 - **esphome-credential-check**: ESPHome-specific credential validation
@@ -48,6 +51,7 @@ Essential hooks that run before each commit:
 ### 2. ESPHome Credential Detection
 
 Automatically detects and prevents:
+
 - **API Encryption Keys**: 44-character base64 strings
 - **OTA Passwords**: 32-character hex strings
 - **Fallback Hotspot Passwords**: 12-character alphanumeric
@@ -57,6 +61,7 @@ Automatically detects and prevents:
 ### 3. Git-secrets Integration
 
 Configured patterns for:
+
 - ESPHome-specific credential formats
 - Generic high-entropy strings
 - Known exposed credentials from this repository
@@ -65,6 +70,7 @@ Configured patterns for:
 ### 4. GitHub Actions
 
 Automated security scanning on:
+
 - Push to main/develop branches
 - Pull requests
 - Scheduled weekly scans
@@ -142,6 +148,7 @@ test_[a-z_]+
 ### For ESPHome Configurations
 
 1. **Always use `!secret` references** for sensitive data:
+
    ```yaml
    # ✅ Correct
    api:
@@ -161,6 +168,7 @@ test_[a-z_]+
 ### For Scripts and Automation
 
 1. **Use 1Password CLI** for credential retrieval:
+
    ```bash
    # ✅ Correct
    API_KEY=$(op read "op://Automation/ESPHome/api_key" --account="$OP_ACCOUNT")
@@ -227,6 +235,7 @@ git secrets --add --allowed 'your_allowed_pattern_here'
 ### Regular Tasks
 
 1. **Update dependencies** monthly:
+
    ```bash
    pre-commit autoupdate
    brew upgrade git-secrets  # macOS

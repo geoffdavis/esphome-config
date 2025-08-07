@@ -1,10 +1,12 @@
 # ESPHome Python Security Framework
 
-A comprehensive, unified security framework for ESPHome configurations that replaces the previous mixed bash/Python approach with a cohesive Python-based solution.
+A comprehensive, unified security framework for ESPHome configurations that replaces the previous mixed
+bash/Python approach with a cohesive Python-based solution.
 
 ## Overview
 
 This framework provides:
+
 - **Unified Security Library**: Shared components for credential validation, 1Password integration, and security scanning
 - **Comprehensive Scripts**: Python scripts for all security operations
 - **Automated Testing**: Full unit test coverage with mock support
@@ -41,6 +43,7 @@ task test-security
 ### Core Components
 
 #### Security Library (`scripts/security_lib.py`)
+
 The foundation of the framework providing:
 
 - **SecurityLogger**: Consistent logging across all scripts
@@ -76,6 +79,7 @@ OP_ACCOUNT=your-1password-account
 ### Daily Operations
 
 #### Validate Configuration
+
 ```bash
 # Quick validation
 python3 scripts/validate_secrets.py
@@ -85,6 +89,7 @@ task security-validate
 ```
 
 #### Security Scanning
+
 ```bash
 # Full security scan
 task security-scan
@@ -96,6 +101,7 @@ python3 scripts/validate_1password_structure.py
 ### Credential Management
 
 #### Credential Rotation
+
 ```bash
 # Automated rotation process
 python3 scripts/rotate_credentials.py
@@ -105,6 +111,7 @@ python3 scripts/track_secret_rotation.py status
 ```
 
 #### Backup and Restore
+
 ```bash
 # Create backup
 task security-backup
@@ -119,6 +126,7 @@ task security-backup-restore -- backup_20240101_120000
 ### Development Workflow
 
 #### Development Setup
+
 ```bash
 # Set up development environment
 python3 scripts/setup_dev_secrets.py
@@ -128,6 +136,7 @@ cp dev/secrets.yaml secrets.yaml
 ```
 
 #### Testing
+
 ```bash
 # Run all tests
 python3 tests/run_tests.py
@@ -144,6 +153,7 @@ python3 tests/run_tests.py --check-env
 The framework integrates with the Task runner:
 
 ### Security Tasks
+
 ```bash
 task security-setup              # Set up security tools
 task security-validate           # Essential validation
@@ -157,6 +167,7 @@ task security-backup-restore   # Restore backup
 ```
 
 ### Development Tasks
+
 ```bash
 task dev-setup                  # Development environment
 task dev-secrets               # Generate dev secrets
@@ -175,6 +186,7 @@ The framework provides pre-commit hooks:
 ```
 
 ### Manual Hook Execution
+
 ```bash
 # Run all hooks
 pre-commit run --all-files
@@ -190,12 +202,14 @@ pre-commit run esphome-secrets-validation
 Required 1Password structure:
 
 **Automation Vault**
+
 - Item: "ESPHome"
   - `api_key`: ESPHome API encryption key
   - `ota_password`: OTA update password
   - `fallback_password`: Fallback hotspot password
 
 **Shared Vault**
+
 - Item: "Home IoT"
   - `network name`: WiFi SSID
   - `wireless network password`: WiFi password
@@ -238,16 +252,19 @@ ESPHOME_LOGS_LEVEL=INFO
 ## Security Features
 
 ### Credential Validation
+
 - **Format Validation**: Ensures credentials meet ESPHome requirements
 - **Exposed Credential Detection**: Identifies known compromised credentials
 - **1Password Integration**: Validates 1Password structure and access
 
 ### Security Scanning
+
 - **Multi-layer Scanning**: git-secrets, detect-secrets, custom validation
 - **File Type Coverage**: YAML, Python, shell scripts, configuration files
 - **Continuous Integration**: Pre-commit and Task integration
 
 ### Backup and Recovery
+
 - **Automated Backups**: Scheduled and manual backup creation
 - **Integrity Verification**: Hash-based backup validation
 - **Selective Restoration**: Granular restore capabilities
@@ -257,6 +274,7 @@ ESPHOME_LOGS_LEVEL=INFO
 ### Common Issues
 
 #### 1Password CLI Issues
+
 ```bash
 # Check CLI availability
 op account list
@@ -269,6 +287,7 @@ python3 scripts/validate_1password_structure.py
 ```
 
 #### Credential Validation Failures
+
 ```bash
 # Check credential format
 python3 scripts/validate_secrets.py
@@ -278,6 +297,7 @@ python3 scripts/rotate_credentials.py
 ```
 
 #### Test Failures
+
 ```bash
 # Check test environment
 python3 tests/run_tests.py --check-env
@@ -289,6 +309,7 @@ python3 tests/run_tests.py --test test_security_lib.TestCredentialValidator
 ### Debug Mode
 
 Enable verbose logging:
+
 ```bash
 # Set environment variable
 export ESPHOME_LOGS_LEVEL=DEBUG
@@ -300,6 +321,7 @@ python3 scripts/validate_secrets.py --verbose
 ## Migration from Bash Scripts
 
 ### Automatic Migration
+
 The Python scripts are drop-in replacements:
 
 ```bash
@@ -311,6 +333,7 @@ python3 scripts/validate_secrets.py
 ```
 
 ### Task Integration
+
 Tasks automatically use the new Python scripts:
 
 ```bash
@@ -320,11 +343,13 @@ task security-scan
 ```
 
 ### Pre-commit Hooks
+
 Pre-commit hooks have been updated to use Python scripts while maintaining backward compatibility.
 
 ## Contributing
 
 ### Development Setup
+
 ```bash
 # Set up development environment
 python3 scripts/setup_dev_secrets.py
@@ -337,6 +362,7 @@ pre-commit run --all-files
 ```
 
 ### Adding New Features
+
 1. Update the security library if needed
 2. Create or modify scripts
 3. Add comprehensive tests
@@ -344,6 +370,7 @@ pre-commit run --all-files
 5. Test integration points
 
 ### Testing Guidelines
+
 - All new functionality must have unit tests
 - Use the test configuration utilities in `tests/test_config.py`
 - Mock external dependencies (1Password CLI, file system)
@@ -352,17 +379,20 @@ pre-commit run --all-files
 ## Security Considerations
 
 ### Credential Handling
+
 - Never log actual credential values
 - Use secure temporary files
 - Clean up sensitive data after use
 - Validate all inputs
 
 ### 1Password Integration
+
 - Use environment variables for account configuration
 - Implement proper error handling for CLI failures
 - Validate vault and item access before operations
 
 ### File Operations
+
 - Use secure file permissions
 - Backup before modifications
 - Validate file integrity
@@ -371,6 +401,7 @@ pre-commit run --all-files
 ## Support
 
 For issues and questions:
+
 1. Check the troubleshooting section
 2. Run diagnostic commands
 3. Review log output

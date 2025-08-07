@@ -2,7 +2,9 @@
 
 ## Problem
 
-Pre-commit hooks were failing to access dependencies managed by Mise because they run in their own isolated environment and don't automatically source the Mise configuration. The hooks were using `language: system` with direct `python3` calls, but needed to use the Mise-managed Python virtual environment.
+Pre-commit hooks were failing to access dependencies managed by Mise because they run in their own isolated
+environment and don't automatically source the Mise configuration. The hooks were using `language: system` with
+direct `python3` calls, but needed to use the Mise-managed Python virtual environment.
 
 ## Solution
 
@@ -35,6 +37,7 @@ fi
 Modified `.pre-commit-config.yaml` to use the wrapper script with `language: script` instead of `language: system`:
 
 **Before:**
+
 ```yaml
 - id: esphome-secrets-validation
   name: ESPHome secrets validation (Python)
@@ -43,6 +46,7 @@ Modified `.pre-commit-config.yaml` to use the wrapper script with `language: scr
 ```
 
 **After:**
+
 ```yaml
 - id: esphome-secrets-validation
   name: ESPHome secrets validation (Python)
@@ -53,6 +57,7 @@ Modified `.pre-commit-config.yaml` to use the wrapper script with `language: scr
 ### 3. Applied to All Python Security Hooks
 
 Updated all three Python security framework hooks:
+
 - `esphome-secrets-validation`
 - `esphome-1password-validation`
 - `python-security-tests`
@@ -67,6 +72,7 @@ Updated all three Python security framework hooks:
 ## Testing Results
 
 All Python security framework hooks now run successfully:
+
 - ✅ ESPHome secrets validation - Running and detecting issues properly
 - ✅ Python security tests - Running with 91.4% success rate
 - ✅ 1Password validation - Running properly
@@ -88,4 +94,5 @@ pre-commit run esphome-secrets-validation --all-files
 pre-commit run --all-files
 ```
 
-The wrapper script ensures that `mise exec -- python3` is used when Mise is available, providing access to the virtual environment and all managed dependencies.
+The wrapper script ensures that `mise exec -- python3` is used when Mise is available, providing access to the
+virtual environment and all managed dependencies.
