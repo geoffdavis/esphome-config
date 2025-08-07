@@ -98,16 +98,13 @@ tasks:
             upload_cmd="esphome upload {{.CLI_ARGS}}-full.yaml"
           fi
 
-          if ! output=$($upload_cmd 2>&1); then
-            if echo "$output" | grep -q "Error resolving IP address" || \
-               echo "$output" | grep -q "Network is unreachable"; then
-              echo "Device {{.CLI_ARGS}} offline, skipping."
-            else
-              echo "$output"
-              exit 1
-            fi
+          # Run the command interactively, but capture exit code
+          if $upload_cmd; then
+            echo "✅ Upload completed successfully for {{.CLI_ARGS}}"
           else
-            echo "$output"
+            exit_code=$?
+            echo "❌ Upload failed for {{.CLI_ARGS}} (exit code: $exit_code)"
+            exit $exit_code
           fi
 
   build-minimal:
@@ -123,16 +120,13 @@ tasks:
         vars: { CLI_ARGS: "{{.CLI_ARGS}}" }
     cmds:
       - cmd: |
-          if ! output=$(esphome upload {{.CLI_ARGS}}-minimal.yaml 2>&1); then
-            if echo "$output" | grep -q "Error resolving IP address" || \
-               echo "$output" | grep -q "Network is unreachable"; then
-              echo "Device {{.CLI_ARGS}} offline, skipping."
-            else
-              echo "$output"
-              exit 1
-            fi
+          # Run the command interactively, but capture exit code
+          if esphome upload {{.CLI_ARGS}}-minimal.yaml; then
+            echo "✅ Minimal upload completed successfully for {{.CLI_ARGS}}"
           else
-            echo "$output"
+            exit_code=$?
+            echo "❌ Minimal upload failed for {{.CLI_ARGS}} (exit code: $exit_code)"
+            exit $exit_code
           fi
 
   build-all:
