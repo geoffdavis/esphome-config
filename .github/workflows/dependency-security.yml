@@ -28,7 +28,6 @@ jobs:
   python-security:
     name: Python Dependencies
     runs-on: ubuntu-latest
-    if: hashFiles('requirements.txt') != ''
 
     steps:
     - name: Checkout code
@@ -70,7 +69,6 @@ jobs:
   nodejs-security:
     name: Node.js Dependencies
     runs-on: ubuntu-latest
-    if: hashFiles('package.json') != ''
 
     steps:
     - name: Checkout code
