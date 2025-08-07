@@ -297,8 +297,8 @@ rotation-audit-*.txt
 compliance-report-*.txt
 security-health-*.txt
 
-# Secrets baseline for detect-secrets
-.secrets.baseline
+# Secrets baseline for detect-secrets (commented out - baseline should be committed)
+# .secrets.baseline
 
 # =============================================================================
 # END OF SECURITY PATTERNS

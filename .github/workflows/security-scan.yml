@@ -99,9 +99,12 @@ jobs:
       run: |
         echo "Running detect-secrets scan..."
         if [ -f .secrets.baseline ]; then
+          echo "Using existing baseline file..."
           detect-secrets scan --baseline .secrets.baseline --force-use-all-plugins
         else
           echo "Creating new secrets baseline..."
+          detect-secrets scan --force-use-all-plugins > .secrets.baseline
+          echo "Baseline created, now scanning against it..."
           detect-secrets scan --baseline .secrets.baseline --force-use-all-plugins
         fi
 
