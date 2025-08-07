@@ -27,7 +27,7 @@
 
 ### Programming Languages
 
-- **Python 3.11**: Security framework and automation scripts
+- **Python 3.13.5**: Security framework and automation scripts (updated from 3.11)
 - **YAML**: Device configuration and shared components
 - **C++**: Custom components and sensor libraries
 - **Bash**: Legacy scripts and system integration
@@ -40,9 +40,9 @@
 
 ```toml
 [tools]
-python = "3.11"
+python = "3.13.5"
 task = "latest"
-nodejs = "22.13.0"
+nodejs = "22.18.0"
 
 [env]
 _.python.venv = { path = ".venv", create = true }
@@ -80,15 +80,15 @@ _.python.venv = { path = ".venv", create = true }
 
 | Script | Purpose | Technology |
 |--------|---------|------------|
-| [`validate_secrets.py`](scripts/validate_secrets.py) | Credential validation | Python 3.11 |
-| [`validate_1password_structure.py`](scripts/validate_1password_structure.py) | 1Password integration | Python 3.11 |
-| [`setup_security.py`](scripts/setup_security.py) | Security tool installation | Python 3.11 |
-| [`rotate_credentials.py`](scripts/rotate_credentials.py) | Automated credential rotation | Python 3.11 |
-| [`deploy_with_rotation.py`](scripts/deploy_with_rotation.py) | Deployment with rotation | Python 3.11 |
-| [`recover_device.py`](scripts/recover_device.py) | Device recovery procedures | Python 3.11 |
-| [`track_secret_rotation.py`](scripts/track_secret_rotation.py) | Rotation history tracking | Python 3.11 |
-| [`backup_secrets.py`](scripts/backup_secrets.py) | Backup management | Python 3.11 |
-| [`setup_dev_secrets.py`](scripts/setup_dev_secrets.py) | Development environment | Python 3.11 |
+| [`validate_secrets.py`](scripts/validate_secrets.py) | Credential validation | Python 3.13.5 |
+| [`validate_1password_structure.py`](scripts/validate_1password_structure.py) | 1Password integration | Python 3.13.5 |
+| [`setup_security.py`](scripts/setup_security.py) | Security tool installation | Python 3.13.5 |
+| [`rotate_credentials.py`](scripts/rotate_credentials.py) | Automated credential rotation | Python 3.13.5 |
+| [`deploy_with_rotation.py`](scripts/deploy_with_rotation.py) | Deployment with rotation | Python 3.13.5 |
+| [`recover_device.py`](scripts/recover_device.py) | Device recovery procedures | Python 3.13.5 |
+| [`track_secret_rotation.py`](scripts/track_secret_rotation.py) | Rotation history tracking | Python 3.13.5 |
+| [`backup_secrets.py`](scripts/backup_secrets.py) | Backup management | Python 3.13.5 |
+| [`setup_dev_secrets.py`](scripts/setup_dev_secrets.py) | Development environment | Python 3.13.5 |
 
 ### Testing Framework
 
@@ -226,11 +226,13 @@ _.python.venv = { path = ".venv", create = true }
 mise install
 
 # Security framework setup
-python3 scripts/setup_security.py
+mise exec -- python3 scripts/setup_security.py
 
 # Development credentials
-python3 scripts/setup_dev_secrets.py
+mise exec -- python3 scripts/setup_dev_secrets.py
 ```
+
+**Important**: All commands should be run with `mise exec --` prefix to ensure the correct project-configured tool versions are used.
 
 ### Environment Variables
 
