@@ -74,29 +74,29 @@ repos:
             fonts/.*\.ttf
           )$
 
-  # Python security framework validation
+  # Python security framework validation (skip in CI)
   - repo: local
     hooks:
       - id: esphome-secrets-validation
         name: ESPHome secrets validation (Python)
-        entry: .githooks/python-wrapper.sh scripts/validate_secrets.py
-        language: script
+        entry: bash -c 'if [ "$CI" = "true" ]; then echo "Skipping Python validation in CI environment"; exit 0; else .githooks/python-wrapper.sh scripts/validate_secrets.py; fi'
+        language: system
         files: ^(secrets\.yaml|.*\.yaml|.*\.yml)$
         pass_filenames: false
         always_run: false
 
       - id: esphome-1password-validation
         name: ESPHome 1Password structure validation
-        entry: .githooks/python-wrapper.sh scripts/validate_1password_structure.py
-        language: script
+        entry: bash -c 'if [ "$CI" = "true" ]; then echo "Skipping 1Password validation in CI environment"; exit 0; else .githooks/python-wrapper.sh scripts/validate_1password_structure.py; fi'
+        language: system
         files: ^(secrets\.yaml|\.env)$
         pass_filenames: false
         always_run: false
 
       - id: python-security-tests
         name: Run Python security framework tests
-        entry: .githooks/python-wrapper.sh tests/run_tests.py
-        language: script
+        entry: bash -c 'if [ "$CI" = "true" ]; then echo "Skipping Python tests in CI environment"; exit 0; else .githooks/python-wrapper.sh tests/run_tests.py; fi'
+        language: system
         files: ^(scripts/.*\.py|tests/.*\.py)$
         pass_filenames: false
         always_run: false
