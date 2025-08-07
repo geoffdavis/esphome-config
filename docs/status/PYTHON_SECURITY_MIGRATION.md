@@ -23,6 +23,7 @@ The essential security shell scripts have been converted to Python to provide:
 - **From**: `.githooks/esphome-credential-check.sh`
 - **To**: `.githooks/esphome_credential_check.py`
 - **Purpose**: Validates YAML files for hardcoded credentials and known exposed secrets
+- **Status**: Available for manual use only (removed from CI pipeline due to redundancy)
 
 ### 3. Git-Secrets Scan Wrapper
 - **From**: `.githooks/git-secrets-scan.sh`

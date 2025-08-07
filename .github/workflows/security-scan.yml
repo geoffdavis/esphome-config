@@ -108,39 +108,6 @@ jobs:
           detect-secrets scan --baseline .secrets.baseline --force-use-all-plugins
         fi
 
-    - name: Run ESPHome credential checks
-      run: |  # pragma: allowlist secret
-        echo "Running ESPHome-specific credential validation..."
-
-        # Make hooks executable
-        chmod +x .githooks/*.sh .githooks/*.py
-
-        # Check for known exposed credentials using regex patterns
-        EXPOSED_CREDENTIAL_PATTERNS=(
-          "rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk="  # pragma: allowlist secret
-          "5929ccc1f08289c79aca50ebe0a9b7eb"  # pragma: allowlist secret
-          "1SXRpeXi7AdU"  # pragma: allowlist secret
-        )
-
-        exit_code=0
-        for pattern in "${EXPOSED_CREDENTIAL_PATTERNS[@]}"; do
-          if grep -r "$pattern" . --exclude-dir=".git" --exclude-dir=".esphome" --exclude=".gitsecrets" --exclude=".gitallowed" --exclude-dir=".github"; then
-            echo "❌ Found known exposed credential matching pattern: $pattern"
-            exit_code=1
-          fi
-        done
-
-        # Run ESPHome credential check on all YAML files
-        find . -name "*.yaml" -o -name "*.yml" | grep -v ".esphome/" | while read file; do
-          ./.githooks/esphome_credential_check.py "$file"
-        done
-
-        if [ $exit_code -eq 0 ]; then
-          echo "✅ No known exposed credentials found"
-        else
-          echo "❌ Known exposed credentials detected - immediate rotation required"
-          exit 1
-        fi
 
     - name: Run pre-commit hooks
       run: |
@@ -158,9 +125,8 @@ jobs:
         echo "## 🔒 Security Scan Summary" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "### 🛡️ Security Measures Active:" >> $GITHUB_STEP_SUMMARY
-        echo "- Git-secrets credential scanning" >> $GITHUB_STEP_SUMMARY
-        echo "- ESPHome-specific pattern detection" >> $GITHUB_STEP_SUMMARY
-        echo "- Known credential exposure detection" >> $GITHUB_STEP_SUMMARY
+        echo "- Git-secrets credential scanning with ESPHome patterns" >> $GITHUB_STEP_SUMMARY
+        echo "- Detect-secrets comprehensive scanning with baseline" >> $GITHUB_STEP_SUMMARY
         echo "- Pre-commit hook enforcement" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "✅ **Essential security checks completed**" >> $GITHUB_STEP_SUMMARY

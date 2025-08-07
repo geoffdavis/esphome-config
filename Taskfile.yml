@@ -28,10 +28,8 @@ tasks:
             task secrets
           fi
 
-          # Run basic credential checks on YAML files
-          find . -name "*.yaml" -not -path "./.esphome/*" | while read -r file; do
-            ./.githooks/esphome_credential_check.py "$file" || exit 1
-          done
+          # Security validation is now handled by git-secrets, detect-secrets, and Python framework
+          echo "ℹ️  ESPHome credential validation integrated into git-secrets and pre-commit hooks"
 
           echo "✅ Essential security validation completed"
 
