@@ -21,9 +21,9 @@ class TestConfig:
         'wifi_ssid': 'TestNetwork',
         'wifi_password': 'testpassword123',
         'wifi_domain': 'test.example.com',
-        'api_key': 'dGVzdF9hcGlfa2V5XzEyMzQ1Njc4OTBhYmNkZWY=',  # test_api_key_1234567890abcdef
-        'ota_password': '1234567890abcdef1234567890abcdef',
-        'fallback_password': 'testpassword'
+        'api_key': 'dGVzdF9hcGlfa2V5XzEyMzQ1Njc4OTBhYmNkZWY=',  # pragma: allowlist secret
+        'ota_password': '1234567890abcdef1234567890abcdef',  # pragma: allowlist secret
+        'fallback_password': 'testpassword'  # pragma: allowlist secret
     }
 
     # Invalid test credentials
@@ -42,9 +42,9 @@ class TestConfig:
 wifi_ssid: "TestNetwork"
 wifi_password: "testpassword123"
 wifi_domain: "test.example.com"
-api_key: "dGVzdF9hcGlfa2V5XzEyMzQ1Njc4OTBhYmNkZWY="
-ota_password: "1234567890abcdef1234567890abcdef"
-fallback_password: "testpassword"
+api_key: "dGVzdF9hcGlfa2V5XzEyMzQ1Njc4OTBhYmNkZWY="  # pragma: allowlist secret
+ota_password: "1234567890abcdef1234567890abcdef"  # pragma: allowlist secret
+fallback_password: "testpassword"  # pragma: allowlist secret
 """
 
     TEST_ENV_FILE = """

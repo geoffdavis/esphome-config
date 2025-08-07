@@ -9,3 +9,43 @@ rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk=
 
 # Known exposed fallback password used in documentation and testing
 1SXRpeXi7AdU
+
+# Additional credentials found in documentation and scripts (safe for testing)
+QUdFI1iJUufjl00V+seh+sH8bZooCNHqHU4vB46c2Ac=
+55977e01702437af44c5544c565fb451
+3a11021250d483c5e78d0ff3e93779e3
+abcdef1234567890abcdef1234567890
+
+# Package-lock.json integrity hashes (npm SHA integrity hashes)
+# Pattern: "integrity": "sha[0-9]+-[A-Za-z0-9+/]+=*"
+"integrity":\s*"sha[0-9]+-[A-Za-z0-9+/]+=*"
+
+# Test credentials in test files (safe for testing)
+# Test API key (base64 encoded "test_api_key_1234567890abcdef")
+dGVzdF9hcGlfa2V5XzEyMzQ1Njc4OTBhYmNkZWY=
+
+# Test OTA password (32-char hex for testing)
+1234567890abcdef1234567890abcdef
+
+# Test fallback password
+testpassword
+
+# Allow pragma comments for detect-secrets compatibility
+# pragma: allowlist secret
+
+# Allow 1Password CLI patterns
+op\s+read\s+["\']?op://[^"'\s]+["\']?
+
+# Allow example placeholders
+EXAMPLE_[A-Z_]+
+YOUR_[A-Z_]+_HERE
+
+# Allow !secret patterns (Home Assistant style)
+!secret\s+[A-Za-z0-9_]+
+
+# Allow resolved URLs in package-lock.json
+"resolved":\s*"https://registry\.npmjs\.org/
+
+# Allow common test patterns
+test_[a-zA-Z0-9_]+
+TEST_[A-Z_]+

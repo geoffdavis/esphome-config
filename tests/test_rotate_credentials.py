@@ -123,7 +123,7 @@ class TestCredentialValidator(unittest.TestCase):
 
     def test_validate_api_key_exposed(self):
         """Test validation detects exposed API key"""
-        exposed_key = "rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk="
+        exposed_key = "rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk="  # pragma: allowlist secret
         valid, msg = self.validator.validate_api_key(exposed_key)
         self.assertFalse(valid)
         self.assertIn("exposed", msg)
@@ -153,7 +153,7 @@ class TestCredentialValidator(unittest.TestCase):
 
     def test_validate_ota_password_exposed(self):
         """Test validation detects exposed OTA password"""
-        exposed_password = "5929ccc1f08289c79aca50ebe0a9b7eb"
+        exposed_password = "5929ccc1f08289c79aca50ebe0a9b7eb"  # pragma: allowlist secret
         valid, msg = self.validator.validate_ota_password(exposed_password)
         self.assertFalse(valid)
         self.assertIn("exposed", msg)
@@ -181,7 +181,7 @@ class TestCredentialValidator(unittest.TestCase):
 
     def test_validate_fallback_password_exposed(self):
         """Test validation detects exposed fallback password"""
-        exposed_password = "1SXRpeXi7AdU"
+        exposed_password = "1SXRpeXi7AdU"  # pragma: allowlist secret
         valid, msg = self.validator.validate_fallback_password(exposed_password)
         self.assertFalse(valid)
         self.assertIn("exposed", msg)
@@ -310,7 +310,7 @@ class TestDeploymentManager(unittest.TestCase):
         with open("secrets.yaml.old", "r") as f:
             content = f.read()
             self.assertIn("test_ssid", content)
-            self.assertIn("rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk=", content)
+            self.assertIn("rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk=", content)  # pragma: allowlist secret
 
     @patch('subprocess.run')
     def test_create_old_credentials_file_failure(self, mock_run):
@@ -628,9 +628,9 @@ class TestIntegration(unittest.TestCase):
         validator = CredentialValidator()
 
         # Test all exposed credentials are detected
-        exposed_api = "rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk="
-        exposed_ota = "5929ccc1f08289c79aca50ebe0a9b7eb"
-        exposed_fallback = "1SXRpeXi7AdU"
+        exposed_api = "rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk="  # pragma: allowlist secret
+        exposed_ota = "5929ccc1f08289c79aca50ebe0a9b7eb"  # pragma: allowlist secret
+        exposed_fallback = "1SXRpeXi7AdU"  # pragma: allowlist secret
 
         api_valid, api_msg = validator.validate_api_key(exposed_api)
         ota_valid, ota_msg = validator.validate_ota_password(exposed_ota)
