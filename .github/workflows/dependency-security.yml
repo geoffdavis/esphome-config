@@ -50,8 +50,8 @@ jobs:
       run: |
         echo "Running Python dependency vulnerability scan..."
 
-        # Run safety check
-        if safety check; then
+        # Run safety scan
+        if safety scan; then
           echo "✅ Safety scan passed"
         else
           echo "❌ Safety found vulnerabilities"
