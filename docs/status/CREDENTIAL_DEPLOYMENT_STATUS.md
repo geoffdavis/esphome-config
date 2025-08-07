@@ -39,7 +39,6 @@ All 24 devices failed deployment during Stage 1 with exit codes 1-2, indicating:
 - Sensor devices using ESP01 boards
 
 **ESP32 Devices** (direct deployment):
-- `esp32heatpump`
 - `den_audio_led`
 - `pruscilla_enclosure`
 - `particle_man`
