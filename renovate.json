@@ -1,13 +1,21 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:base"
+    "config:recommended"
   ],
   "packageRules": [
     {
       "matchPackageNames": ["esphome"],
-      "datasource": "github-releases",
-      "depName": "esphome/esphome"
+      "matchManagers": ["pip_requirements"],
+      "schedule": ["before 6am on monday"]
+    },
+    {
+      "matchPackageNames": ["PyYAML", "yamllint"],
+      "matchManagers": ["pip_requirements"],
+      "groupName": "Python linting tools"
     }
-  ]
+  ],
+  "schedule": ["before 6am on monday"],
+  "timezone": "America/Los_Angeles",
+  "labels": ["dependencies"]
 }
