@@ -78,7 +78,8 @@ climate:
       disabled_by_default: false
     stage_sensor:
       name: Stage
-      # use_as_operating_fallback: false     # set to true if your unit doesn't provide activity indicator
+      # use_as_operating_fallback: false     # set to true if your unit
+      #                                      # doesn't provide activity indicator
       id: stage
       entity_category: diagnostic
       disabled_by_default: true

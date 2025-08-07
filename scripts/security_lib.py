@@ -25,6 +25,22 @@ import logging
 # ENVIRONMENT CONFIGURATION
 # =============================================================================
 
+def is_ci_environment() -> bool:
+    """Check if running in a CI environment"""
+    ci_indicators = [
+        'CI',           # Generic CI indicator
+        'GITHUB_ACTIONS',  # GitHub Actions
+        'TRAVIS',       # Travis CI
+        'JENKINS_URL',  # Jenkins
+        'CIRCLECI',     # CircleCI
+        'GITLAB_CI',    # GitLab CI
+        'BUILDKITE',    # Buildkite
+        'TF_BUILD'      # Azure DevOps
+    ]
+
+    return any(os.getenv(indicator) for indicator in ci_indicators)
+
+
 def load_env_file(env_file: str = ".env") -> None:
     """Load environment variables from .env file if it exists"""
     if os.path.exists(env_file):
@@ -54,8 +70,29 @@ class SecurityConfig:
         """Get 1Password account from environment"""
         account = os.getenv('OP_ACCOUNT')
         if not account:
+            if is_ci_environment():
+                # In CI, return a placeholder to avoid breaking the flow
+                return "ci-placeholder"
             raise ValueError("OP_ACCOUNT environment variable not set. Please set it in .env file or environment.")
         return account
+
+    @staticmethod
+    def is_onepassword_available() -> bool:
+        """Check if 1Password is available and configured"""
+        if is_ci_environment():
+            return False
+
+        account = os.getenv('OP_ACCOUNT')
+        if not account:
+            return False
+
+        # Check if 1Password CLI is available
+        try:
+            subprocess.run(['op', 'account', 'list'],
+                         check=True, capture_output=True, text=True)
+            return True
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            return False
 
     AUTOMATION_VAULT = "Automation"
     SHARED_VAULT = "Shared"
@@ -296,11 +333,18 @@ class OnePasswordManager:
     """Manages 1Password CLI operations"""
 
     def __init__(self, account: Optional[str] = None):
-        self.account = account or SecurityConfig.get_onepassword_account()
+        if is_ci_environment():
+            self.account = "ci-placeholder"
+            self.ci_mode = True
+        else:
+            self.account = account or SecurityConfig.get_onepassword_account()
+            self.ci_mode = False
         self.logger = SecurityLogger("1password")
 
     def check_cli_available(self) -> bool:
         """Check if 1Password CLI is available and authenticated"""
+        if self.ci_mode:
+            return False
         try:
             subprocess.run(['op', 'account', 'list'],
                          check=True, capture_output=True, text=True)
@@ -310,6 +354,8 @@ class OnePasswordManager:
 
     def check_account_access(self) -> bool:
         """Check if we can access the configured account"""
+        if self.ci_mode:
+            return False
         try:
             result = subprocess.run([
                 'op', 'account', 'list', f'--account={self.account}'
@@ -320,6 +366,8 @@ class OnePasswordManager:
 
     def check_vault_access(self, vault_name: str) -> bool:
         """Check if we can access a specific vault"""
+        if self.ci_mode:
+            return False
         try:
             result = subprocess.run([
                 'op', 'vault', 'list', f'--account={self.account}'
@@ -330,6 +378,8 @@ class OnePasswordManager:
 
     def check_item_access(self, vault_name: str, item_name: str) -> bool:
         """Check if we can access a specific item"""
+        if self.ci_mode:
+            return False
         try:
             subprocess.run([
                 'op', 'item', 'get', item_name, f'--vault={vault_name}',
@@ -341,6 +391,8 @@ class OnePasswordManager:
 
     def get_item_field(self, vault_name: str, item_name: str, field_name: str) -> Optional[str]:
         """Get a specific field from an item"""
+        if self.ci_mode:
+            return None
         try:
             result = subprocess.run([
                 'op', 'item', 'get', item_name, f'--vault={vault_name}',
@@ -352,6 +404,8 @@ class OnePasswordManager:
 
     def update_item_field(self, vault_name: str, item_name: str, field_name: str, value: str) -> bool:
         """Update a specific field in an item"""
+        if self.ci_mode:
+            return False
         try:
             subprocess.run([
                 'op', 'item', 'edit', item_name, f'--vault={vault_name}',
@@ -364,6 +418,8 @@ class OnePasswordManager:
 
     def get_esphome_credentials(self) -> Optional[Dict[str, str]]:
         """Get all ESPHome credentials from 1Password"""
+        if self.ci_mode:
+            return None
         credentials = {}
 
         for field in ['api_key', 'ota_password', 'fallback_password']:
@@ -377,6 +433,8 @@ class OnePasswordManager:
 
     def get_wifi_credentials(self) -> Optional[Dict[str, str]]:
         """Get WiFi credentials from 1Password"""
+        if self.ci_mode:
+            return None
         credentials = {}
         field_mapping = {
             'wifi_ssid': 'network name',

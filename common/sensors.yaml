@@ -18,7 +18,8 @@ sensor:
   - platform: uptime
     name: ${name} Uptime
 
-# Create a button to restart the unit from HomeAssistant. Rarely needed, but can be handy.
+# Create a button to restart the unit from HomeAssistant. Rarely needed,
+# but can be handy.
 button:
   - platform: restart
     name: Restart

@@ -19,7 +19,8 @@ from security_lib import (
     CredentialValidator,
     OnePasswordManager,
     SecureFileHandler,
-    SecurityScanner
+    SecurityScanner,
+    is_ci_environment
 )
 
 
@@ -141,6 +142,11 @@ class SecretsValidator:
 
     def validate_1password_integration(self) -> bool:
         """Validate 1Password integration"""
+        # Skip 1Password validation in CI environments
+        if is_ci_environment():
+            self.logger.info("Running in CI environment - skipping 1Password validation")
+            return True
+
         try:
             op_manager = OnePasswordManager()
         except ValueError as e:

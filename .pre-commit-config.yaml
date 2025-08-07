@@ -15,7 +15,9 @@ repos:
             scripts/setup-security\.sh|
             scripts/setup_security\.py|
             tests/.*\.py|
-            dev/.*
+            dev/.*|
+            \.github/workflows/security-scan\.yml|
+            docs/status/CREDENTIAL_ROTATION_GUIDE\.md
           )$
 
   # Basic YAML validation

@@ -1,7 +1,8 @@
 ---
 # File: common/sensor/temt6000.yaml
-# This file contains the configuration for a TEMT6000 light sensor connected to a GPIO pin.
-# It is included in various ESPHome configurations to standardize TEMT6000 sensor setup.
+# This file contains the configuration for a TEMT6000 light sensor
+# connected to a GPIO pin. It is included in various ESPHome
+# configurations to standardize TEMT6000 sensor setup.
 
 sensor:
   - platform: adc

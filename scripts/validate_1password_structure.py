@@ -20,7 +20,8 @@ from security_lib import (
     CredentialValidator,
     OnePasswordManager,
     CredentialGenerator,
-    check_required_tools
+    check_required_tools,
+    is_ci_environment
 )
 
 
@@ -284,6 +285,12 @@ class OnePasswordValidator:
     def run_validation(self) -> bool:
         """Run complete 1Password structure validation"""
         self.logger.header("1Password Structure Validation")
+
+        # Skip 1Password validation in CI environments
+        if is_ci_environment():
+            self.logger.info("Running in CI environment - skipping 1Password structure validation")
+            self.logger.success("1Password validation skipped in CI environment")
+            return True
 
         # Check 1Password CLI
         if not self.check_op_cli():
