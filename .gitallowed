@@ -1,0 +1,11 @@
+# Git-secrets allowed patterns for legitimate test credentials and documentation
+# These are known exposed credentials used only for testing and documentation
+
+# Known exposed API key used in documentation and testing
+rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk=
+
+# Known exposed OTA password used in documentation and testing
+5929ccc1f08289c79aca50ebe0a9b7eb
+
+# Known exposed fallback password used in documentation and testing
+1SXRpeXi7AdU

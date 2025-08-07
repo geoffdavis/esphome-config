@@ -76,7 +76,8 @@ class CredentialChecker:
                 # Skip common English words that match the pattern
                 common_words = [
                     'representing', 'markdownlint', 'configuration', 'temperature',
-                    'cn105climate', 'environments', 'overwhelming', 'production'
+                    'cn105climate', 'environments', 'overwhelming', 'production',
+                    'disconnected'
                 ]
                 if matched_text.lower() in common_words:
                     continue
