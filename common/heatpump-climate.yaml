@@ -4,7 +4,20 @@
 
 # External component: https://github.com/echavet/MitsubishiCN105ESPHome
 external_components:
-  - source: github://echavet/MitsubishiCN105ESPHome@v1.4.1
+  # - source: github://echavet/MitsubishiCN105ESPHome@v1.4.1
+  #  refresh: 0s
+  - source: github://echavet/MitsubishiCN105ESPHome@main
+     # This is the latest version, but you can pin to a specific version if needed
+     # by replacing 'main' with a specific tag or commit hash.
+     # The refresh option is set to 0s to avoid unnecessary updates.
+     # If you want to update the component automatically, you can set a refresh
+     # interval, e.g., 1d for daily updates.
+     # Note: Using the main branch may introduce breaking changes if the component
+     #       is updated frequently. Consider using a specific version for stability.
+     #       If you use a specific version, you can remove the refresh option.
+     #       If you want to use a specific version, you can specify it like this:
+     # - source: github://echavet/MitsubishiCN105ESPHome@v1.4.1
+     #   refresh: 0s
     refresh: 0s
 
 # Add remote temperature action (previously service) to the API
