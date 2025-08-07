@@ -56,14 +56,13 @@ jobs:
           done < .gitsecrets
         fi
 
-        # Add allowed patterns for legitimate test credentials and documentation
+        # Add allowed patterns for legitimate test credentials and documentation (using regex patterns)
         git secrets --add --allowed 'rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk='
         git secrets --add --allowed '5929ccc1f08289c79aca50ebe0a9b7eb'
         git secrets --add --allowed '1SXRpeXi7AdU'
         
-        # Additional credentials found in documentation and scripts (safe for testing)
-        git secrets --add --allowed 'QUdFI1iJUufjl00V+seh+sH8bZooCNHqHU4vB46c2Ac='
-        git secrets --add --allowed '`QUdFI1iJUufjl00V\+seh\+sH8bZooCNHqHU4vB46c2Ac=`'
+        # Additional credentials found in documentation and scripts (safe for testing) - regex patterns
+        git secrets --add --allowed 'QUdFI1iJUufjl00V\+seh\+sH8bZooCNHqHU4vB46c2Ac='
         git secrets --add --allowed '55977e01702437af44c5544c565fb451'
         git secrets --add --allowed '3a11021250d483c5e78d0ff3e93779e3'
         git secrets --add --allowed 'abcdef1234567890abcdef1234567890'
@@ -113,17 +112,17 @@ jobs:
         # Make hooks executable
         chmod +x .githooks/*.sh .githooks/*.py
 
-        # Check for known exposed credentials
-        EXPOSED_CREDENTIALS=(
+        # Check for known exposed credentials using regex patterns
+        EXPOSED_CREDENTIAL_PATTERNS=(
           "rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk="  # pragma: allowlist secret
           "5929ccc1f08289c79aca50ebe0a9b7eb"  # pragma: allowlist secret
           "1SXRpeXi7AdU"  # pragma: allowlist secret
         )
 
         exit_code=0
-        for cred in "${EXPOSED_CREDENTIALS[@]}"; do
-          if grep -r "$cred" . --exclude-dir=".git" --exclude-dir=".esphome" --exclude=".gitsecrets"; then
-            echo "❌ Found known exposed credential: $cred"
+        for pattern in "${EXPOSED_CREDENTIAL_PATTERNS[@]}"; do
+          if grep -r "$pattern" . --exclude-dir=".git" --exclude-dir=".esphome" --exclude=".gitsecrets" --exclude=".gitallowed" --exclude-dir=".github"; then
+            echo "❌ Found known exposed credential matching pattern: $pattern"
             exit_code=1
           fi
         done

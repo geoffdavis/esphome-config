@@ -1,17 +1,17 @@
 # Git-secrets allowed patterns for legitimate test credentials and documentation
-# These are known exposed credentials used only for testing and documentation
+# These are regex patterns that match known exposed credentials used only for testing and documentation
 
-# Known exposed API key used in documentation and testing
+# Known exposed API key used in documentation and testing (regex pattern)
 rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk=
 
-# Known exposed OTA password used in documentation and testing
+# Known exposed OTA password used in documentation and testing (regex pattern)
 5929ccc1f08289c79aca50ebe0a9b7eb
 
-# Known exposed fallback password used in documentation and testing
+# Known exposed fallback password used in documentation and testing (regex pattern)
 1SXRpeXi7AdU
 
-# Additional credentials found in documentation and scripts (safe for testing)
-QUdFI1iJUufjl00V+seh+sH8bZooCNHqHU4vB46c2Ac=
+# Additional credentials found in documentation and scripts (safe for testing) - regex patterns
+QUdFI1iJUufjl00V\+seh\+sH8bZooCNHqHU4vB46c2Ac=
 55977e01702437af44c5544c565fb451
 3a11021250d483c5e78d0ff3e93779e3
 abcdef1234567890abcdef1234567890
