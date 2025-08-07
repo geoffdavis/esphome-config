@@ -2,7 +2,8 @@
 
 ## Complete Step-by-Step Process for Rotating Exposed Credentials
 
-This document provides a complete walkthrough of the credential rotation process for the exposed ESPHome credentials, integrating with the security validation tools and two-stage deployment process.
+This document provides a complete walkthrough of the credential rotation process for the exposed
+ESPHome credentials, integrating with the security validation tools and two-stage deployment process.
 
 ## Prerequisites Setup
 
@@ -28,7 +29,7 @@ chmod +x .githooks/*.sh
 chmod +x scripts/validate-*.sh
 
 # Test security detection
-echo 'api_key: "rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk="' > test.yaml
+echo 'api_key: "rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk="' > test.yaml  # pragma: allowlist secret
 ./.githooks/esphome-credential-check.sh test.yaml
 # Should output: "ERROR: Known exposed API key found in test.yaml"
 rm test.yaml
@@ -143,9 +144,9 @@ cat > secrets.yaml.old << EOF
 wifi_ssid: $(op read "op://Shared/Home IoT/network name")
 wifi_password: $(op read "op://Shared/Home IoT/wireless network password")
 wifi_domain: $(op read "op://Shared/Home IoT/domain name")
-api_key: "rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk="
-ota_password: "5929ccc1f08289c79aca50ebe0a9b7eb"
-fallback_password: "1SXRpeXi7AdU"
+api_key: "rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk="  # pragma: allowlist secret
+ota_password: "5929ccc1f08289c79aca50ebe0a9b7eb"  # pragma: allowlist secret
+fallback_password: "1SXRpeXi7AdU"  # pragma: allowlist secret
 EOF
 
 # Use old credentials for deployment authentication
@@ -205,9 +206,9 @@ done
 echo "=== Testing Security Hook Detection ==="
 
 # Test that security hooks detect old exposed credentials
-echo 'api_key: "rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk="' > test_old_api.yaml
-echo 'ota_password: "5929ccc1f08289c79aca50ebe0a9b7eb"' > test_old_ota.yaml
-echo 'fallback_password: "1SXRpeXi7AdU"' > test_old_fallback.yaml
+echo 'api_key: "rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk="' > test_old_api.yaml  # pragma: allowlist secret
+echo 'ota_password: "5929ccc1f08289c79aca50ebe0a9b7eb"' > test_old_ota.yaml  # pragma: allowlist secret
+echo 'fallback_password: "1SXRpeXi7AdU"' > test_old_fallback.yaml  # pragma: allowlist secret
 
 echo "Testing API key detection:"
 ./.githooks/esphome-credential-check.sh test_old_api.yaml
@@ -278,19 +279,19 @@ rm -f secrets.yaml.backup.*
 
 # Verify no old credentials remain in working directory
 echo "Scanning for remaining exposed credentials..."
-if grep -r "rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk=" . --exclude-dir=.git 2>/dev/null; then
+if grep -r "rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk=" . --exclude-dir=.git 2>/dev/null; then  # pragma: allowlist secret
     echo "❌ Old API key still found in files"
 else
     echo "✅ No old API keys found"
 fi
 
-if grep -r "5929ccc1f08289c79aca50ebe0a9b7eb" . --exclude-dir=.git 2>/dev/null; then
+if grep -r "5929ccc1f08289c79aca50ebe0a9b7eb" . --exclude-dir=.git 2>/dev/null; then  # pragma: allowlist secret
     echo "❌ Old OTA password still found in files"
 else
     echo "✅ No old OTA passwords found"
 fi
 
-if grep -r "1SXRpeXi7AdU" . --exclude-dir=.git 2>/dev/null; then
+if grep -r "1SXRpeXi7AdU" . --exclude-dir=.git 2>/dev/null; then  # pragma: allowlist secret
     echo "❌ Old fallback password still found in files"
 else
     echo "✅ No old fallback passwords found"
@@ -396,9 +397,9 @@ echo "⚠️  EMERGENCY ROLLBACK - Use only if new credentials fail"
 
 # Restore old credentials temporarily in 1Password
 op item edit "ESPHome" --vault="Automation" \
-  api_key="rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk=" \
-  ota_password="5929ccc1f08289c79aca50ebe0a9b7eb" \
-  fallback_password="1SXRpeXi7AdU"
+  api_key="rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk=" \  # pragma: allowlist secret
+  ota_password="5929ccc1f08289c79aca50ebe0a9b7eb" \  # pragma: allowlist secret
+  fallback_password="1SXRpeXi7AdU"  # pragma: allowlist secret
 
 # Generate old secrets
 ./scripts/generate_secrets.sh
@@ -420,4 +421,5 @@ This walkthrough provides a complete, tested process for rotating exposed ESPHom
 - **Automated validation** with security hooks
 - **Complete documentation** of the rotation process
 
-The process ensures that exposed credentials are securely rotated while maintaining device connectivity and implementing robust security measures to prevent future exposures.
+The process ensures that exposed credentials are securely rotated while maintaining device
+connectivity and implementing robust security measures to prevent future exposures.

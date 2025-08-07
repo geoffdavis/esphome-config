@@ -87,7 +87,7 @@ jobs:
         echo "Running ESPHome-specific credential validation..."
 
         # Make hooks executable
-        chmod +x .githooks/*.sh
+        chmod +x .githooks/*.sh .githooks/*.py
 
         # Check for known exposed credentials
         EXPOSED_CREDENTIALS=(
@@ -106,7 +106,7 @@ jobs:
 
         # Run ESPHome credential check on all YAML files
         find . -name "*.yaml" -o -name "*.yml" | grep -v ".esphome/" | while read file; do
-          ./.githooks/esphome-credential-check.sh "$file"
+          ./.githooks/esphome_credential_check.py "$file"
         done
 
         if [ $exit_code -eq 0 ]; then

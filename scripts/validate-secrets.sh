@@ -55,7 +55,7 @@ validate_api_key() {
         log_success "API key format is valid (44 chars, base64)"
 
         # Check if it's the known exposed key
-        if [[ "$api_key" == "rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk=" ]]; then
+        if [[ "$api_key" == "rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk=" ]]; then  # pragma: allowlist secret
             log_error "API key is the known exposed credential - must be rotated!"
             return 1
         fi
@@ -84,7 +84,7 @@ validate_ota_password() {
         log_success "OTA password format is valid (32 chars, hex)"
 
         # Check if it's the known exposed password
-        if [[ "$ota_password" == "5929ccc1f08289c79aca50ebe0a9b7eb" ]]; then
+        if [[ "$ota_password" == "5929ccc1f08289c79aca50ebe0a9b7eb" ]]; then  # pragma: allowlist secret
             log_error "OTA password is the known exposed credential - must be rotated!"
             return 1
         fi
@@ -113,7 +113,7 @@ validate_fallback_password() {
         log_success "Fallback password format is valid (${#fallback_password} chars, alphanumeric)"
 
         # Check if it's the known exposed password
-        if [[ "$fallback_password" == "1SXRpeXi7AdU" ]]; then
+        if [[ "$fallback_password" == "1SXRpeXi7AdU" ]]; then  # pragma: allowlist secret
             log_error "Fallback password is the known exposed credential - must be rotated!"
             return 1
         fi
@@ -215,9 +215,9 @@ scan_for_exposed_credentials() {
     local found_issues=0
 
     # Known exposed credentials
-    local exposed_api_key="rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk="
-    local exposed_ota_password="5929ccc1f08289c79aca50ebe0a9b7eb"
-    local exposed_fallback_password="1SXRpeXi7AdU"
+    local exposed_api_key="rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk="  # pragma: allowlist secret
+    local exposed_ota_password="5929ccc1f08289c79aca50ebe0a9b7eb"  # pragma: allowlist secret
+    local exposed_fallback_password="1SXRpeXi7AdU"  # pragma: allowlist secret
 
     # Scan all YAML files except secrets.yaml (which we validate separately)
     while IFS= read -r -d '' file; do

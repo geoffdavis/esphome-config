@@ -130,7 +130,7 @@ validate_field_values() {
     api_key=$(op item get "$item_name" --vault="$vault_name" --account="$OP_ACCOUNT" --fields="api_key" 2>/dev/null || echo "")
     if [[ -n "$api_key" ]]; then
         if [[ ${#api_key} -eq 44 && "$api_key" =~ ^[A-Za-z0-9+/]{43}=$ ]]; then
-            if [[ "$api_key" == "rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk=" ]]; then
+            if [[ "$api_key" == "rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk=" ]]; then  # pragma: allowlist secret
                 log_error "API key is the known exposed credential - must be rotated!"
                 errors=$((errors + 1))
             else
@@ -147,7 +147,7 @@ validate_field_values() {
     ota_password=$(op item get "$item_name" --vault="$vault_name" --account="$OP_ACCOUNT" --fields="ota_password" 2>/dev/null || echo "")
     if [[ -n "$ota_password" ]]; then
         if [[ ${#ota_password} -eq 32 && "$ota_password" =~ ^[a-fA-F0-9]{32}$ ]]; then
-            if [[ "$ota_password" == "5929ccc1f08289c79aca50ebe0a9b7eb" ]]; then
+            if [[ "$ota_password" == "5929ccc1f08289c79aca50ebe0a9b7eb" ]]; then  # pragma: allowlist secret
                 log_error "OTA password is the known exposed credential - must be rotated!"
                 errors=$((errors + 1))
             else
@@ -164,7 +164,7 @@ validate_field_values() {
     fallback_password=$(op item get "$item_name" --vault="$vault_name" --account="$OP_ACCOUNT" --fields="fallback_password" 2>/dev/null || echo "")
     if [[ -n "$fallback_password" ]]; then
         if [[ ${#fallback_password} -ge 12 && "$fallback_password" =~ ^[A-Za-z0-9]+$ ]]; then
-            if [[ "$fallback_password" == "1SXRpeXi7AdU" ]]; then
+            if [[ "$fallback_password" == "1SXRpeXi7AdU" ]]; then  # pragma: allowlist secret
                 log_error "Fallback password is the known exposed credential - must be rotated!"
                 errors=$((errors + 1))
             else

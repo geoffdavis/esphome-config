@@ -2,7 +2,9 @@
 
 ## Overview
 
-This guide provides step-by-step procedures for rotating exposed ESPHome credentials using a secure two-stage deployment process. The rotation process ensures zero-downtime updates while maintaining security throughout the transition.
+This guide provides step-by-step procedures for rotating exposed ESPHome credentials using a secure
+two-stage deployment process. The rotation process ensures zero-downtime updates while maintaining
+security throughout the transition.
 
 ## Exposed Credentials Requiring Rotation
 
@@ -12,7 +14,9 @@ The following credentials have been exposed and must be rotated immediately:
 - **OTA Password**: `5929ccc1f08289c79aca50ebe0a9b7eb` # pragma: allowlist secret
 - **Fallback Hotspot Password**: `1SXRpeXi7AdU` # pragma: allowlist secret
 
-These credentials are detected by the security hooks in [`.githooks/esphome-credential-check.sh`](.githooks/esphome-credential-check.sh:30-43) and must not appear in any configuration files.
+These credentials are detected by the security hooks in
+[`.githooks/esphome-credential-check.sh`](.githooks/esphome-credential-check.sh:30-43) and must not
+appear in any configuration files.
 
 ## Prerequisites
 
@@ -25,6 +29,7 @@ Before starting the rotation process, ensure you have:
 5. **Network access** to all ESPHome devices
 
 Verify prerequisites:
+
 ```bash
 # Check 1Password access
 op account list
@@ -212,7 +217,7 @@ Test that the security hooks properly detect the old exposed credentials:
 
 ```bash
 # Test security hooks detect old credentials
-echo 'api_key: "rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk="' > test_old_creds.yaml
+echo 'api_key: "rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk="' > test_old_creds.yaml  # pragma: allowlist secret
 ./.githooks/esphome-credential-check.sh test_old_creds.yaml
 
 # Should output: "ERROR: Known exposed API key found in test_old_creds.yaml"
@@ -269,8 +274,10 @@ rm -f secrets.yaml.old
 rm -f secrets.yaml.backup.*
 
 # Verify no old credentials remain in working directory
-grep -r "rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk=" . --exclude-dir=.git || echo "✅ No old API keys found" # pragma: allowlist secret
-grep -r "5929ccc1f08289c79aca50ebe0a9b7eb" . --exclude-dir=.git || echo "✅ No old OTA passwords found" # pragma: allowlist secret
+grep -r "rgXTHsxFpWpqZ8keD/h0cPLN6CN2ZznLLyXwh9JgTAk=" . --exclude-dir=.git || \
+  echo "✅ No old API keys found" # pragma: allowlist secret
+grep -r "5929ccc1f08289c79aca50ebe0a9b7eb" . --exclude-dir=.git || \
+  echo "✅ No old OTA passwords found" # pragma: allowlist secret
 grep -r "1SXRpeXi7AdU" . --exclude-dir=.git || echo "✅ No old fallback passwords found" # pragma: allowlist secret
 ```
 
@@ -320,6 +327,7 @@ echo "✅ Rotation documented in CREDENTIAL_ROTATION_LOG.md"
 If a device becomes unresponsive:
 
 1. **Check network connectivity**:
+
    ```bash
    ping device-name.local
    ```
@@ -328,11 +336,12 @@ If a device becomes unresponsive:
    - Power cycle the device
    - Connect to "[Device Name] ESP" network
    - Use new fallback password
-   - Access http://192.168.4.1
+   - Access <http://192.168.4.1>
 
 3. **Physical access recovery**:
    - Connect device via USB
    - Flash firmware directly:
+
      ```bash
      task upload -- device-name --device /dev/ttyUSB0
      ```
@@ -361,7 +370,8 @@ If security hooks incorrectly flag valid configurations:
 
 1. **Check for hardcoded values** instead of `!secret` references
 2. **Verify secrets.yaml** contains only valid references
-3. **Update security patterns** in [`.githooks/esphome-credential-check.sh`](.githooks/esphome-credential-check.sh:1) if needed
+3. **Update security patterns** in
+   [`.githooks/esphome-credential-check.sh`](.githooks/esphome-credential-check.sh:1) if needed
 
 ### Rollback Procedure
 
@@ -428,6 +438,8 @@ This rotation process integrates with:
 
 ## Conclusion
 
-Following this guide ensures secure, zero-downtime rotation of exposed ESPHome credentials. The two-stage deployment process maintains device connectivity throughout the rotation while the integrated security hooks prevent future credential exposure.
+Following this guide ensures secure, zero-downtime rotation of exposed ESPHome credentials. The
+two-stage deployment process maintains device connectivity throughout the rotation while the
+integrated security hooks prevent future credential exposure.
 
 For questions or issues, refer to the troubleshooting section or review the security implementation in [`scripts/setup-security.sh`](scripts/setup-security.sh:1).
