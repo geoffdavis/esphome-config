@@ -1,6 +1,7 @@
 ---
+# Hardware: ESP32 M5Stack NanoC6 (upgraded from esp-01s #3 on board #3)
 # Hardware: esp-01s #3 on board #3
-# MAC Addr: ec:fa:bc:61:c8:e0
+# MAC Addr: 54:32:04:3f:1e:1c # (ESP32 NanoC6)
 substitutions:
   # This is the name used in the log files and for the device in Home Assistant
   name: bedroom-west-heatpump
@@ -22,8 +23,6 @@ packages:
   wifi: !include common/wifi.yaml
   ipv6: !include common/ipv6.yaml
   sensors: !include common/sensors.yaml
-  esp01: !include common/esp01.yaml
-  heatpump-esp01: !include common/heatpump-esp01.yaml
+  heatpump-esp32-nanoc6: !include common/heatpump-esp32-nanoc6.yaml
   climate: !include common/heatpump-climate.yaml
-
-web_server:
+  # bluetooth-proxy: !include common/bluetooth-proxy.yaml
