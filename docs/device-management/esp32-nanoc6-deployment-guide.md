@@ -11,7 +11,7 @@ hardware upgrade from ESP01 to ESP32-C6.
 - **Flash Memory**: 4MB (significant upgrade from ESP01's 1MB)
 - **Framework**: ESP-IDF
 - **UART Pins**: GPIO1 (TX), GPIO2 (RX) for heat pump communication
-- **USB Connection**: `/dev/tty.debug-console` (or similar USB serial port)
+- **USB Connection**: `/dev/tty.usbmodem2101` (or similar USB serial port)
 
 ## Pre-Deployment Verification
 
@@ -62,7 +62,7 @@ Since this is a new ESP32 device replacing an ESP01, initial flashing must be do
 ### 1. Hardware Connection
 
 1. Connect the M5Stack NanoC6 to your computer via USB-C cable
-2. Verify the device appears as `/dev/tty.debug-console` (or similar)
+2. Verify the device appears as `/dev/tty.usbmodem2101` (or similar)
 3. Ensure heat pump CN105 connector is properly wired:
    - GPIO1 → CN105 TX
    - GPIO2 → CN105 RX
@@ -75,7 +75,7 @@ Since this is a new ESP32 device replacing an ESP01, initial flashing must be do
 cd /Users/geoff/src/personal/esphome-config
 
 # Flash the firmware via USB serial
-mise exec -- esphome run bedroom_east_heatpump.yaml --device /dev/tty.debug-console
+mise exec uv -- esphome run bedroom-west-heatpump.yaml --device /dev/tty.usbmodem2101
 ```
 
 **Alternative using task system:**
@@ -92,7 +92,7 @@ After successful flashing:
 1. **Monitor Serial Output**:
 
    ```bash
-   mise exec -- esphome logs bedroom_east_heatpump.yaml --device /dev/tty.usbmodem2102
+   mise exec -- uv run esphome logs bedroom_east_heatpump.yaml --device /dev/tty.usbmodem2102
    ```
 
 2. **Expected Boot Sequence**:
@@ -269,6 +269,6 @@ For ongoing support:
 
 ---
 
-**Last Updated**: 2025-01-06
+**Last Updated**: 2025-09-28
 **Device**: bedroom_east_heatpump (ESP32 M5Stack NanoC6)
 **Configuration Version**: ESP32-C6 with CN105 heat pump integration

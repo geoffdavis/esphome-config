@@ -6,6 +6,8 @@ task = "latest"
 nodejs = "22.18.0"
 "npm:markdownlint-cli" = "latest"
 gh = "latest"
+uv = "latest"
+1password = "latest" # pragma: allowlist secret
 
 [env]
 _.python.venv = { path = ".venv", create = true }
