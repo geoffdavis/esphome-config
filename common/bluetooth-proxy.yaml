@@ -1,0 +1,14 @@
+# ESP32 Bluetooth LE proxy
+# VERY flash intensive, doesn't work with the HVAC Nano C6 units.
+#
+# Configure the bluetooth proxy component, required for the BLE tracker
+# https://esphome.io/components/bluetooth_proxy/
+bluetooth_proxy:
+  # Active connections are now enabled by default
+  # To disable active connections (previous default behavior), use:
+  # active: false
+
+# Then, configure the ESP32 BLE tracker component
+# https://esphome.io/components/esp32_ble_tracker/
+esp32_ble_tracker:
+  max_connections: 3
