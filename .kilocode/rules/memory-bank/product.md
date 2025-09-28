@@ -107,7 +107,7 @@ The system supports multiple deployment strategies:
 
 ### Controls
 
-- **Climate**: Heat pump controllers with ESP01 integration
+- **Climate**: Heat pump controllers with ESP01 and ESP32-C6 integration
 - **Switches**: Smart outlets and switches (TopGreener, Sonoff)
 - **Lighting**: RGB LED strips and smart bulbs
 - **Audio**: Music-reactive LED controllers with FFT processing
@@ -115,8 +115,15 @@ The system supports multiple deployment strategies:
 ### Platforms
 
 - **ESP32**: Full-featured devices with ample memory and processing power
+- **ESP32-C6**: RISC-V based ESP32 variant with enhanced features (M5Stack NanoC6)
 - **ESP8266**: Standard IoT devices (NodeMCU, D1 Mini variants)
 - **ESP01**: Memory-constrained devices requiring two-stage deployment
+
+### Bluetooth Integration
+
+- **Bluetooth Proxy**: ESP32 devices can serve as Bluetooth LE proxies for Home Assistant
+- **BLE Tracker**: Enhanced device tracking and presence detection
+- **Active Connections**: Support for multiple simultaneous Bluetooth connections
 
 ## Integration Points
 
@@ -125,6 +132,7 @@ The system supports multiple deployment strategies:
 - **API Integration**: Encrypted communication with Home Assistant
 - **Entity Discovery**: Automatic device and sensor discovery
 - **State Synchronization**: Real-time sensor data and control state updates
+- **Bluetooth Integration**: BLE proxy functionality for enhanced device tracking
 
 ### 1Password
 

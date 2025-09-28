@@ -144,11 +144,13 @@ for future reference.
 
 3. Include appropriate packages based on hardware platform:
    - ESP32: `nodemcuv2.yaml` or `esp32_device_base.yaml`
+   - ESP32-C6: `heatpump-esp32-nanoc6.yaml` for heat pumps
    - ESP8266: `nodemcuv2.yaml` or `wemosd1mini.yaml`
    - ESP01: `esp01.yaml`
 4. Add connectivity packages:
    - Full devices: `wifi.yaml`, `ipv6.yaml`
    - ESP01 minimal: `wifi-minimal.yaml`
+   - Bluetooth proxy: `bluetooth-proxy.yaml` (ESP32 only, not ESP32-C6 heat pumps)
 5. Include sensor packages as needed:
    - `sensor/bme280.yaml`, `sensor/dht.yaml`, etc.
 6. Test configuration: `task build -- device-name`
@@ -160,6 +162,7 @@ for future reference.
 - Always include fallback hotspot for recovery
 - Test with minimal configuration first for ESP01 devices
 - Document hardware connections in comments
+- ESP32-C6 devices support single-stage deployment
 
 ### Add New Sensor Type
 
@@ -236,6 +239,93 @@ for future reference.
 - Keep configurations synchronized between stages
 - Monitor device stability after full deployment
 
+### ESP32-C6 Heat Pump Deployment
+
+**Last performed:** Recent platform migration
+**Files to modify:**
+
+- Device configuration file (e.g., `bedroom-east-heatpump.yaml`)
+- ESP32-C6 platform package (`common/heatpump-esp32-nanoc6.yaml`)
+- Deployment documentation
+
+**Steps:**
+
+1. Create ESP32-C6 heat pump configuration:
+
+   ```yaml
+   substitutions:
+     name: device-heatpump
+     friendly_name: Device HeatPump
+     model: MFZ-KA09NA
+     remote_temp_sensor: sensor.device_temperature
+
+   packages:
+     wifi: !include common/wifi.yaml
+     ipv6: !include common/ipv6.yaml
+     sensors: !include common/sensors.yaml
+     heatpump-esp32-nanoc6: !include common/heatpump-esp32-nanoc6.yaml
+     climate: !include common/heatpump-climate.yaml
+   ```
+
+2. Initial serial flashing (new device):
+   - Connect ESP32-C6 via USB-C
+   - Flash via serial: `mise exec -- uv run esphome run device.yaml --device /dev/tty.usbmodem2101`
+
+3. Verify hardware connections:
+   - GPIO1 → CN105 TX
+   - GPIO2 → CN105 RX
+   - Ground connection
+
+4. Monitor first boot and WiFi connection
+5. Verify heat pump communication and Home Assistant integration
+6. Test climate controls and remote temperature sensor
+7. Future updates via OTA: `task upload -- device-name`
+
+**Important notes:**
+
+- Single-stage deployment (no minimal/full split needed)
+- 4MB flash allows full feature set immediately
+- Enhanced logging available for debugging
+- Native USB support for easier development
+- Not compatible with Bluetooth proxy due to flash constraints
+
+### Bluetooth Proxy Integration
+
+**Last performed:** Recent feature addition
+**Files to modify:**
+
+- Device configuration files (ESP32 devices only)
+- Bluetooth proxy package (`common/bluetooth-proxy.yaml`)
+- Home Assistant integration
+
+**Steps:**
+
+1. Add Bluetooth proxy to ESP32 device configuration:
+
+   ```yaml
+   packages:
+     wifi: !include common/wifi.yaml
+     ipv6: !include common/ipv6.yaml
+     sensors: !include common/sensors.yaml
+     bluetooth-proxy: !include common/bluetooth-proxy.yaml
+     # Other packages as needed
+   ```
+
+2. Verify device has sufficient flash memory (not suitable for ESP32-C6 heat pumps)
+3. Deploy configuration: `task upload -- device-name`
+4. Monitor device boot and Bluetooth initialization
+5. Verify BLE scanning and device discovery in Home Assistant
+6. Test active connections and device tracking
+7. Configure max connections based on device capabilities
+
+**Important notes:**
+
+- ESP32 platform only (not ESP8266, ESP01, or ESP32-C6 heat pumps)
+- Flash memory intensive - check available space
+- Active connections enabled by default
+- Configurable max connections (default: 3)
+- Enhances Home Assistant device tracking and presence detection
+
 ## Security Management Tasks
 
 ### Credential Rotation
@@ -288,14 +378,15 @@ for future reference.
    - Set up recovery network with exact credentials device expects
    - Wait for device to connect to recovery network
    - Deploy fixed firmware: `python3 scripts/recover_device.py <device_name>`
-5. For physical recovery:
-   - Use serial connection for firmware flashing
-   - Follow ESP01 physical recovery procedures
+5. For ESP32-C6 devices:
+   - Use USB-C serial connection for recovery flashing
+   - Flash recovery firmware via serial
 6. Verify device connectivity after recovery
 
 **Important notes:**
 
 - ESP01 devices may require recovery network setup
+- ESP32-C6 devices can use USB serial recovery
 - Always include fallback hotspot in minimal configurations
 - Document recovery procedures for each device type
 - Test recovery procedures periodically
@@ -412,11 +503,11 @@ for future reference.
 
 ### Update Development Tools
 
-**Last performed:** Regular maintenance
+**Last performed:** Python 3.13.5 and pyproject.toml migration
 **Files to modify:**
 
 - `.mise.toml` (tool versions)
-- `requirements.txt` (Python dependencies)
+- `pyproject.toml` (Python dependencies)
 - `package.json` (Node.js dependencies)
 
 **Steps:**
@@ -424,7 +515,7 @@ for future reference.
 1. Check for tool updates: `mise outdated`
 2. Update tool versions in `.mise.toml`
 3. Install updated tools: `mise install`
-4. Update Python dependencies: `pip install -r requirements.txt --upgrade`
+4. Update Python dependencies: `mise exec -- uv pip install -e . --upgrade`
 5. Update Node.js dependencies: `npm update`
 6. Run tests to ensure compatibility: `task test-security`
 7. Test build process: `task build-all`
@@ -437,6 +528,51 @@ for future reference.
 - Check for breaking changes in tool updates
 - Update documentation for any workflow changes
 - Coordinate updates across development team
+- Use UV package manager for faster Python dependency resolution
+
+### Python Environment Migration
+
+**Last performed:** Python 3.13.5 and pyproject.toml migration
+**Files to modify:**
+
+- `pyproject.toml` (new Python dependency management)
+- `.mise.toml` (Python version update)
+- Development workflows and documentation
+
+**Steps:**
+
+1. Create `pyproject.toml` with modern Python packaging:
+
+   ```toml
+   [project]
+   name = "esphome-config"
+   version = "0.1.0"
+   requires-python = ">=3.13"
+   dependencies = [
+       "esphome>=2025.9.1",
+   ]
+   ```
+
+2. Update `.mise.toml` with Python 3.13.5 and UV:
+
+   ```toml
+   [tools]
+   python = "3.13.5"
+   uv = "latest"
+   ```
+
+3. Install dependencies with UV: `mise exec -- uv pip install -e .`
+4. Test all Python scripts with new version
+5. Update documentation and workflows
+6. Verify security framework compatibility
+7. Test ESPHome compilation and deployment
+
+**Important notes:**
+
+- Modern Python packaging standards
+- Faster dependency resolution with UV
+- Better integration with development tools
+- Maintain backward compatibility where possible
 
 ## Maintenance Tasks
 
@@ -481,7 +617,7 @@ for future reference.
 1. Identify component requiring updates
 2. Create backup of current component
 3. Update component configuration
-4. Test with representative devices
+4. Test with representative devices (ESP01, ESP32, ESP32-C6)
 5. Validate sensor readings and functionality
 6. Update documentation and comments
 7. Deploy to test devices first
@@ -490,10 +626,11 @@ for future reference.
 
 **Important notes:**
 
-- Test with multiple device types
+- Test with multiple device types and platforms
 - Verify backward compatibility
 - Update component documentation
 - Monitor device performance after changes
+- Consider platform-specific limitations (ESP32-C6 heat pumps, Bluetooth proxy compatibility)
 
 ### Security Audit and Cleanup
 
@@ -522,3 +659,35 @@ for future reference.
 - Update security procedures as needed
 - Test all security tools and validations
 - Coordinate security updates with deployments
+
+### Platform Migration Planning
+
+**Last performed:** ESP32-C6 heat pump migration
+**Files to modify:**
+
+- Device migration documentation
+- Platform comparison analysis
+- Migration procedures and checklists
+
+**Steps:**
+
+1. Identify devices suitable for platform migration
+2. Analyze benefits and constraints:
+   - ESP01 → ESP32: Memory constraints eliminated
+   - ESP01 → ESP32-C6: Enhanced features, single-stage deployment
+   - Platform-specific limitations (Bluetooth proxy compatibility)
+3. Create migration plan with rollback procedures
+4. Test new platform configuration thoroughly
+5. Document hardware changes and wiring requirements
+6. Plan deployment timing and coordination
+7. Execute migration with monitoring
+8. Verify functionality and performance improvements
+9. Update documentation and procedures
+
+**Important notes:**
+
+- Consider memory, performance, and feature requirements
+- Document hardware compatibility and wiring changes
+- Plan for rollback scenarios
+- Test thoroughly before production migration
+- Update deployment procedures for new platforms

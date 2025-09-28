@@ -4,7 +4,7 @@
 
 ### ESPHome Framework
 
-- **Version**: Latest (managed via requirements.txt)
+- **Version**: Latest (managed via pyproject.toml)
 - **Purpose**: Primary IoT device firmware framework
 - **Language**: YAML configuration with C++ extensions
 - **Features**:
@@ -43,6 +43,8 @@
 python = "3.13.5"
 task = "latest"
 nodejs = "22.18.0"
+uv = "latest"
+1password = "latest" # pragma: allowlist secret
 
 [env]
 _.python.venv = { path = ".venv", create = true }
@@ -59,9 +61,10 @@ _.python.venv = { path = ".venv", create = true }
 
 ### Dependency Management
 
-- **Python**: [`requirements.txt`](requirements.txt) - ESPHome core
+- **Python**: [`pyproject.toml`](pyproject.toml) - Modern Python dependency management
 - **Node.js**: [`package.json`](package.json) - Renovate for dependency updates
 - **System**: Mise manages tool versions consistently
+- **UV**: Modern Python package manager for faster dependency resolution
 
 ## Security Framework
 
@@ -245,7 +248,7 @@ mise exec -- python3 scripts/setup_dev_secrets.py
 ```text
 ├── .mise.toml              # Tool version management
 ├── Taskfile.yml            # Build automation
-├── requirements.txt        # Python dependencies
+├── pyproject.toml          # Modern Python dependency management
 ├── package.json           # Node.js dependencies
 ├── .pre-commit-config.yaml # Quality assurance
 ├── .gitignore             # Version control exclusions
@@ -303,3 +306,91 @@ mise exec -- python3 scripts/setup_dev_secrets.py
 - **Security Logs**: Credential validation and rotation tracking
 - **Build Logs**: Compilation and deployment status
 - **Test Logs**: Security framework validation results
+
+## Platform-Specific Architecture
+
+### ESP32-C6 Platform Architecture
+
+**Hardware Specifications**:
+- **Board**: esp32-c6-devkitc-1 compatible (M5Stack NanoC6)
+- **Flash**: 4MB (significant upgrade from ESP01's 1MB)
+- **Framework**: ESP-IDF
+- **Architecture**: RISC-V based
+
+**Configuration Pattern**:
+```yaml
+esp32:
+  board: esp32-c6-devkitc-1
+  variant: esp32c6
+  flash_size: 4MB
+  framework:
+    type: esp-idf
+```
+
+**Deployment Benefits**:
+- Single-stage deployment (no minimal/full split needed)
+- Full feature set available immediately
+- Enhanced logging and debugging capabilities
+- Native USB support for easier development
+
+### Bluetooth Proxy Architecture
+
+**Component Structure**:
+```yaml
+bluetooth_proxy:
+  # Active connections enabled by default
+
+esp32_ble_tracker:
+  max_connections: 3
+```
+
+**Integration Flow**:
+1. ESP32 device scans for BLE devices
+2. Discovered devices forwarded to Home Assistant
+3. Enhanced presence detection and device tracking
+4. Active connections support for interactive devices
+
+**Limitations**:
+- ESP32 platform only (not ESP8266 or ESP01)
+- Flash memory intensive (not compatible with ESP32-C6 heat pump units)
+- Configurable connection limits to manage resources
+
+## Modern Python Development
+
+### pyproject.toml Migration
+
+**Configuration** ([`pyproject.toml`](pyproject.toml)):
+
+```toml
+[project]
+name = "esphome-config"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "esphome>=2025.9.1",
+]
+```
+
+**Benefits**:
+- Modern Python packaging standards
+- Clear dependency specification
+- Better integration with development tools
+- Simplified dependency management
+
+### UV Package Manager
+
+**Features**:
+- Faster dependency resolution than pip
+- Better caching and performance
+- Modern Python package management
+- Integrated with Mise tool management
+
+**Usage**:
+```bash
+# Install dependencies
+mise exec -- uv pip install -e .
+
+# Run ESPHome with UV
+mise exec -- uv run esphome compile device.yaml

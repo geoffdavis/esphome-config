@@ -33,6 +33,7 @@ The [`common/`](common/) directory contains reusable components organized by fun
   [`sensor/pir.yaml`](common/sensor/pir.yaml)
 - **Device-Specific Packages**: [`heatpump-esp01.yaml`](common/heatpump-esp01.yaml),
   [`heatpump-esp32-nanoc6.yaml`](common/heatpump-esp32-nanoc6.yaml), [`outlet-topgreener.yaml`](common/outlet-topgreener.yaml)
+- **Bluetooth Integration**: [`bluetooth-proxy.yaml`](common/bluetooth-proxy.yaml)
 
 ### 3. Deployment Architecture
 
@@ -173,6 +174,12 @@ packages:
 
 - [`custom_components/esphome-music-leds/`](custom_components/esphome-music-leds/)
 
+**Bluetooth Proxy Devices**: ESP32 devices with Bluetooth LE proxy capability
+
+- [`common/bluetooth-proxy.yaml`](common/bluetooth-proxy.yaml) - BLE proxy configuration
+- **Features**: Active connections, configurable max connections
+- **Compatibility**: ESP32 devices only (not compatible with ESP32-C6 heat pump units)
+
 ## Build and Deployment Architecture
 
 ### 1. Task-Based Automation
@@ -194,15 +201,16 @@ Device Operations:
 
 ### 2. Development Environment
 
-**Tool Management**: [`mise.toml`](.mise.toml)
+**Tool Management**: [`.mise.toml`](.mise.toml)
 
-- Python 3.11 (security framework)
+- Python 3.13.5 (security framework)
 - Task (automation runner)
-- Node.js 22.13.0 (Renovate dependency updates)
+- Node.js 22.18.0 (Renovate dependency updates)
+- UV (modern Python package manager)
 
 **Dependency Management**:
 
-- [`requirements.txt`](requirements.txt): ESPHome core
+- [`pyproject.toml`](pyproject.toml): Modern Python dependency management
 - [`package.json`](package.json): Renovate for automated updates
 
 ### 3. Quality Assurance Pipeline
@@ -252,6 +260,16 @@ Connection Failed → Fallback Hotspot
 Captive Portal → Web Interface → Manual Configuration
 ```
 
+### 4. Bluetooth Proxy Flow
+
+```text
+ESP32 Device ←→ Bluetooth LE Devices
+     ↓              ↑
+BLE Scanning     Device Discovery
+     ↓              ↑
+Home Assistant ←→ Enhanced Tracking
+```
+
 ## File Organization Patterns
 
 ### 1. Root Level Structure
@@ -287,6 +305,7 @@ docs/
 │   ├── device-types.md
 │   ├── two-stage-deployment.md
 │   ├── recovery-procedures.md
+│   ├── esp32-nanoc6-deployment-guide.md
 │   └── common-tasks.md
 ├── architecture/ (system design guides)
 │   ├── system-overview.md
@@ -311,7 +330,8 @@ common/
 │   └── heatpump-esp32-nanoc6.yaml (ESP32-C6 heat pump platform)
 ├── Connectivity
 │   ├── wifi.yaml, wifi-minimal.yaml
-│   └── ipv6.yaml
+│   ├── ipv6.yaml
+│   └── bluetooth-proxy.yaml (Bluetooth LE proxy)
 ├── Sensors (sensor/)
 │   ├── bme280.yaml, dht.yaml, dht22.yaml
 │   ├── pir.yaml, temt6000.yaml
@@ -352,6 +372,7 @@ Documentation Integration Architecture:
 - **Entity Discovery**: Automatic device and sensor registration
 - **State Management**: Real-time bidirectional communication
 - **Service Integration**: Climate controls, switches, sensors
+- **Bluetooth Integration**: BLE proxy for enhanced device tracking
 
 ### 2. 1Password Integration
 
@@ -398,3 +419,51 @@ Documentation Integration Architecture:
 - **Documentation Integration**: Memory Bank system with unified user guides
 - **Version Management**: Consistent tool versions across environments
 - **Knowledge Management**: Comprehensive documentation with clear maintenance procedures
+
+## Platform-Specific Architecture
+
+### ESP32-C6 Platform Architecture
+
+**Hardware Specifications**:
+- **Board**: esp32-c6-devkitc-1 compatible (M5Stack NanoC6)
+- **Flash**: 4MB (significant upgrade from ESP01's 1MB)
+- **Framework**: ESP-IDF
+- **Architecture**: RISC-V based
+
+**Configuration Pattern**:
+```yaml
+esp32:
+  board: esp32-c6-devkitc-1
+  variant: esp32c6
+  flash_size: 4MB
+  framework:
+    type: esp-idf
+```
+
+**Deployment Benefits**:
+- Single-stage deployment (no minimal/full split needed)
+- Full feature set available immediately
+- Enhanced logging and debugging capabilities
+- Native USB support for easier development
+
+### Bluetooth Proxy Architecture
+
+**Component Structure**:
+```yaml
+bluetooth_proxy:
+  # Active connections enabled by default
+
+esp32_ble_tracker:
+  max_connections: 3
+```
+
+**Integration Flow**:
+1. ESP32 device scans for BLE devices
+2. Discovered devices forwarded to Home Assistant
+3. Enhanced presence detection and device tracking
+4. Active connections support for interactive devices
+
+**Limitations**:
+- ESP32 platform only (not ESP8266 or ESP01)
+- Flash memory intensive (not compatible with ESP32-C6 heat pump units)
+- Configurable connection limits to manage resources
