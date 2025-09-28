@@ -96,6 +96,14 @@ climate:
       id: stage
       entity_category: diagnostic
       disabled_by_default: true
+    sub_mode_sensor:
+      name: Sub Mode
+      entity_category: diagnostic
+      disabled_by_default: true
+    auto_sub_mode_sensor:
+      name: Auto Sub Mode
+      entity_category: diagnostic
+      disabled_by_default: true
     kwh_sensor:
       name: Energy Usage
       disabled_by_default: true
