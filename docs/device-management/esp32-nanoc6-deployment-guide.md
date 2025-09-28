@@ -82,7 +82,7 @@ mise exec -- esphome run bedroom_east_heatpump.yaml --device /dev/tty.debug-cons
 
 ```bash
 # If task system supports serial flashing
-mise exec -- task upload -- bedroom_east_heatpump --device /dev/tty.debug-console
+mise exec -- task upload -- bedroom_east_heatpump --device /dev/tty.usbmodem2101
 ```
 
 ### 3. First Boot Verification
@@ -92,7 +92,7 @@ After successful flashing:
 1. **Monitor Serial Output**:
 
    ```bash
-   mise exec -- esphome logs bedroom_east_heatpump.yaml --device /dev/tty.debug-console
+   mise exec -- esphome logs bedroom_east_heatpump.yaml --device /dev/tty.usbmodem2102
    ```
 
 2. **Expected Boot Sequence**:
