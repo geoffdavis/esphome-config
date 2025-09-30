@@ -1,7 +1,7 @@
 min_version = "2024.9.5"
 
 [tools]
-python = "3.13.5"
+python = "3.13.7"
 task = "latest"
 nodejs = "22.18.0"
 "npm:markdownlint-cli" = "latest"
