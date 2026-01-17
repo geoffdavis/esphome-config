@@ -7,5 +7,5 @@ requires-python = ">=3.13"
 dependencies = [
     # See https://github.com/echavet/MitsubishiCN105ESPHome/issues/396
     # https://github.com/echavet/MitsubishiCN105ESPHome/issues/378#issuecomment-3347999263
-    "esphome==2025.7.5",
+    "esphome==2025.12.7",
 ]
