@@ -4,7 +4,7 @@
 
 # External component: https://github.com/echavet/MitsubishiCN105ESPHome
 external_components:
-  - source: github://echavet/MitsubishiCN105ESPHome@v1.4.2
+  - source: github://echavet/MitsubishiCN105ESPHome@2026.5.2
      # This is the latest version, but you can pin to a specific version if needed
      # by replacing the text after "@" with a specific tag (main, v1.4.3) or commit hash.
      # The refresh option is set to 0s to avoid unnecessary updates.
