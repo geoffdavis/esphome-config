@@ -21,6 +21,11 @@
       "schedule": ["before 6am on monday"]
     },
     {
+      "description": "Keep .python-version on the dev shell's Python (flake.nix python313); esphome caps supported Python, so bump both together by hand",
+      "matchManagers": ["pyenv"],
+      "allowedVersions": "<3.14"
+    },
+    {
       "description": "Mitsubishi CN105 component releases need ESPHome compatibility checks",
       "matchPackageNames": ["echavet/MitsubishiCN105ESPHome"],
       "labels": ["dependencies", "heatpump"]
