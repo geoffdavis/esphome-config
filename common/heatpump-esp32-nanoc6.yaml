@@ -27,7 +27,11 @@ uart:
   id: HP_UART
   baud_rate: 2400
   tx_pin: GPIO1
-  rx_pin: GPIO2
+  rx_pin:
+    number: GPIO2
+    mode:
+      input: true
+      pullup: true
 
 # Enable logging
 logger:
