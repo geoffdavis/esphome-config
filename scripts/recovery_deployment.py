@@ -85,7 +85,7 @@ class RecoveryDeployment:
 
             # Compile first
             compile_result = subprocess.run([
-                'mise', 'exec', '--', 'esphome', 'compile', minimal_config
+                'uv', 'run', 'esphome', 'compile', minimal_config
             ], capture_output=True, text=True, timeout=300)
 
             if compile_result.returncode != 0:
@@ -95,7 +95,7 @@ class RecoveryDeployment:
 
             # Upload minimal firmware
             upload_result = subprocess.run([
-                'mise', 'exec', '--', 'esphome', 'upload', minimal_config
+                'uv', 'run', 'esphome', 'upload', minimal_config
             ], capture_output=True, text=True, timeout=300)
 
             if upload_result.returncode != 0:
@@ -116,7 +116,7 @@ class RecoveryDeployment:
 
             # Compile full firmware
             compile_result = subprocess.run([
-                'mise', 'exec', '--', 'esphome', 'compile', full_config
+                'uv', 'run', 'esphome', 'compile', full_config
             ], capture_output=True, text=True, timeout=300)
 
             if compile_result.returncode != 0:
@@ -126,7 +126,7 @@ class RecoveryDeployment:
 
             # Upload full firmware
             upload_result = subprocess.run([
-                'mise', 'exec', '--', 'esphome', 'upload', full_config
+                'uv', 'run', 'esphome', 'upload', full_config
             ], capture_output=True, text=True, timeout=300)
 
             if upload_result.returncode != 0:

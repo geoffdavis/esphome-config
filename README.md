@@ -25,8 +25,8 @@ framework and automated deployment system.
 ### 1. Initial Setup
 
 ```bash
-# Install project tools
-mise install
+# Enter the dev shell (nix + direnv): installs tools and syncs .venv
+direnv allow
 
 # Set up security framework
 python3 scripts/setup_security.py
@@ -142,7 +142,7 @@ task test-security                 # Run security tests
 
 - **Home Assistant**: Encrypted API communication with automatic entity discovery
 - **1Password**: Secure credential storage with CLI integration
-- **Development Tools**: Mise for tool management, Task for automation
+- **Development Tools**: Nix dev shell via direnv for tool management, Task for automation
 - **Quality Assurance**: Pre-commit hooks and comprehensive testing
 
 ## 📝 Key Features

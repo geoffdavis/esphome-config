@@ -20,7 +20,6 @@ secrets.local.yaml
 # Environment files
 .env
 .env.*
-.envrc
 
 # Local configuration files
 config.local.*
@@ -280,10 +279,13 @@ log/
 *.lock
 
 # =============================================================================
-# MISE TOOL VERSION MANAGER
+# DIRENV / NIX DEV SHELL
 # =============================================================================
 
-/.mise/
+.direnv/
+result
+# Pins the dev shell's nixpkgs; must be committed despite *.lock above.
+!flake.lock
 
 # =============================================================================
 # SECURITY REPORTS AND TEMPORARY FILES

@@ -201,7 +201,7 @@ Device Operations:
 
 ### 2. Development Environment
 
-**Tool Management**: [`.mise.toml`](.mise.toml)
+**Tool Management**: [`flake.nix`](flake.nix) + [`.envrc`](.envrc)
 
 - Python 3.13.5 (security framework)
 - Task (automation runner)
@@ -383,7 +383,7 @@ Documentation Integration Architecture:
 
 ### 3. Development Tool Integration
 
-- **Mise**: Environment and tool version management
+- **Nix + direnv**: Environment and tool version management
 - **Task**: Workflow automation and standardization
 - **Pre-commit**: Quality gates and security validation
 - **Renovate**: Automated dependency updates

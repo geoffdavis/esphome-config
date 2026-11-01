@@ -15,7 +15,7 @@ pyproject.toml migration, and Bluetooth proxy integration for enhanced Home Assi
 - **Status**: Complete and Production-Ready
 - **Achievement**: Successfully migrated from requirements.txt to pyproject.toml with Python 3.13.5
 - **Impact**: Modern Python dependency management, improved development environment consistency
-- **Key Files**: [`pyproject.toml`](pyproject.toml), [`.mise.toml`](.mise.toml) with Python 3.13.5
+- **Key Files**: [`pyproject.toml`](pyproject.toml), [`flake.nix`](flake.nix) with Python 3.13
 - **Tools Added**: UV package manager for faster dependency resolution
 
 ### ESP32-C6 Heat Pump Platform Expansion
@@ -94,7 +94,7 @@ pyproject.toml migration, and Bluetooth proxy integration for enhanced Home Assi
 
 - **Active**: Python 3.13.5 with modern dependency management
 - **Tools**: UV package manager, pyproject.toml configuration
-- **Environment**: Mise-managed tool versions with Python virtual environments
+- **Environment**: Nix dev shell (direnv) tool versions with a uv-managed Python virtual environment
 - **Automation**: Task runner for all common operations
 
 ### Bluetooth and Connectivity Enhancement
@@ -224,7 +224,7 @@ pyproject.toml migration, and Bluetooth proxy integration for enhanced Home Assi
 
 ### Development Tools
 
-- **Mise**: Tool version management active with Python 3.13.5
+- **Nix + direnv**: Tool version management via flake.nix with Python 3.13
 - **Task**: Workflow automation comprehensive
 - **UV**: Modern Python package management
 - **Renovate**: Dependency updates automated

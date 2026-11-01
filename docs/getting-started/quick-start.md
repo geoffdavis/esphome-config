@@ -13,14 +13,13 @@ Get your ESPHome configuration project up and running in minutes.
 ### Install Project Tools
 
 ```bash
-# Install Mise (tool version manager)
-curl https://mise.run | sh
+# Requires Nix (with flakes) and direnv with nix-direnv
 
 # Navigate to project directory
 cd /path/to/esphome-config
 
-# Install project-specific tools
-mise install
+# Load the dev shell from flake.nix and sync the Python venv (.envrc)
+direnv allow
 ```
 
 ### Set Up Security Framework

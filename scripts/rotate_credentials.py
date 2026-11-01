@@ -138,7 +138,7 @@ fallback_password: "{SecurityConfig.EXPOSED_CREDENTIALS['fallback_password']}"
                         # Try minimal first if it exists
                         if os.path.exists(f"{device}-minimal.yaml"):
                             subprocess.run([
-                                'mise', 'exec', '--', 'esphome', 'upload',
+                                'uv', 'run', 'esphome', 'upload',
                                 f"{device}-minimal.yaml"
                             ], check=True, capture_output=True, text=True)
 
@@ -147,7 +147,7 @@ fallback_password: "{SecurityConfig.EXPOSED_CREDENTIALS['fallback_password']}"
                                      if os.path.exists(f"{device}-full.yaml")
                                      else f"{device}.yaml")
                         subprocess.run([
-                            'mise', 'exec', '--', 'esphome', 'upload', config_file
+                            'uv', 'run', 'esphome', 'upload', config_file
                         ], check=True, capture_output=True, text=True)
 
                         self.logger.success(f"Successfully deployed to {device}")
