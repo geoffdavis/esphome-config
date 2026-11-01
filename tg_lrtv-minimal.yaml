@@ -16,4 +16,10 @@ packages:
   wifi: !include common/wifi-minimal.yaml
   esp01: !include common/esp01.yaml
 
+# "${friendly_name} Recovery" from wifi-minimal.yaml is 34 characters, over
+# the 32-character SSID limit, so shorten the fallback hotspot name here.
+wifi:
+  ap:
+    ssid: "LR Entertainment Recovery"
+
 web_server:
