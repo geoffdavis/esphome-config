@@ -508,7 +508,7 @@ for future reference.
 
 - `flake.nix` / `.envrc` (tool versions)
 - `pyproject.toml` (Python dependencies)
-- `package.json` (Node.js dependencies)
+- `renovate.json` (Renovate config)
 
 **Steps:**
 
@@ -516,11 +516,10 @@ for future reference.
 2. Change tool selections (e.g. `nodejs_22`, `python313`) in `flake.nix` if needed
 3. Reload the dev shell: `direnv reload`
 4. Update Python dependencies: bump pins in `pyproject.toml`, then `uv lock --upgrade && uv sync`
-5. Update Node.js dependencies: `npm update`
-6. Run tests to ensure compatibility: `task test-security`
-7. Test build process: `task build-all`
-8. Update documentation if needed
-9. Commit tool version updates
+5. Run tests to ensure compatibility: `task test-security`
+6. Test build process: `task build-all`
+7. Update documentation if needed
+8. Commit tool version updates
 
 **Important notes:**
 

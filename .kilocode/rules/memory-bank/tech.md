@@ -57,7 +57,7 @@
 ### Dependency Management
 
 - **Python**: [`pyproject.toml`](pyproject.toml) - Modern Python dependency management
-- **Node.js**: [`package.json`](package.json) - Renovate for dependency updates
+- **Renovate**: [`renovate.json`](renovate.json) - GitHub app opens dependency update PRs
 - **System**: Nix dev shell (flake.nix) via direnv manages tool versions consistently
 - **UV**: Modern Python package manager for faster dependency resolution
 
@@ -231,7 +231,7 @@ with `direnv exec . ` to get the project-configured tool versions.
 ├── .envrc                  # direnv: loads flake + .venv
 ├── Taskfile.yml            # Build automation
 ├── pyproject.toml          # Modern Python dependency management
-├── package.json           # Node.js dependencies
+├── renovate.json          # Renovate dependency update config
 ├── .pre-commit-config.yaml # Quality assurance
 ├── .gitignore             # Version control exclusions
 └── .env                   # Environment configuration

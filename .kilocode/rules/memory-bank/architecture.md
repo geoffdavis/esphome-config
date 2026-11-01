@@ -207,7 +207,7 @@ Device Operations:
 **Dependency Management**:
 
 - [`pyproject.toml`](pyproject.toml): Modern Python dependency management
-- [`package.json`](package.json): Renovate for automated updates
+- [`renovate.json`](renovate.json): Renovate (GitHub app) for automated updates
 
 ### 3. Quality Assurance Pipeline
 
