@@ -269,7 +269,7 @@ for future reference.
 
 2. Initial serial flashing (new device):
    - Connect ESP32-C6 via USB-C
-   - Flash via serial: `mise exec -- uv run esphome run device.yaml --device /dev/tty.usbmodem2101`
+   - Flash via serial: `uv run esphome run device.yaml --device /dev/tty.usbmodem2101`
 
 3. Verify hardware connections:
    - GPIO1 → CN105 TX
@@ -483,9 +483,9 @@ for future reference.
 
 **Steps:**
 
-1. Install Mise: Follow installation guide
+1. Install Nix (with flakes) and direnv with nix-direnv
 2. Clone repository and navigate to project directory
-3. Install project tools: `mise install`
+3. Load project tools: `direnv allow`
 4. Set up security framework: `python3 scripts/setup_security.py`
 5. Configure 1Password CLI access
 6. Set up development environment: `python3 scripts/setup_dev_secrets.py`
@@ -506,21 +506,20 @@ for future reference.
 **Last performed:** Python 3.13.5 and pyproject.toml migration
 **Files to modify:**
 
-- `.mise.toml` (tool versions)
+- `flake.nix` / `.envrc` (tool versions)
 - `pyproject.toml` (Python dependencies)
-- `package.json` (Node.js dependencies)
+- `renovate.json` (Renovate config)
 
 **Steps:**
 
-1. Check for tool updates: `mise outdated`
-2. Update tool versions in `.mise.toml`
-3. Install updated tools: `mise install`
-4. Update Python dependencies: `mise exec -- uv pip install -e . --upgrade`
-5. Update Node.js dependencies: `npm update`
-6. Run tests to ensure compatibility: `task test-security`
-7. Test build process: `task build-all`
-8. Update documentation if needed
-9. Commit tool version updates
+1. Update the pinned nixpkgs: `nix flake update` (refreshes `flake.lock`)
+2. Change tool selections (e.g. `nodejs_22`, `python313`) in `flake.nix` if needed
+3. Reload the dev shell: `direnv reload`
+4. Update Python dependencies: bump pins in `pyproject.toml`, then `uv lock --upgrade && uv sync`
+5. Run tests to ensure compatibility: `task test-security`
+6. Test build process: `task build-all`
+7. Update documentation if needed
+8. Commit tool version updates
 
 **Important notes:**
 

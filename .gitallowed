@@ -20,6 +20,9 @@ abcdef1234567890abcdef1234567890
 # Pattern: "integrity": "sha[0-9]+-[A-Za-z0-9+/]+=*"
 "integrity":\s*"sha[0-9]+-[A-Za-z0-9+/]+=*"
 
+# flake.lock content hashes (nix narHash)
+"narHash":\s*"sha256-[A-Za-z0-9+/]+=*"
+
 # Test credentials in test files (safe for testing)
 # Test API key (base64 encoded "test_api_key_1234567890abcdef")
 dGVzdF9hcGlfa2V5XzEyMzQ1Njc4OTBhYmNkZWY=

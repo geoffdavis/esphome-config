@@ -1,12 +1,14 @@
 ---
 # Hardware: Wemos D1 Mini #??
 # Mac Address: 98:f4:ab:da:4e:4f
-# HW notes: Pin D0 is dead, D1 is the relay board, D5 is the doorbell button.
+# HW notes: D1 is the relay board, D6 is the doorbell button (external 10k pullup to 3.3V).
+#   D5 is leaky (reads ~2.2V with internal pullup, nothing connected) - do not use.
+#   D0 (GPIO16) was marked dead, but it has no internal pullup, which may explain it.
 substitutions:
   name: doorbell
   friendly_name: Doorbell
   chime_pin: D1
-  button_pin: D5 # D0 is fried.
+  button_pin: D6 # D5 leaky, see HW notes.
 
 packages:
   wemosd1mini: !include common/wemosd1mini.yaml

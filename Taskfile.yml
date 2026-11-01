@@ -194,4 +194,4 @@ tasks:
       GH_TOKEN:
         sh: op read --account CamiAndGeoff 'op://Private/GitHub Personal Access Token/token'
     cmds:
-      - GITHUB_COM_TOKEN={{.GH_TOKEN}} RENOVATE_TOKEN={{.GH_TOKEN}} ./node_modules/.bin/renovate geoffdavis/esphome
+      - GITHUB_COM_TOKEN={{.GH_TOKEN}} RENOVATE_TOKEN={{.GH_TOKEN}} npx --yes renovate@latest geoffdavis/esphome-config

@@ -401,8 +401,8 @@ task --dry-run <task-name>
 # Check environment
 task check-tools
 
-# Verify mise environment
-mise doctor
+# Reload the nix dev shell and venv
+direnv reload
 
 # Check Python environment
 python3 --version

@@ -36,19 +36,14 @@
 
 ### Tool Version Management
 
-**Mise** ([`.mise.toml`](.mise.toml))
+**Nix dev shell + direnv** ([`flake.nix`](flake.nix), [`.envrc`](.envrc))
 
-```toml
-[tools]
-python = "3.13.5"
-task = "latest"
-nodejs = "22.18.0"
-uv = "latest"
-1password = "latest" # pragma: allowlist secret
-
-[env]
-_.python.venv = { path = ".venv", create = true }
-```
+- `flake.nix` provides python313, uv, nodejs_22, markdownlint-cli, pre-commit,
+  go-task, gh and the 1Password CLI; `flake.lock` pins nixpkgs.
+- `.envrc` runs `use flake`, then `uv sync` and activates `.venv`, where
+  Python dependencies such as esphome live.
+- Node from `/nix/store` lets pre-commit treat it as the system node for the
+  markdownlint hook instead of downloading one with nodeenv.
 
 ### Task Automation
 
@@ -62,8 +57,8 @@ _.python.venv = { path = ".venv", create = true }
 ### Dependency Management
 
 - **Python**: [`pyproject.toml`](pyproject.toml) - Modern Python dependency management
-- **Node.js**: [`package.json`](package.json) - Renovate for dependency updates
-- **System**: Mise manages tool versions consistently
+- **Renovate**: [`renovate.json`](renovate.json) - GitHub app opens dependency update PRs
+- **System**: Nix dev shell (flake.nix) via direnv manages tool versions consistently
 - **UV**: Modern Python package manager for faster dependency resolution
 
 ## Security Framework
@@ -147,22 +142,6 @@ _.python.venv = { path = ".venv", create = true }
 
 ## Custom Components
 
-### Music-Reactive LEDs
-
-**Location**: [`custom_components/esphome-music-leds/`](custom_components/esphome-music-leds/)
-
-- **Language**: C++ with Python ESPHome integration
-- **Features**: FFT processing, visual effects, Gaussian filtering
-- **Files**:
-  - [`__init__.py`](custom_components/esphome-music-leds/__init__.py):
-    ESPHome component definition
-  - [`esphome_music_leds.cpp/.h`](custom_components/esphome-music-leds/esphome_music_leds.h):
-    Main component
-  - [`FFT.cpp/.h`](custom_components/esphome-music-leds/FFT.h): Fast
-    Fourier Transform
-  - [`VisualEffect.cpp/.h`](custom_components/esphome-music-leds/VisualEffect.h):
-    LED effects
-
 ### Air Quality Index Calculation
 
 **Location**: [`include/aqipm.h`](include/aqipm.h)
@@ -225,31 +204,34 @@ _.python.venv = { path = ".venv", create = true }
 ### Development Setup
 
 ```bash
-# Tool installation
-mise install
+# Tool installation (nix dev shell + uv venv)
+direnv allow
 
 # Security framework setup
-mise exec -- python3 scripts/setup_security.py
+python3 scripts/setup_security.py
 
 # Development credentials
-mise exec -- python3 scripts/setup_dev_secrets.py
+python3 scripts/setup_dev_secrets.py
 ```
 
-**Important**: All commands should be run with `mise exec --` prefix to ensure the correct project-configured tool versions are used.
+**Important**: Run commands inside the direnv-loaded dev shell. From a shell
+without the direnv hook (e.g. an agent's non-interactive shell), prefix them
+with `direnv exec . ` to get the project-configured tool versions.
 
 ### Environment Variables
 
 - **OP_ACCOUNT**: 1Password account identifier
 - **ESPHOME_LOGS_LEVEL**: Logging verbosity (INFO, DEBUG)
-- **Python Virtual Environment**: Managed by Mise
+- **Python Virtual Environment**: `.venv`, managed by uv (synced by `.envrc`)
 
 ### File Structure
 
 ```text
-├── .mise.toml              # Tool version management
+├── flake.nix               # Tool version management (nix dev shell)
+├── .envrc                  # direnv: loads flake + .venv
 ├── Taskfile.yml            # Build automation
 ├── pyproject.toml          # Modern Python dependency management
-├── package.json           # Node.js dependencies
+├── renovate.json          # Renovate dependency update config
 ├── .pre-commit-config.yaml # Quality assurance
 ├── .gitignore             # Version control exclusions
 └── .env                   # Environment configuration
@@ -385,12 +367,12 @@ dependencies = [
 - Faster dependency resolution than pip
 - Better caching and performance
 - Modern Python package management
-- Integrated with Mise tool management
+- Runs on the nix-provided Python (UV_PYTHON set in flake.nix)
 
 **Usage**:
 ```bash
 # Install dependencies
-mise exec -- uv pip install -e .
+uv sync
 
 # Run ESPHome with UV
-mise exec -- uv run esphome compile device.yaml
+uv run esphome compile device.yaml

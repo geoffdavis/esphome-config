@@ -170,10 +170,6 @@ packages:
 - [`common/outlet-topgreener.yaml`](common/outlet-topgreener.yaml)
 - [`common/sonoff_s31.yaml`](common/sonoff_s31.yaml)
 
-**Audio-Reactive LEDs**: Custom FFT processing
-
-- [`custom_components/esphome-music-leds/`](custom_components/esphome-music-leds/)
-
 **Bluetooth Proxy Devices**: ESP32 devices with Bluetooth LE proxy capability
 
 - [`common/bluetooth-proxy.yaml`](common/bluetooth-proxy.yaml) - BLE proxy configuration
@@ -201,7 +197,7 @@ Device Operations:
 
 ### 2. Development Environment
 
-**Tool Management**: [`.mise.toml`](.mise.toml)
+**Tool Management**: [`flake.nix`](flake.nix) + [`.envrc`](.envrc)
 
 - Python 3.13.5 (security framework)
 - Task (automation runner)
@@ -211,7 +207,7 @@ Device Operations:
 **Dependency Management**:
 
 - [`pyproject.toml`](pyproject.toml): Modern Python dependency management
-- [`package.json`](package.json): Renovate for automated updates
+- [`renovate.json`](renovate.json): Renovate (GitHub app) for automated updates
 
 ### 3. Quality Assurance Pipeline
 
@@ -280,7 +276,6 @@ Home Assistant ←→ Enhanced Tracking
 ├── scripts/ (security framework)
 ├── tests/ (validation tests)
 ├── docs/ (unified documentation)
-├── custom_components/ (ESPHome extensions)
 ├── include/ (C++ headers)
 ├── fonts/ (display resources)
 └── packages/ (deployment packages)
@@ -383,7 +378,7 @@ Documentation Integration Architecture:
 
 ### 3. Development Tool Integration
 
-- **Mise**: Environment and tool version management
+- **Nix + direnv**: Environment and tool version management
 - **Task**: Workflow automation and standardization
 - **Pre-commit**: Quality gates and security validation
 - **Renovate**: Automated dependency updates

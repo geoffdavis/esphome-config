@@ -142,7 +142,7 @@ The system supports multiple deployment strategies:
 
 ### Development Tools
 
-- **Mise**: Project-specific tool version management
+- **Nix + direnv**: Project-specific tool version management
 - **Task**: Automated build and deployment workflows
 - **Pre-commit**: Automated security and quality checks
 - **Renovate**: Dependency update automation
