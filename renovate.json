@@ -6,8 +6,8 @@
   "customManagers": [
     {
       "customType": "regex",
-      "description": "ESPHome external components pinned as github://owner/repo@tag in device YAML",
-      "managerFilePatterns": ["/\\.ya?ml$/"],
+      "description": "ESPHome external components pinned as github://owner/repo@tag in live device YAML (not archive/)",
+      "managerFilePatterns": ["/^[^/]+\\.ya?ml$/", "/^common/.+\\.ya?ml$/", "/^packages/.+\\.ya?ml$/"],
       "matchStrings": [
         "\\n\\s*-\\s*source:\\s*github://(?<depName>[^/@\\s]+/[^/@\\s]+)@(?<currentValue>[^\\s#]+)"
       ],
@@ -17,7 +17,7 @@
   "packageRules": [
     {
       "matchPackageNames": ["esphome"],
-      "matchManagers": ["pep621"],
+      "matchDatasources": ["pypi"],
       "schedule": ["before 6am on monday"]
     },
     {
