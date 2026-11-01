@@ -3,16 +3,27 @@
   "extends": [
     "config:recommended"
   ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "ESPHome external components pinned as github://owner/repo@tag in device YAML",
+      "managerFilePatterns": ["/\\.ya?ml$/"],
+      "matchStrings": [
+        "\\n\\s*-\\s*source:\\s*github://(?<depName>[^/@\\s]+/[^/@\\s]+)@(?<currentValue>[^\\s#]+)"
+      ],
+      "datasourceTemplate": "github-releases"
+    }
+  ],
   "packageRules": [
     {
       "matchPackageNames": ["esphome"],
-      "matchManagers": ["pip_requirements"],
+      "matchManagers": ["pep621"],
       "schedule": ["before 6am on monday"]
     },
     {
-      "matchPackageNames": ["PyYAML", "yamllint"],
-      "matchManagers": ["pip_requirements"],
-      "groupName": "Python linting tools"
+      "description": "Mitsubishi CN105 component releases need ESPHome compatibility checks",
+      "matchPackageNames": ["echavet/MitsubishiCN105ESPHome"],
+      "labels": ["dependencies", "heatpump"]
     }
   ],
   "schedule": ["before 6am on monday"],
