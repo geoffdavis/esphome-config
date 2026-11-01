@@ -170,10 +170,6 @@ packages:
 - [`common/outlet-topgreener.yaml`](common/outlet-topgreener.yaml)
 - [`common/sonoff_s31.yaml`](common/sonoff_s31.yaml)
 
-**Audio-Reactive LEDs**: Custom FFT processing
-
-- [`custom_components/esphome-music-leds/`](custom_components/esphome-music-leds/)
-
 **Bluetooth Proxy Devices**: ESP32 devices with Bluetooth LE proxy capability
 
 - [`common/bluetooth-proxy.yaml`](common/bluetooth-proxy.yaml) - BLE proxy configuration
@@ -280,7 +276,6 @@ Home Assistant ←→ Enhanced Tracking
 ├── scripts/ (security framework)
 ├── tests/ (validation tests)
 ├── docs/ (unified documentation)
-├── custom_components/ (ESPHome extensions)
 ├── include/ (C++ headers)
 ├── fonts/ (display resources)
 └── packages/ (deployment packages)

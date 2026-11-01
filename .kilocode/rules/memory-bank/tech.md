@@ -142,22 +142,6 @@
 
 ## Custom Components
 
-### Music-Reactive LEDs
-
-**Location**: [`custom_components/esphome-music-leds/`](custom_components/esphome-music-leds/)
-
-- **Language**: C++ with Python ESPHome integration
-- **Features**: FFT processing, visual effects, Gaussian filtering
-- **Files**:
-  - [`__init__.py`](custom_components/esphome-music-leds/__init__.py):
-    ESPHome component definition
-  - [`esphome_music_leds.cpp/.h`](custom_components/esphome-music-leds/esphome_music_leds.h):
-    Main component
-  - [`FFT.cpp/.h`](custom_components/esphome-music-leds/FFT.h): Fast
-    Fourier Transform
-  - [`VisualEffect.cpp/.h`](custom_components/esphome-music-leds/VisualEffect.h):
-    LED effects
-
 ### Air Quality Index Calculation
 
 **Location**: [`include/aqipm.h`](include/aqipm.h)
