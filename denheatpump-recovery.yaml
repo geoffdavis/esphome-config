@@ -33,9 +33,13 @@ wifi:
 # Enable captive portal for recovery access
 captive_portal:
 
-# Enable OTA for recovery
+# Enable OTA for recovery, encrypted with the api encryption key
 ota:
   platform: esphome
+  encryption:
+    # MIGRATION ONLY: see common/wifi.yaml; remove with the password once
+    # every device has been flashed with this config.
+    allow_plaintext_upload: true
   password: !secret ota_password
 
 # Enable API for recovery
@@ -47,3 +51,5 @@ api:
 web_server:
   port: 80
   version: 3
+  # Firmware upload stays on the captive portal (fallback AP) only.
+  ota: false

@@ -28,10 +28,15 @@ api:
 
 # Enable Over-The-Air (OTA) updates
 # This allows the device to be updated wirelessly
-# The OTA password is used for secure updates
-# The password is stored in secrets.yaml for security
+# Uploads are encrypted and authenticated with the api encryption key
 ota:
   platform: esphome
+  encryption:
+    # MIGRATION ONLY: lets the first upload reach firmware older than
+    # ESPHome 2026.9.0, which can't encrypt and still asks for the password
+    # below (the password is no longer built into the firmware). Remove this
+    # and the password once every device has been flashed with this config.
+    allow_plaintext_upload: true
   password: !secret ota_password
 
 # Enable Web server, version 3
@@ -40,6 +45,9 @@ ota:
 web_server:
   port: 80
   version: 3
+  # Firmware upload stays on the captive portal (fallback AP) only; the
+  # web UI's /update endpoint would bypass OTA encryption.
+  ota: false
 
 # Wifi related sensors
 # These sensors provide information about the WiFi connection
