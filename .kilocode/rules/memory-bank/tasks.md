@@ -143,16 +143,15 @@ for future reference.
    ```
 
 3. Include appropriate packages based on hardware platform:
-   - ESP32: `nodemcuv2.yaml` or `esp32_device_base.yaml`
+   - ESP32: `quinled_deca-esp32.yaml` or `particle-d1mini32.yaml`
    - ESP32-C6: `heatpump-esp32-nanoc6.yaml` for heat pumps
-   - ESP8266: `nodemcuv2.yaml` or `wemosd1mini.yaml`
+   - ESP8266: `wemosd1mini.yaml`
    - ESP01: `esp01.yaml`
 4. Add connectivity packages:
    - Full devices: `wifi.yaml`, `ipv6.yaml`
    - ESP01 minimal: `wifi-minimal.yaml`
    - Bluetooth proxy: `bluetooth-proxy.yaml` (ESP32 only, not ESP32-C6 heat pumps)
-5. Include sensor packages as needed:
-   - `sensor/bme280.yaml`, `sensor/dht.yaml`, etc.
+5. Include device packages as needed (e.g. `outlet-topgreener.yaml`, `doorbell.yaml`)
 6. Test configuration: `task build -- device-name`
 7. Deploy: `task upload -- device-name` or `task upload-two-stage -- device-name`
 

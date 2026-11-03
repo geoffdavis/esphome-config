@@ -66,7 +66,6 @@ class ESP01Recovery:
     def list_bricked_devices(self):
         """List devices that are likely bricked based on ESP01 configuration"""
         esp01_devices = [
-            "attic_sensor",
             "bedroom_east_heatpump",
             "bedroom_west_heatpump",
             "denheatpump",

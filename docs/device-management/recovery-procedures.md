@@ -32,7 +32,7 @@ fallback hotspot:
 
 **Look for WiFi networks named:**
 
-- `[Device Name] ESP` (e.g., "Den Multisensor ESP")
+- `[Device Name] ESP` (e.g., "Doorbell ESP")
 - `[Device Name] Recovery`
 
 ### Recovery Steps
@@ -193,7 +193,6 @@ For detailed ESP01 recovery procedures, see
 
 **Affected ESP01 devices:**
 
-- `attic_sensor`
 - `bedroom_east_heatpump`
 - `bedroom_west_heatpump`
 - `denheatpump`

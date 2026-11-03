@@ -52,7 +52,6 @@ class RecoveryDeployment:
         self.logger.info("Scanning for devices on recovery network...")
 
         esp01_devices = [
-            "attic_sensor",
             "bedroom_east_heatpump",
             "bedroom_west_heatpump",
             "denheatpump",

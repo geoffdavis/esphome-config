@@ -21,8 +21,8 @@ task --help <task-name>
 task build -- <device-name>
 
 # Examples
-task build -- den_multisensor
-task build -- attic_sensor
+task build -- doorbell
+task build -- tg_lrtv
 ```
 
 ### Bulk Build Operations
@@ -47,8 +47,8 @@ task clean-all
 task upload -- <device-name>
 
 # Examples
-task upload -- den_multisensor
-task upload -- bedroom_east_multisensor
+task upload -- doorbell
+task upload -- bedroom-east-heatpump
 ```
 
 ### Two-Stage Deployment (ESP01 Devices)
@@ -58,7 +58,7 @@ task upload -- bedroom_east_multisensor
 task upload-two-stage -- <device-name>
 
 # Examples
-task upload-two-stage -- attic_sensor
+task upload-two-stage -- tg_lrtv
 task upload-two-stage -- bedroom_east_heatpump
 ```
 
@@ -202,7 +202,7 @@ task install-tools
 task upload-two-stage -- <esp01-device>
 
 # Examples for ESP01 devices
-task upload-two-stage -- attic_sensor
+task upload-two-stage -- tg_lrtv
 task upload-two-stage -- bedroom_east_heatpump
 task upload-two-stage -- denheatpump
 ```
@@ -214,8 +214,8 @@ task upload-two-stage -- denheatpump
 task upload -- <device-name>
 
 # Examples for ESP32/ESP8266 devices
-task upload -- den_multisensor
-task upload -- bedroom_east_multisensor
+task upload -- doorbell
+task upload -- bedroom-east-heatpump
 task upload -- particle_man
 ```
 

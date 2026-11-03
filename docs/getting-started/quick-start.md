@@ -59,7 +59,7 @@ cp dev/secrets.yaml secrets.yaml
 task security-validate
 
 # Test build system
-task build -- den_multisensor
+task build -- doorbell
 ```
 
 ## 4. Deploy Your First Device
