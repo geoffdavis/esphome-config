@@ -12,10 +12,6 @@ repos:
           (?x)^(
             \.secrets\.baseline|
             \.gitsecrets|
-            scripts/setup-security\.sh|
-            scripts/setup_security\.py|
-            tests/.*\.py|
-            dev/.*|
             \.github/workflows/security-scan\.yml
           )$
 
@@ -62,16 +58,6 @@ repos:
             build/.*|
             fonts/.*\.ttf
           )$
-
-  # Script tests, when the scripts change (skipped in CI)
-  - repo: local
-    hooks:
-      - id: python-security-tests
-        name: Run Python security framework tests
-        entry: bash -c 'if [ "$CI" = "true" ]; then echo "Skipping Python tests in CI environment"; exit 0; else .githooks/python-wrapper.sh tests/run_tests.py; fi'
-        language: system
-        files: ^(scripts/.*\.py|tests/.*\.py)$
-        pass_filenames: false
 
 # Global configuration
 default_stages: [pre-commit]

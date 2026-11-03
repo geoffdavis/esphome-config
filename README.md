@@ -12,7 +12,7 @@ the doorbell, smart plugs, and a few one-offs.
 | `include/` | C++ helpers used by lambdas (`aqipm.h` for the particle sensor's AQI). |
 | `fonts/` | Fonts for devices with displays. |
 | `archive/` | Retired configs kept for reference. Not validated or updated. |
-| `scripts/`, `tests/` | Secrets generation and credential tooling, and its tests. |
+| `scripts/` | `generate_secrets.sh`, which `task secrets` runs. |
 
 ## Setup
 
