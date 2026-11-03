@@ -14,8 +14,8 @@ light:
   #   name: "Pruscilla Light"
   #   output: pwm_mono_out
   - platform: rgbww
-    name: "Pruscilla Enc Light"
-    id: enc_light
+    name: "${rgbww_bottom_name}"
+    id: ${rgbww_bottom_id}
     red: LED_channel_B1
     green: LED_channel_B2
     blue: LED_channel_B3
@@ -30,8 +30,8 @@ light:
       - strobe
 
   - platform: rgbww
-    id: shelf_light
-    name: "Shelf Lights"
+    id: ${rgbww_top_id}
+    name: "${rgbww_top_name}"
     red: LED_channel_T1
     green: LED_channel_T2
     blue: LED_channel_T3

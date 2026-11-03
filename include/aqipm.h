@@ -8,7 +8,7 @@
 #include <string>
 
 static const float BIN_PM25[] {0, 0, 12, 35.4, 55.4, 150.4, 250.4, 350.4, 500.4};
-static const float BIN_PM10[] {0, 0, 54, 154, 254, 135, 424, 504, 604};
+static const float BIN_PM10[] {0, 0, 54, 154, 254, 354, 424, 504, 604};
 static const float BIN_AQI[]  {0, 0, 50, 100, 150, 200, 300, 400, 500};
 
 int calcAQIpm25(float pm25) {
