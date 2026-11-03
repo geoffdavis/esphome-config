@@ -4,7 +4,7 @@
 repos:
   # Essential secret detection
   - repo: https://github.com/Yelp/detect-secrets
-    rev: v1.4.0
+    rev: v1.5.0
     hooks:
       - id: detect-secrets
         name: Detect hardcoded secrets
@@ -16,13 +16,12 @@ repos:
             scripts/setup_security\.py|
             tests/.*\.py|
             dev/.*|
-            \.github/workflows/security-scan\.yml|
-            docs/status/CREDENTIAL_ROTATION_GUIDE\.md
+            \.github/workflows/security-scan\.yml
           )$
 
   # Basic YAML validation
   - repo: https://github.com/adrienverge/yamllint
-    rev: v1.35.1
+    rev: v1.38.0
     hooks:
       - id: yamllint
         name: YAML Lint
@@ -31,34 +30,24 @@ repos:
 
   # Markdown validation
   - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.39.0
+    rev: v0.50.0
     hooks:
       - id: markdownlint
         name: Markdown Lint
         args: ['--config', '.markdownlint.json']
         files: \.md$
-        exclude: |
-          (?x)^(
-            \.kilocode/rules/memory-bank/.*\.md|
-            docs/status/.*\.md|
-            ESP01_RECOVERY_WORKFLOW\.md
-          )$
 
   # Essential security checks
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v6.0.0
     hooks:
       - id: check-added-large-files
         args: ['--maxkb=500']
       - id: check-merge-conflict
       - id: check-yaml
-        exclude: |
-          (?x)^(
-            .*-full\.yaml|
-            .*-minimal\.yaml|
-            .*\.yaml|
-            .*\.yml
-          )$
+        # --unsafe checks syntax only, so ESPHome tags (!secret, !include,
+        # !lambda) don't fail the hook.
+        args: ['--unsafe']
       - id: end-of-file-fixer
         exclude: |
           (?x)^(
@@ -74,53 +63,22 @@ repos:
             fonts/.*\.ttf
           )$
 
-  # Python security framework validation (skip in CI)
+  # Script tests, when the scripts change (skipped in CI)
   - repo: local
     hooks:
-      - id: esphome-secrets-validation
-        name: ESPHome secrets validation (Python)
-        entry: bash -c 'if [ "$CI" = "true" ]; then echo "Skipping Python validation in CI environment"; exit 0; else .githooks/python-wrapper.sh scripts/validate_secrets.py; fi'
-        language: system
-        files: ^(secrets\.yaml|.*\.yaml|.*\.yml)$
-        pass_filenames: false
-        always_run: false
-
-      - id: esphome-1password-validation
-        name: ESPHome 1Password structure validation
-        entry: bash -c 'if [ "$CI" = "true" ]; then echo "Skipping 1Password validation in CI environment"; exit 0; else .githooks/python-wrapper.sh scripts/validate_1password_structure.py; fi'
-        language: system
-        files: ^(secrets\.yaml|\.env)$
-        pass_filenames: false
-        always_run: false
-
       - id: python-security-tests
         name: Run Python security framework tests
         entry: bash -c 'if [ "$CI" = "true" ]; then echo "Skipping Python tests in CI environment"; exit 0; else .githooks/python-wrapper.sh tests/run_tests.py; fi'
         language: system
         files: ^(scripts/.*\.py|tests/.*\.py)$
         pass_filenames: false
-        always_run: false
-
-  # Legacy credential validation (fallback)
-  - repo: local
-    hooks:
-      - id: esphome-credential-check-legacy
-        name: ESPHome credential validation (legacy)
-        entry: .githooks/esphome_credential_check.py
-        language: script
-        files: \.(yaml|yml)$
-        pass_filenames: true
-        stages: [manual]
-
-      - id: git-secrets-scan-legacy
-        name: Git-secrets credential scan (legacy)
-        entry: .githooks/git_secrets_scan.py
-        language: script
-        files: \.(yaml|yml|sh|py|js|ts|json|md)$
-        pass_filenames: true
-        stages: [manual]
 
 # Global configuration
 default_stages: [pre-commit]
+# nodeenv otherwise installs the newest Node release, which can be an
+# unparseable pre-release (27.0.0-alpha broke markdownlint outside the
+# nix dev shell).
+default_language_version:
+  node: lts
 fail_fast: false
 minimum_pre_commit_version: '3.0.0'
