@@ -7,7 +7,7 @@ substitutions:
   name: den-heatpump
   # This is the name originally used for the device in Home Assistant, and is
   # only used for the "rename" package.
-  old_name: bedroom_west_heatpump
+  old_name: denheatpump
   # This is the friendly name used in Home Assistant for the device
   # and in the web interface.
   # It is also used in the climate component.
