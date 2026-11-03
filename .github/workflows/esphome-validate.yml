@@ -1,0 +1,82 @@
+name: ESPHome Validate
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '*.yaml'
+      - 'common/**'
+      - 'include/**'
+      - 'fonts/**'
+      - 'pyproject.toml'
+      - '.github/workflows/esphome-validate.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - '*.yaml'
+      - 'common/**'
+      - 'include/**'
+      - 'fonts/**'
+      - 'pyproject.toml'
+      - '.github/workflows/esphome-validate.yml'
+  workflow_dispatch:
+
+env:
+  PYTHON_VERSION: '3.13'
+
+jobs:
+  validate:
+    name: esphome config
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v7
+
+    - name: Set up Python
+      uses: actions/setup-python@v7
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Set up uv
+      uses: astral-sh/setup-uv@v10.3.3
+
+    - name: Install ESPHome
+      run: |
+        uv sync --quiet
+        uv run esphome version
+
+    - name: Write placeholder secrets
+      run: |
+        # Validation only checks that each secret exists and is well formed,
+        # so random throwaway values stand in for the real secrets.yaml.
+        cat > secrets.yaml <<EOF
+        wifi_ssid: "ci-validate"
+        wifi_password: "$(openssl rand -hex 12)"
+        wifi_domain: ".ci.invalid"
+        api_key: "$(openssl rand -base64 32)"
+        ota_password: "$(openssl rand -hex 16)"
+        fallback_password: "$(openssl rand -hex 12)"
+        EOF
+
+    - name: Validate device configs
+      run: |
+        failed=0
+        for f in *.yaml; do
+          [ "$f" = secrets.yaml ] && continue
+          if out=$(uv run esphome config "$f" 2>&1); then
+            echo "✅ $f"
+          else
+            echo "❌ $f"
+            echo "::error file=$f::esphome config failed"
+            failed=1
+            # On failure the resolved config marks where the error is.
+            printf '%s\n' "$out" | sed 's/\x1b\[[0-9;]*m//g'
+          fi
+          # Surface warnings (deprecations etc.) as annotations. Strapping-pin
+          # warnings are expected for the boards' onboard buttons and LEDs.
+          printf '%s\n' "$out" | sed 's/\x1b\[[0-9;]*m//g' \
+            | grep '^WARNING' | grep -v 'strapping pin' \
+            | sed "s/^WARNING /::warning file=$f::/" || true
+        done
+        exit $failed
