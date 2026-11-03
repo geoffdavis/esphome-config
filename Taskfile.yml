@@ -11,61 +11,18 @@ tasks:
     cmds:
       - task -l
 
-  # ============================================================================
-  # ESSENTIAL SECURITY VALIDATION
-  # Basic security checks for single-user repository
-  # ============================================================================
-
-  security-validate:
-    desc: "Run essential pre-deployment security validation"
+  ensure-secrets:
+    desc: "Generates secrets.yaml from 1Password if it's missing"
+    status:
+      - test -f secrets.yaml
     cmds:
-      - cmd: |
-          echo "🔍 Running essential security validation..."
-
-          # Check if secrets.yaml exists
-          if [[ ! -f "secrets.yaml" ]]; then
-            echo "⚠️  secrets.yaml not found - generating from 1Password..."
-            task secrets
-          fi
-
-          # Security validation is now handled by git-secrets, detect-secrets, and Python framework
-          echo "ℹ️  ESPHome credential validation integrated into git-secrets and pre-commit hooks"
-
-          echo "✅ Essential security validation completed"
+      - task: secrets
 
   security-scan:
-    desc: "Run basic security scan"
+    desc: "Scans for committed secrets (git-secrets) and runs all pre-commit hooks"
     cmds:
-      - cmd: |
-          echo "🔍 Running security scan..."
-
-          # Run git-secrets if available
-          if command -v git-secrets >/dev/null 2>&1; then
-            git secrets --scan
-          else
-            echo "⚠️  git-secrets not installed - run: ./scripts/setup-security.sh"
-          fi
-
-          # Run pre-commit hooks if available
-          if command -v pre-commit >/dev/null 2>&1; then
-            pre-commit run --all-files
-          else
-            echo "⚠️  pre-commit not installed - run: ./scripts/setup-security.sh"
-          fi
-
-          echo "✅ Security scan completed"
-
-  test-security:
-    desc: "Run unit tests for Python security scripts"
-    cmds:
-      - cmd: |
-          echo "🧪 Running security script tests..."
-          python3 tests/run_tests.py
-          echo "✅ Security tests completed"
-
-  # ============================================================================
-  # EXISTING TASKS WITH BASIC SECURITY INTEGRATION
-  # ============================================================================
+      - git secrets --scan
+      - pre-commit run --all-files
 
   clean:
     desc: "Removes the build directory for a specific device. Usage: task clean -- <device>"
@@ -88,7 +45,7 @@ tasks:
   upload:
     desc: "Uploads the firmware for a specific device. Usage: task upload -- <device>"
     deps:
-      - task: security-validate
+      - task: ensure-secrets
       - task: build
         vars: { CLI_ARGS: "{{.CLI_ARGS}}" }
     cmds:
@@ -115,7 +72,7 @@ tasks:
   upload-minimal:
     desc: "Uploads the minimal firmware for a specific device. Usage: task upload-minimal -- <device>"
     deps:
-      - task: security-validate
+      - task: ensure-secrets
       - task: build-minimal
         vars: { CLI_ARGS: "{{.CLI_ARGS}}" }
     cmds:
@@ -132,7 +89,7 @@ tasks:
   build-all:
     desc: "Builds the firmware for all devices."
     deps:
-      - security-validate
+      - ensure-secrets
     cmds:
       - for: { var: ALL_DEVICES }
         task: build
@@ -141,7 +98,7 @@ tasks:
   upload-all-two-stage:
     desc: "Uploads the firmware for all devices in two stages."
     deps:
-      - security-validate
+      - ensure-secrets
     cmds:
       - for: { var: ALL_DEVICES }
         task: upload-two-stage
@@ -150,7 +107,7 @@ tasks:
   upload-two-stage:
     desc: "Uploads the firmware for a single device in two stages."
     deps:
-      - security-validate
+      - ensure-secrets
     cmds:
       - task: upload-minimal-if-exists
         vars: { CLI_ARGS: "{{.CLI_ARGS}}" }
@@ -168,7 +125,7 @@ tasks:
   build-all-minimal:
     desc: "Builds the minimal firmware for all devices."
     deps:
-      - security-validate
+      - ensure-secrets
     cmds:
       - for: { var: MINIMAL_DEVICES }
         task: build-minimal
@@ -177,7 +134,7 @@ tasks:
   upload-all-minimal:
     desc: "Uploads the minimal firmware for all devices."
     deps:
-      - security-validate
+      - ensure-secrets
     cmds:
       - for: { var: MINIMAL_DEVICES }
         task: upload-minimal

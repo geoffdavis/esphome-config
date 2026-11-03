@@ -1,1 +1,0 @@
-# ESPHome Security Framework Tests
