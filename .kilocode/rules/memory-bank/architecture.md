@@ -11,13 +11,13 @@ principles: modularity, security, and maintainability.
 ### 1. Hierarchical Configuration System
 
 ```text
-Device Configuration (e.g., den_multisensor.yaml)
+Device Configuration (e.g., doorbell.yaml)
 ├── Substitutions (device-specific parameters)
 ├── Packages (shared component includes)
 │   ├── Hardware Platform (esp32, esp8266, esp01)
 │   ├── Connectivity (wifi.yaml, wifi-minimal.yaml)
 │   ├── Common Services (sensors.yaml, ipv6.yaml)
-│   └── Specialized Components (sensor/bme280.yaml)
+│   └── Specialized Components (doorbell.yaml, outlet-topgreener.yaml)
 └── Device-Specific Overrides
 ```
 
@@ -25,12 +25,10 @@ Device Configuration (e.g., den_multisensor.yaml)
 
 The [`common/`](common/) directory contains reusable components organized by function:
 
-- **Platform Packages**: [`esp01.yaml`](common/esp01.yaml), [`nodemcuv2.yaml`](common/nodemcuv2.yaml),
-  [`esp32_device_base.yaml`](common/esp32_device_base.yaml)
+- **Platform Packages**: [`esp01.yaml`](common/esp01.yaml), [`wemosd1mini.yaml`](common/wemosd1mini.yaml),
+  [`quinled_deca-esp32.yaml`](common/quinled_deca-esp32.yaml)
 - **Connectivity Packages**: [`wifi.yaml`](common/wifi.yaml), [`wifi-minimal.yaml`](common/wifi-minimal.yaml),
   [`ipv6.yaml`](common/ipv6.yaml)
-- **Sensor Packages**: [`sensor/bme280.yaml`](common/sensor/bme280.yaml), [`sensor/dht.yaml`](common/sensor/dht.yaml),
-  [`sensor/pir.yaml`](common/sensor/pir.yaml)
 - **Device-Specific Packages**: [`heatpump-esp01.yaml`](common/heatpump-esp01.yaml),
   [`heatpump-esp32-nanoc6.yaml`](common/heatpump-esp32-nanoc6.yaml), [`outlet-topgreener.yaml`](common/outlet-topgreener.yaml)
 - **Bluetooth Integration**: [`bluetooth-proxy.yaml`](common/bluetooth-proxy.yaml)
@@ -43,13 +41,13 @@ For memory-constrained ESP01 devices (1MB flash):
 
 ```text
 Stage 1: Minimal Deployment
-├── Device-minimal.yaml (e.g., attic_sensor-minimal.yaml)
+├── Device-minimal.yaml (e.g., tg_lrtv-minimal.yaml)
 ├── wifi-minimal.yaml (basic connectivity)
 ├── esp01.yaml (platform configuration)
 └── Essential services only
 
 Stage 2: Full Deployment
-├── Device-full.yaml (e.g., attic_sensor-full.yaml)
+├── Device-full.yaml (e.g., tg_lrtv-full.yaml)
 ├── wifi.yaml (full connectivity features)
 ├── All sensors and components
 └── Web server and advanced features
@@ -116,26 +114,27 @@ Pre-commit Hooks
 
 ### 1. Standard ESP32/ESP8266 Devices
 
-Example: [`den_multisensor.yaml`](den_multisensor.yaml)
+Example: [`doorbell.yaml`](doorbell.yaml)
 
 ```yaml
 substitutions:
-  name: den-multisensor
-  friendly_name: Den Multisensor
+  name: doorbell
+  friendly_name: Doorbell
   # Hardware-specific pin assignments
+  chime_pin: D1
+  button_pin: D6
 
 packages:
-  nodemcuv2: !include common/nodemcuv2.yaml
+  wemosd1mini: !include common/wemosd1mini.yaml
   wifi: !include common/wifi.yaml
   ipv6: !include common/ipv6.yaml
   sensors: !include common/sensors.yaml
-  sensor_bme280: !include common/sensor/bme280.yaml
-  # Additional sensor packages as needed
+  doorbell: !include common/doorbell.yaml
 ```
 
 ### 2. Memory-Constrained ESP01 Devices
 
-Minimal Configuration: [`attic_sensor-minimal.yaml`](attic_sensor-minimal.yaml)
+Minimal Configuration: [`tg_lrtv-minimal.yaml`](tg_lrtv-minimal.yaml)
 
 ```yaml
 packages:
@@ -143,15 +142,15 @@ packages:
   esp01: !include common/esp01.yaml        # Platform-specific settings
 ```
 
-Full Configuration: [`attic_sensor-full.yaml`](attic_sensor-full.yaml)
+Full Configuration: [`tg_lrtv-full.yaml`](tg_lrtv-full.yaml)
 
 ```yaml
 packages:
   wifi: !include common/wifi.yaml          # Full feature set
   ipv6: !include common/ipv6.yaml
   sensors: !include common/sensors.yaml
-  sensor_dht: !include common/sensor/dht.yaml
   esp01: !include common/esp01.yaml
+  topgreener: !include common/outlet-topgreener.yaml
 ```
 
 ### 3. Specialized Device Types
@@ -321,15 +320,13 @@ docs/
 common/
 ├── Platform Definitions
 │   ├── esp01.yaml, esp32_device_base.yaml
-│   ├── nodemcuv2.yaml, wemosd1mini.yaml
+│   ├── wemosd1mini.yaml
 │   └── heatpump-esp32-nanoc6.yaml (ESP32-C6 heat pump platform)
 ├── Connectivity
 │   ├── wifi.yaml, wifi-minimal.yaml
 │   ├── ipv6.yaml
 │   └── bluetooth-proxy.yaml (Bluetooth LE proxy)
 ├── Sensors (sensor/)
-│   ├── bme280.yaml, dht.yaml, dht22.yaml
-│   ├── pir.yaml, temt6000.yaml
 │   └── uptime.config.yaml, wifi_signal.config.yaml
 └── Device-Specific
     ├── heatpump-esp01.yaml (ESP01 heat pump platform)

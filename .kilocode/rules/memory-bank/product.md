@@ -48,7 +48,7 @@ and other smart devices throughout the home.
 
 The system uses a hierarchical configuration approach:
 
-1. **Device-Specific Files**: Individual YAML files for each device (e.g., [`den_multisensor.yaml`](den_multisensor.yaml))
+1. **Device-Specific Files**: Individual YAML files for each device (e.g., [`doorbell.yaml`](doorbell.yaml))
 2. **Common Components**: Shared templates in [`common/`](common/) directory for reusable functionality
 3. **Package System**: Full and minimal package configurations for different deployment scenarios
 4. **Substitution Variables**: Device-specific parameters defined at the top level
