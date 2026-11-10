@@ -146,9 +146,11 @@ tasks:
       - ./scripts/generate_secrets.sh
 
   renovate:
-    desc: "Run renovate to update dependencies"
-    vars:
-      GH_TOKEN:
+    desc: "Preview Renovate updates (dry run; the Renovate app does the real runs)"
+    # Set via env, not templated into the command, so task doesn't echo the token.
+    # A real run with a personal token opens a second dashboard as you, so dry-run only.
+    env:
+      RENOVATE_TOKEN:
         sh: op read --account CamiAndGeoff 'op://Private/GitHub Personal Access Token/token'
     cmds:
-      - GITHUB_COM_TOKEN={{.GH_TOKEN}} RENOVATE_TOKEN={{.GH_TOKEN}} npx --yes renovate@latest geoffdavis/esphome-config
+      - GITHUB_COM_TOKEN="$RENOVATE_TOKEN" npx --yes renovate@latest --dry-run=full geoffdavis/esphome-config
