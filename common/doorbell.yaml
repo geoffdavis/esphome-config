@@ -24,7 +24,9 @@ switch:
   - platform: template
     name: Doorbell Chime Active
     id: chime_active
-    restore_mode: ALWAYS_OFF
+    # DISABLED: report the restored global. Any other mode runs the
+    # turn_on/turn_off action at boot (ALWAYS_OFF muted the chime on every boot).
+    restore_mode: DISABLED
     turn_on_action:
       - globals.set:
           id: chime
