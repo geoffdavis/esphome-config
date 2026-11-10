@@ -32,7 +32,7 @@
             uv
             # Node from /nix/store lets pre-commit use it as the "system" node for
             # node hooks (markdownlint) instead of downloading one with nodeenv.
-            nodejs_22
+            nodejs_24  # renovate needs >=24.11
             markdownlint-cli
             pre-commit
             go-task
