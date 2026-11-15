@@ -43,10 +43,9 @@ web_server:
 
 # The TFT upload blocks the main loop on HTTP reads; the default 5 s task
 # watchdog reset the panel mid-download (2026-11-14, Blackymas v2026041).
+# Use ESPHome's own option: its 5 s default can override an sdkconfig value.
 esp32:
-  framework:
-    sdkconfig_options:
-      CONFIG_ESP_TASK_WDT_TIMEOUT_S: "30"
+  watchdog_timeout: 30s
 
 # The model is persisted in the Nextion's EEPROM, which a stock or blank TFT
 # can't hold, so until the first NSPanel Easy TFT lands every reboot reset
@@ -54,6 +53,26 @@ esp32:
 select:
   - id: !extend display_model
     initial_option: NSPanel US
+
+# Diagnostics for restarts. NSPanel Easy reboots on purpose when the blueprint
+# binds new entities ("Restarting to activate new binding(s)"), which shows as a
+# software reset; anything else (watchdog, brownout, panic) shows here too.
+debug:
+  update_interval: 60s
+
+text_sensor:
+  - platform: debug
+    reset_reason:
+      name: Reset reason
+
+sensor:
+  - platform: uptime
+    name: Uptime
+  - platform: debug
+    free:
+      name: Free heap
+    loop_time:
+      name: Loop time
 
 packages:
   remote_package:
