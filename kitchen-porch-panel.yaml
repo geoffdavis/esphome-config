@@ -1,0 +1,64 @@
+---
+# Hardware: Sonoff NSPanel US portrait (NSPanel-USW), ESP32-D0WD-V3, 4MB flash
+# Mac Address: c0:49:ef:d1:ee:50
+# Location: kitchen, controls the kitchen porch light (relay 1).
+# Stock firmware backup (eWeLink v2.03.11):
+#   ~/Documents/nspanel/nspanel-usw-stock-c049efd1ee50.bin
+# Firmware is NSPanel Easy (edwardtfn, successor to Blackymas
+# NSPanel_HA_Blueprint). Button/relay behaviour and pages are configured from
+# the HA blueprint automation; the display model ("NSPanel US") is the
+# panel's "Display model" select in HA. Don't include common/wifi.yaml: the
+# package defines its own wifi network list, api and ota entries.
+substitutions:
+  name: kitchen-porch-panel
+  device_name: kitchen-porch-panel
+  friendly_name: Kitchen Porch Panel
+  wifi_ssid: !secret wifi_ssid
+  wifi_password: !secret wifi_password
+  language: en
+  api_encryption_key: !secret api_key
+  # OTA is authenticated and encrypted with the API key (no OTA password).
+  ota_encryption: "true"
+  boot_sound: "false"
+  upload_tft_automatically: "true"
+  # VLAN 60 has no outbound, so the TFT comes from nas-sdg's mirror
+  # (nix-personal hosts/nas-sdg/nspanel-tft.nix), which fetches each new
+  # NSPanel Easy release daily. Needs the UDM NoT -> nas-sdg tcp/8099 rule.
+  nextion_update_base_url: "http://172.29.50.20:8099/nspanel-easy/v${version}"
+
+wifi:
+  domain: !secret wifi_domain
+  ap:
+    ssid: "${friendly_name} ESP"
+    password: !secret fallback_password
+
+captive_portal:
+
+web_server:
+  port: 80
+  version: 3
+  # Firmware upload stays on the captive portal only; /update would bypass
+  # OTA encryption.
+  ota: false
+
+# The TFT upload blocks the main loop on HTTP reads; the default 5 s task
+# watchdog reset the panel mid-download (2026-11-14, Blackymas v2026041).
+esp32:
+  framework:
+    sdkconfig_options:
+      CONFIG_ESP_TASK_WDT_TIMEOUT_S: "30"
+
+# The model is persisted in the Nextion's EEPROM, which a stock or blank TFT
+# can't hold, so until the first NSPanel Easy TFT lands every reboot reset
+# it to the EU default and the upload fetched the wrong file.
+select:
+  - id: !extend display_model
+    initial_option: NSPanel US
+
+packages:
+  remote_package:
+    url: https://github.com/edwardtfn/NSPanel-Easy
+    ref: v2026.11.16  # renovate: NSPanel Easy releases
+    refresh: 1d
+    files:
+      - nspanel_esphome.yaml

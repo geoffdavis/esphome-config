@@ -1,7 +1,7 @@
 # ESPHome Device Configurations
 
 ESPHome configs for the devices in the house: Mitsubishi heat pumps (CN105),
-the doorbell, smart plugs, and a few one-offs.
+the doorbell, smart plugs, an NSPanel, and a few one-offs.
 
 ## Layout
 
@@ -49,6 +49,17 @@ serial (USB, or the UART header on ESP-01 based plugs):
 ```bash
 esphome run tg_lrtv-minimal.yaml --device /dev/tty.usbserial-XXXX
 ```
+
+## NSPanels (NSPanel Easy)
+
+`kitchen-porch-panel.yaml` is a Sonoff NSPanel running
+[NSPanel Easy](https://github.com/edwardtfn/NSPanel-Easy) as a remote
+package. It doesn't include `common/wifi.yaml` (the package defines wifi,
+api and ota), and its pages and buttons are set from the HA blueprint, not
+here. Panels sit on VLAN 60, which has no internet, so the display (TFT)
+file comes from nas-sdg's mirror via `nextion_update_base_url`
+(nix-personal `hosts/nas-sdg/nspanel-tft.nix`). Renovate bumps the package
+`ref:`. Full setup: the notes vault's "Set Up an NSPanel with NSPanel Easy".
 
 ## OTA encryption migration
 
