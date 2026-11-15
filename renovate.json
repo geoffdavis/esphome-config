@@ -7,33 +7,75 @@
     {
       "customType": "regex",
       "description": "ESPHome external components pinned as github://owner/repo@tag in live device YAML (not archive/)",
-      "managerFilePatterns": ["/^[^/]+\\.ya?ml$/", "/^common/.+\\.ya?ml$/", "/^packages/.+\\.ya?ml$/"],
+      "managerFilePatterns": [
+        "/^[^/]+\\.ya?ml$/",
+        "/^common/.+\\.ya?ml$/",
+        "/^packages/.+\\.ya?ml$/"
+      ],
       "matchStrings": [
         "\\n\\s*-\\s*source:\\s*github://(?<depName>[^/@\\s]+/[^/@\\s]+)@(?<currentValue>[^\\s#]+)"
+      ],
+      "datasourceTemplate": "github-releases"
+    },
+    {
+      "customType": "regex",
+      "description": "ESPHome remote packages pinned as url: https://github.com/owner/repo + ref: <tag> (e.g. NSPanel Easy)",
+      "managerFilePatterns": [
+        "/^[^/]+\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "url:\\s*https://github\\.com/(?<depName>[^/\\s]+/[^/\\s]+?)(?:\\.git)?\\s*\\n\\s*ref:\\s*(?<currentValue>v[^\\s#]+)"
       ],
       "datasourceTemplate": "github-releases"
     }
   ],
   "packageRules": [
     {
-      "matchPackageNames": ["esphome"],
-      "matchDatasources": ["pypi"],
-      "schedule": ["before 6am on monday"]
+      "matchPackageNames": [
+        "esphome"
+      ],
+      "matchDatasources": [
+        "pypi"
+      ],
+      "schedule": [
+        "before 6am on monday"
+      ]
     },
     {
       "description": "Keep .python-version on the dev shell's Python (flake.nix python313); esphome caps supported Python, so bump both together by hand",
-      "matchManagers": ["pyenv"],
+      "matchManagers": [
+        "pyenv"
+      ],
       "allowedVersions": "<3.14"
     },
     {
       "description": "Mitsubishi CN105 component releases need ESPHome compatibility checks",
-      "matchPackageNames": ["echavet/MitsubishiCN105ESPHome"],
-      "labels": ["dependencies", "heatpump"]
+      "matchPackageNames": [
+        "echavet/MitsubishiCN105ESPHome"
+      ],
+      "labels": [
+        "dependencies",
+        "heatpump"
+      ]
+    },
+    {
+      "description": "NSPanel Easy firmware bumps: nas-sdg's TFT mirror fetches new releases daily, so the TFT is local by the time this is flashed",
+      "matchPackageNames": [
+        "edwardtfn/NSPanel-Easy"
+      ],
+      "labels": [
+        "dependencies",
+        "nspanel"
+      ]
     }
   ],
-  "schedule": ["before 6am on monday"],
+  "schedule": [
+    "before 6am on monday"
+  ],
   "timezone": "America/Los_Angeles",
-  "labels": ["dependencies"],
+  "labels": [
+    "dependencies"
+  ],
   "pre-commit": {
     "enabled": true
   }
