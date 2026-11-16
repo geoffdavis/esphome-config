@@ -3,8 +3,13 @@
 #   model (US portrait NSPanel-USW assumed; set display_model below if not),
 #   MAC address, and the stock firmware backup path, e.g.
 #   ~/Documents/nspanel/nspanel-<model>-stock-<mac>.bin
-# Location: entry hall, replacing the HASPone (plate01). What the relays
-#   switch there is not known yet; record it here once wired.
+# Location: entry hall, replacing the HASPone (plate01).
+# Relays (planned, not wired yet):
+#   relay 1: front porch light feed (one Hue bulb). Stays on; it exists only
+#     to power-cycle the bulb. Not bound to the left button.
+#   relay 2: switched line to the entry hall Shelly Dimmer 2's SW input (edge
+#     mode), so the right button toggles the light locally with HA down.
+#     Panel and Shelly must be on the same breaker.
 # Everything shared between the panels is in common/nspanel-easy.yaml.
 substitutions:
   name: entry-hall-panel
@@ -13,3 +18,10 @@ substitutions:
 
 packages:
   nspanel: !include common/nspanel-easy.yaml
+
+# A Hue bulb without power drops off the Hue network, so the porch relay must
+# come back on after any reboot or power loss. NSPanel Easy's default is
+# RESTORE_DEFAULT_OFF.
+switch:
+  - id: !extend relay_1
+    restore_mode: ALWAYS_ON
