@@ -1,0 +1,621 @@
+---
+# Hardware: HASwitchPlate "plate01" in the entry hall. HASPone PCB with a
+#   Wemos D1 mini (ESP8266) and a Nextion 2.4" Basic (NX3224T024_011R),
+#   still running the stock HASPone TFT (lcdVersion 2, HASPone v1.09 release).
+# Replaces the HASPone MQTT firmware. The panel subscribes to the Home
+# Assistant entities it shows, so the ~18 HASPone blueprint automations and
+# the MQTT backlight automation go away. See the PR description for the
+# migration plan (serial flash, rollback to HASPone v1.09).
+#
+# HASPone PCB wiring (from HASPone v1.09 HASwitchPlate.cpp):
+#   D4 / GPIO2  -> Nextion RX   (HASPone: Serial1 TX)
+#   D7 / GPIO13 <- Nextion TX   (HASPone: Serial RX after Serial.swap())
+#   D6 / GPIO12 -> Nextion 5V rail switch, HIGH = on
+#   D2 / GPIO4  -> beeper (unused here)
+# The TFT's page 0 pre-init script sets bauds=115200 on every boot.
+#
+# ESPHome's ESP8266 UART can only use hardware for TX1/RX3, swapped TX15/RX13,
+# or TX-only UART1 on GPIO2; the HASPone split (TX2 + RX13) falls back to
+# software serial. That works at 115200 but receive can drop bytes while
+# WiFi is busy: watch the "Nextion" log for garbled touch events. A pin-
+# compatible ESP32 D1 mini (wemos_d1_mini32) puts both pins on a hardware
+# UART and quadruples the RAM; see the PR for the pin mapping.
+#
+# Objects are addressed HASPone style, p[page].b[id]; the TFT gives them
+# global scope, so they can be written while another page is showing.
+#   Page 1 (home):   b4 clock, b5 date (calendar icon), b6 weather (cycles
+#                    temperature / condition every 5 s), b7 house mode
+#                    (tap opens page 3)
+#   Page 2 (alerts): b4 label, b5 message, b6 time, b7 spare. Filled by the
+#                    show_alert API action (front-door notifications).
+#   Page 3 (mode):   b4..b7 = Home, Sleep, Away, Extended Away
+#   Page 4 (lights): b4..b6 toggle buttons, b7..b9 sliders (0..255)
+#   Every page:      b1 Status -> 1, b2 Lights -> 4, b3 Mode -> 3
+substitutions:
+  name: entry-hall-haspone
+  friendly_name: Entry Hall HASPone
+  # HA entities
+  weather_entity: weather.pirateweather
+  house_mode_entity: input_select.house_mode
+  motion_entity: binary_sensor.entry_hall_tradfri_motion_sensor_motion
+  light1_entity: light.entry_hall_overhead
+  light1_label: Entry Hall Overhead
+  light2_entity: light.downstairs_hall_overhead
+  light2_label: Downstairs Hall
+  light3_entity: light.front_porch
+  light3_label: Front Porch
+  # RGB565 text colour for the weather condition text and the calendar
+  # icon (HASPone "selected foreground"). Check against the retained
+  # hasp/plate01/light/selectedforegroundcolor/rgb value before flashing.
+  color_fg: "65535"
+  idle_seconds: "30"
+
+packages:
+  wemosd1mini: !include common/wemosd1mini.yaml
+  wifi: !include common/wifi.yaml
+  sensors: !include common/sensors.yaml
+
+# The ESP8266 has ~40 KB of heap to share between the API connection, the
+# Nextion command queue and the HA subscriptions; the web server would eat
+# a big slice of it.
+web_server: !remove
+
+logger:
+  logs:
+    # Each command echoes at DEBUG; keep the log readable.
+    nextion: INFO
+
+esphome:
+  on_boot:
+    priority: 600
+    then:
+      # ESPHome's component_name validator rejects HASPone's p[4].b[7]
+      # syntax, so the slider readback sensors get their names here.
+      - lambda: |-
+          id(slider1).set_variable_name("p[4].b[7]", "p[4].b[7].val");
+          id(slider2).set_variable_name("p[4].b[8]", "p[4].b[8].val");
+          id(slider3).set_variable_name("p[4].b[9]", "p[4].b[9].val");
+
+uart:
+  id: nextion_uart
+  tx_pin: GPIO2
+  rx_pin: GPIO13
+  baud_rate: 115200
+  rx_buffer_size: 256
+
+switch:
+  # The LCD's 5 V rail. Kept on; toggling it power-cycles the Nextion.
+  - platform: gpio
+    id: display_power
+    name: Display power
+    pin: GPIO12
+    restore_mode: ALWAYS_ON
+    entity_category: config
+
+globals:
+  - id: current_page
+    type: uint8_t
+    initial_value: "0"
+  # Backlight level last sent to the panel (percent).
+  - id: backlight_level
+    type: int
+    initial_value: "0"
+  # A touch while the backlight is off only wakes it (5% for 15 s).
+  - id: touch_wake
+    type: bool
+    initial_value: "false"
+  - id: swallow_release
+    type: bool
+    initial_value: "false"
+  - id: weather_show_temp
+    type: bool
+    initial_value: "true"
+
+display:
+  - platform: nextion
+    id: disp
+    uart_id: nextion_uart
+    update_interval: never
+    on_setup:
+      then:
+        # The TFT boots at its saved dims value before ESPHome connects, and
+        # HASPone left that at whatever it last set (often 100). Save 0 so a
+        # power cut at night doesn't light the hall; one write per boot.
+        - lambda: id(disp).send_command("dims=0");
+        - script.execute: render_static
+        - script.execute: render_all
+        - lambda: id(disp).goto_page("1");
+        - script.execute: apply_backlight
+    on_page:
+      then:
+        - lambda: |-
+            id(current_page) = x;
+            if (x == 1) {
+              id(draw_page1_icons).execute();
+            }
+        - if:
+            condition:
+              lambda: return x != 1;
+            then:
+              - script.execute: idle_timer
+    on_touch:
+      then:
+        - lambda: |-
+            // Backlight off: the first touch only wakes the panel.
+            if (touch_event && id(backlight_level) == 0) {
+              id(swallow_release) = true;
+              id(touch_wake) = true;
+              id(touch_wake_timer).execute();
+              id(apply_backlight).execute();
+              return;
+            }
+            if (!touch_event) {
+              if (id(swallow_release)) {
+                id(swallow_release) = false;
+                // A slider may have moved under the dark screen.
+                if (page_id == 4) id(render_lights).execute();
+                return;
+              }
+              id(handle_release).execute(page_id, component_id);
+            }
+            if (id(current_page) != 1) {
+              id(idle_timer).execute();
+            }
+
+script:
+  # Fonts and labels that never change (HASPone Core and Display Text
+  # blueprints).
+  - id: render_static
+    then:
+      - lambda: |-
+          auto *d = id(disp);
+          for (int p = 1; p <= 4; p++) {
+            d->send_command_printf("p[%d].b[1].font=5", p);
+            d->send_command_printf("p[%d].b[1].txt=\"Status\"", p);
+            d->send_command_printf("p[%d].b[2].font=5", p);
+            d->send_command_printf("p[%d].b[2].txt=\"Lights\"", p);
+            d->send_command_printf("p[%d].b[3].font=5", p);
+            d->send_command_printf("p[%d].b[3].txt=\"Mode\"", p);
+          }
+          d->set_component_font("p[1].b[4]", 8);
+          d->set_component_font("p[1].b[5]", 8);
+          d->send_command("p[1].b[5].xcen=2");
+          d->send_command("p[1].b[6].xcen=2");
+          d->set_component_font("p[1].b[7]", 8);
+          const char *modes[] = {"Set Mode: Home", "Set Mode: Sleep", "Set Mode: Away", "Set Mode: Ext. Away"};
+          const int mode_fonts[] = {6, 6, 5, 5};
+          for (int i = 0; i < 4; i++) {
+            d->send_command_printf("p[3].b[%d].font=%d", 4 + i, mode_fonts[i]);
+            d->send_command_printf("p[3].b[%d].txt=\"%s\"", 4 + i, modes[i]);
+          }
+          const char *labels[] = {"${light1_label}", "${light2_label}", "${light3_label}"};
+          for (int i = 0; i < 3; i++) {
+            d->send_command_printf("p[4].b[%d].font=6", 4 + i);
+            d->send_command_printf("p[4].b[%d].ycen=0", 4 + i);
+            d->send_command_printf("p[4].b[%d].txt=\"%s\"", 4 + i, labels[i]);
+          }
+
+  - id: render_all
+    then:
+      - script.execute: render_clock
+      - script.execute: render_weather
+      - script.execute: render_house_mode
+      - script.execute: render_lights
+
+  - id: render_clock
+    then:
+      - lambda: |-
+          if (!id(disp).is_setup()) return;
+          auto now = id(homeassistant_time).now();
+          if (!now.is_valid()) return;
+          int hour = now.hour % 12;
+          if (hour == 0) hour = 12;
+          id(disp).set_component_text_printf("p[1].b[4]", "%d:%02d %s", hour, now.minute,
+                                             now.hour < 12 ? "am" : "pm");
+          // Trailing space keeps the text clear of the icon, as the
+          // blueprint did.
+          id(disp).set_component_text("p[1].b[5]", now.strftime("%b %-d ").c_str());
+          if (id(current_page) == 1) id(draw_page1_icons).execute();
+
+  - id: render_weather
+    then:
+      - lambda: |-
+          if (!id(disp).is_setup()) return;
+          auto *d = id(disp);
+          if (id(weather_show_temp)) {
+            float t = id(weather_temperature).state;
+            if (std::isnan(t)) return;
+            d->set_component_font("p[1].b[6]", 10);
+            d->set_component_font_color("p[1].b[6]", (uint16_t) ${color_fg});
+            d->set_component_text_printf("p[1].b[6]", "%d°", (int) lroundf(t));
+          } else {
+            std::string c = id(weather_condition).state;
+            if (c.empty() || c == "unknown" || c == "unavailable") return;
+            // Same wording as the HASPone blueprint.
+            if (c == "windy-variant") c = "windy";
+            else if (c == "clear-night") c = "clear night";
+            else if (c == "partlycloudy") c = "partly cloudy";
+            else if (c == "lightning-rainy") c = "lightning & rain";
+            else if (c == "snowy-rainy") c = "snow & rain";
+            bool cap = true;
+            for (auto &ch : c) {
+              ch = cap ? toupper(ch) : ch;
+              cap = (ch == ' ');
+            }
+            int font = c.size() < 7 ? 8 : (c.size() < 12 ? 7 : 6);
+            d->set_component_font("p[1].b[6]", font);
+            d->set_component_font_color("p[1].b[6]", (uint16_t) ${color_fg});
+            d->set_component_text("p[1].b[6]", c.c_str());
+          }
+          if (id(current_page) == 1) id(draw_page1_icons).execute();
+
+  # xstr draws straight onto the current page, so the icons are redrawn
+  # whenever page 1 appears or one of its buttons repaints.
+  - id: draw_page1_icons
+    mode: restart
+    then:
+      - delay: 50ms
+      - lambda: |-
+          auto *d = id(disp);
+          if (id(current_page) != 1) return;
+          // Calendar icon, p[1].b[5] (y = (5-4)*67+2).
+          d->send_command_printf("xstr 0,69,50,65,8,%d,0,1,1,3,\"\"", ${color_fg});
+          // Weather icon, p[1].b[6] (y = 136).
+          if (id(weather_show_temp)) {
+            float t = id(weather_temperature).state;
+            if (std::isnan(t)) return;
+            int temp = (int) lroundf(t);
+            const char *icon;
+            int color;
+            if (temp <= 0) { icon = ""; color = 2047; }
+            else if (temp < 32) { icon = ""; color = 31; }
+            else if (temp < 80) { icon = ""; color = 1536; }
+            else if (temp < 95) { icon = ""; color = 64512; }
+            else { icon = ""; color = 63488; }
+            d->send_command_printf("xstr 0,136,40,65,8,%d,0,1,1,3,\"%s\"", color, icon);
+          } else {
+            const std::string &c = id(weather_condition).state;
+            const char *icon = "";
+            if (c == "clear-night") icon = "";
+            else if (c == "cloudy" || c == "fog") icon = "";
+            else if (c == "hail") icon = "";
+            else if (c == "lightning") icon = "";
+            else if (c == "lightning-rainy" || c == "exceptional") icon = "";
+            else if (c == "pouring") icon = "";
+            else if (c == "rainy") icon = "";
+            else if (c == "snowy" || c == "snowy-rainy") icon = "";
+            else if (c == "sunny") icon = "";
+            else if (c == "windy" || c == "windy-variant") icon = "";
+            d->send_command_printf("xstr 0,136,65,65,8,%d,0,1,1,3,\"%s\"", ${color_fg}, icon);
+          }
+
+  - id: render_house_mode
+    then:
+      - lambda: |-
+          if (!id(disp).is_setup()) return;
+          const std::string &m = id(house_mode).state;
+          if (m.empty()) return;
+          id(disp).set_component_text("p[1].b[7]", m.c_str());
+
+  - id: render_lights
+    then:
+      - lambda: |-
+          if (!id(disp).is_setup()) return;
+          auto level = [](const std::string &state, float brightness) -> int {
+            if (state != "on") return 0;
+            return std::isnan(brightness) ? 255 : (int) brightness;
+          };
+          id(disp).set_component_value("p[4].b[7]", level(id(light1_state).state, id(light1_brightness).state));
+          id(disp).set_component_value("p[4].b[8]", level(id(light2_state).state, id(light2_brightness).state));
+          id(disp).set_component_value("p[4].b[9]", level(id(light3_state).state, id(light3_brightness).state));
+
+  # Button releases. HASPone fired its device triggers on press; acting on
+  # release lets a slider finish moving first.
+  - id: handle_release
+    parameters:
+      page: int
+      button: int
+    then:
+      - lambda: |-
+          // Page navigation (HASPone Core: page1page 1, page2page 4,
+          // page3page 3).
+          if (button == 1) { id(disp).goto_page("1"); return; }
+          if (button == 2) { id(disp).goto_page("4"); return; }
+          if (button == 3) { id(disp).goto_page("3"); return; }
+          if (page == 1 && button == 7) { id(disp).goto_page("3"); return; }
+          if (page == 3 && button >= 4 && button <= 7) {
+            const char *modes[] = {"Home", "Sleep", "Away", "Extended Away"};
+            id(select_house_mode).execute(modes[button - 4]);
+            id(disp).goto_page("1");
+            return;
+          }
+          if (page == 4) {
+            switch (button) {
+              case 4: id(toggle_light).execute("${light1_entity}"); break;
+              case 5: id(toggle_light).execute("${light2_entity}"); break;
+              case 6: id(toggle_light).execute("${light3_entity}"); break;
+              // Sliders: read .val back; the sensor's on_value sets the light.
+              case 7: id(disp).add_to_get_queue(id(slider1)); break;
+              case 8: id(disp).add_to_get_queue(id(slider2)); break;
+              case 9: id(disp).add_to_get_queue(id(slider3)); break;
+            }
+          }
+
+  - id: select_house_mode
+    parameters:
+      option: std::string
+    then:
+      - homeassistant.action:
+          action: input_select.select_option
+          data:
+            entity_id: ${house_mode_entity}
+            option: !lambda return option;
+
+  - id: toggle_light
+    parameters:
+      entity: std::string
+    then:
+      - homeassistant.action:
+          action: light.toggle
+          data:
+            entity_id: !lambda return entity;
+
+  - id: set_light_brightness
+    parameters:
+      entity: std::string
+      brightness: int
+    then:
+      - if:
+          condition:
+            lambda: return brightness <= 0;
+          then:
+            - homeassistant.action:
+                action: light.turn_off
+                data:
+                  entity_id: !lambda return entity;
+          else:
+            - homeassistant.action:
+                action: light.turn_on
+                data:
+                  entity_id: !lambda return entity;
+                  brightness: !lambda return to_string(brightness);
+
+  # HASPone "activates a page after inactivity": back to page 1 after
+  # ${idle_seconds} s without a touch.
+  - id: idle_timer
+    mode: restart
+    then:
+      - delay: ${idle_seconds}s
+      - lambda: |-
+          if (id(current_page) != 1) id(disp).goto_page("1");
+
+  - id: touch_wake_timer
+    mode: restart
+    then:
+      - delay: 15s
+      - lambda: id(touch_wake) = false;
+      - script.execute: apply_backlight
+
+  # Same rules as the old automation.haspone_plate01_backlight: daylight
+  # 100%, night 5%, linear between sun elevation +6 and -6 degrees. Sleep:
+  # off, 5% with motion (or after a wake touch). Otherwise motion lifts it to
+  # at least 40%. Until HA has sent the sun and house mode it stays off.
+  - id: apply_backlight
+    then:
+      - lambda: |-
+          if (!id(disp).is_setup()) return;
+          float e = id(sun_elevation).state;
+          const std::string &mode = id(house_mode).state;
+          bool motion = id(entry_motion).has_state() && id(entry_motion).state;
+          bool awake = motion || id(touch_wake);
+          int level;
+          if (mode == "Sleep") {
+            level = awake ? 5 : 0;
+          } else if (std::isnan(e) || mode.empty()) {
+            level = id(touch_wake) ? 5 : 0;
+          } else {
+            int sun = e >= 6 ? 100 : (e <= -6 ? 5 : (int) lroundf(5 + (95.0f / 12.0f) * (e + 6)));
+            level = motion ? std::max(sun, 40) : sun;
+          }
+          if (level != id(backlight_level)) {
+            ESP_LOGI("backlight", "%d%% (elevation %.1f, mode %s, motion %d, wake %d)", level, e,
+                     mode.c_str(), motion, id(touch_wake));
+          }
+          id(backlight_level) = level;
+          id(disp).set_backlight_brightness(level / 100.0f);
+          id(backlight).publish_state(level);
+
+api:
+  actions:
+    # Front-door notifications: label, message and time on page 2, then show
+    # page 2 (the idle timer returns to page 1). Replaces the MQTT JSON in
+    # automation.kitchen_porch_panel_front_door_notifications. In Sleep the
+    # backlight stays off unless motion wakes it, as before.
+    - action: show_alert
+      variables:
+        label: string
+        message: string
+      then:
+        - lambda: |-
+            auto clean = [](std::string s) {
+              std::replace(s.begin(), s.end(), '"', '\'');
+              return s;
+            };
+            auto *d = id(disp);
+            d->set_component_font("p[2].b[4]", 6);
+            d->set_component_text("p[2].b[4]", clean(label).c_str());
+            d->set_component_font("p[2].b[5]", 5);
+            d->set_component_text("p[2].b[5]", clean(message).c_str());
+            d->set_component_font("p[2].b[6]", 5);
+            auto now = id(homeassistant_time).now();
+            if (now.is_valid()) {
+              int hour = now.hour % 12;
+              if (hour == 0) hour = 12;
+              d->set_component_text_printf("p[2].b[6]", "%d:%02d %s", hour, now.minute,
+                                           now.hour < 12 ? "AM" : "PM");
+            } else {
+              d->set_component_text("p[2].b[6]", "");
+            }
+            d->set_component_text("p[2].b[7]", "");
+            d->goto_page("2");
+    - action: set_page
+      variables:
+        page: int
+      then:
+        - lambda: id(disp).goto_page((uint8_t) page);
+
+time:
+  - id: !extend homeassistant_time
+    on_time:
+      - seconds: 0
+        then:
+          - script.execute: render_clock
+    on_time_sync:
+      then:
+        - script.execute: render_clock
+
+interval:
+  # HASPone "cycle automations": temperature and condition alternate every 5 s.
+  - interval: 5s
+    then:
+      - lambda: id(weather_show_temp) = !id(weather_show_temp);
+      - script.execute: render_weather
+
+sensor:
+  - platform: homeassistant
+    id: sun_elevation
+    entity_id: sun.sun
+    attribute: elevation
+    internal: true
+    on_value:
+      - script.execute: apply_backlight
+  - platform: homeassistant
+    id: weather_temperature
+    entity_id: ${weather_entity}
+    attribute: temperature
+    internal: true
+  - platform: homeassistant
+    id: light1_brightness
+    entity_id: ${light1_entity}
+    attribute: brightness
+    internal: true
+    on_value:
+      - script.execute: render_lights
+  - platform: homeassistant
+    id: light2_brightness
+    entity_id: ${light2_entity}
+    attribute: brightness
+    internal: true
+    on_value:
+      - script.execute: render_lights
+  - platform: homeassistant
+    id: light3_brightness
+    entity_id: ${light3_entity}
+    attribute: brightness
+    internal: true
+    on_value:
+      - script.execute: render_lights
+
+  # Slider readback, polled once per release (names set in on_boot).
+  - platform: nextion
+    id: slider1
+    nextion_id: disp
+    component_name: slider1
+    update_interval: never
+    internal: true
+    on_value:
+      - script.execute:
+          id: set_light_brightness
+          entity: ${light1_entity}
+          brightness: !lambda return (int) x;
+  - platform: nextion
+    id: slider2
+    nextion_id: disp
+    component_name: slider2
+    update_interval: never
+    internal: true
+    on_value:
+      - script.execute:
+          id: set_light_brightness
+          entity: ${light2_entity}
+          brightness: !lambda return (int) x;
+  - platform: nextion
+    id: slider3
+    nextion_id: disp
+    component_name: slider3
+    update_interval: never
+    internal: true
+    on_value:
+      - script.execute:
+          id: set_light_brightness
+          entity: ${light3_entity}
+          brightness: !lambda return (int) x;
+
+  - platform: template
+    id: backlight
+    name: Backlight
+    unit_of_measurement: "%"
+    accuracy_decimals: 0
+    update_interval: never
+    entity_category: diagnostic
+
+  - platform: debug
+    free:
+      name: Free heap
+    block:
+      name: Largest free heap block
+
+debug:
+  update_interval: 60s
+
+text_sensor:
+  - platform: homeassistant
+    id: house_mode
+    entity_id: ${house_mode_entity}
+    internal: true
+    on_value:
+      - script.execute: render_house_mode
+      - script.execute: apply_backlight
+  - platform: homeassistant
+    id: weather_condition
+    entity_id: ${weather_entity}
+    internal: true
+  - platform: homeassistant
+    id: light1_state
+    entity_id: ${light1_entity}
+    internal: true
+    on_value:
+      - script.execute: render_lights
+  - platform: homeassistant
+    id: light2_state
+    entity_id: ${light2_entity}
+    internal: true
+    on_value:
+      - script.execute: render_lights
+  - platform: homeassistant
+    id: light3_state
+    entity_id: ${light3_entity}
+    internal: true
+    on_value:
+      - script.execute: render_lights
+  - platform: debug
+    reset_reason:
+      name: Reset reason
+
+binary_sensor:
+  - platform: status
+    name: Status
+  - platform: homeassistant
+    id: entry_motion
+    entity_id: ${motion_entity}
+    internal: true
+    on_press:
+      - script.execute: apply_backlight
+      # Motion shows the home page, except in Sleep.
+      - if:
+          condition:
+            lambda: return id(house_mode).state != "Sleep";
+          then:
+            - lambda: id(disp).goto_page("1");
+    on_release:
+      - script.execute: apply_backlight
