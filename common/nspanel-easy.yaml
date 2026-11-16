@@ -1,0 +1,79 @@
+---
+# Shared config for the Sonoff NSPanels running NSPanel Easy
+# (edwardtfn/NSPanel-Easy, successor to Blackymas NSPanel_HA_Blueprint).
+# Each device file sets name, device_name and friendly_name and includes this.
+# Button/relay behaviour and pages are configured from each panel's HA
+# blueprint automation, not here. Don't include common/wifi.yaml: the NSPanel
+# Easy package defines its own wifi network list, api and ota entries.
+substitutions:
+  wifi_ssid: !secret wifi_ssid
+  wifi_password: !secret wifi_password
+  language: en
+  # The embedded sensor is formatted on the panel; the blueprint's
+  # "Temperature Unit" input (also °F) only covers HA-provided values.
+  temp_units: "°F"
+  api_encryption_key: !secret api_key
+  # OTA is authenticated and encrypted with the API key (no OTA password).
+  ota_encryption: "true"
+  boot_sound: "false"
+  upload_tft_automatically: "true"
+  # VLAN 60 has no outbound, so the TFT comes from nas-sdg's mirror
+  # (nix-personal hosts/nas-sdg/nspanel-tft.nix), which fetches each new
+  # NSPanel Easy release daily. Needs the UDM NoT -> nas-sdg tcp/8099 rule.
+  nextion_update_base_url: "http://172.29.50.20:8099/nspanel-easy/v${version}"
+
+wifi:
+  domain: !secret wifi_domain
+  ap:
+    ssid: "${friendly_name} ESP"
+    password: !secret fallback_password
+
+captive_portal:
+
+web_server:
+  port: 80
+  version: 3
+  # Firmware upload stays on the captive portal only; /update would bypass
+  # OTA encryption.
+  ota: false
+
+# The TFT upload blocks the main loop on HTTP reads; the default 5 s task
+# watchdog reset the panel mid-download (2026-11-14, Blackymas v2026041).
+# Use ESPHome's own option: its 5 s default can override an sdkconfig value.
+esp32:
+  watchdog_timeout: 30s
+
+# The model is persisted in the Nextion's EEPROM, which a stock or blank TFT
+# can't hold, so until the first NSPanel Easy TFT lands every reboot reset
+# it to the EU default and the upload fetched the wrong file.
+select:
+  - id: !extend display_model
+    initial_option: NSPanel US
+
+# Diagnostics for restarts. NSPanel Easy reboots on purpose when the blueprint
+# binds new entities ("Restarting to activate new binding(s)"), which shows as a
+# software reset; anything else (watchdog, brownout, panic) shows here too.
+debug:
+  update_interval: 60s
+
+text_sensor:
+  - platform: debug
+    reset_reason:
+      name: Reset reason
+
+sensor:
+  - platform: uptime
+    name: Uptime
+  - platform: debug
+    free:
+      name: Free heap
+    loop_time:
+      name: Loop time
+
+packages:
+  remote_package:
+    url: https://github.com/edwardtfn/NSPanel-Easy
+    ref: v2026.11.16  # renovate: NSPanel Easy releases
+    refresh: 1d
+    files:
+      - nspanel_esphome.yaml

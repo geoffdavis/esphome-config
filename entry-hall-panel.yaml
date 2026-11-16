@@ -1,0 +1,15 @@
+---
+# Hardware: Sonoff NSPanel (on order 2026-11-15). Fill in at bring-up:
+#   model (US portrait NSPanel-USW assumed; set display_model below if not),
+#   MAC address, and the stock firmware backup path, e.g.
+#   ~/Documents/nspanel/nspanel-<model>-stock-<mac>.bin
+# Location: entry hall, replacing the HASPone (plate01). What the relays
+#   switch there is not known yet; record it here once wired.
+# Everything shared between the panels is in common/nspanel-easy.yaml.
+substitutions:
+  name: entry-hall-panel
+  device_name: entry-hall-panel
+  friendly_name: Entry Hall Panel
+
+packages:
+  nspanel: !include common/nspanel-easy.yaml
