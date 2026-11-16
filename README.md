@@ -52,12 +52,13 @@ esphome run tg_lrtv-minimal.yaml --device /dev/tty.usbserial-XXXX
 
 ## NSPanels (NSPanel Easy)
 
-`kitchen-porch-panel.yaml` is a Sonoff NSPanel running
-[NSPanel Easy](https://github.com/edwardtfn/NSPanel-Easy) as a remote
-package. It doesn't include `common/wifi.yaml` (the package defines wifi,
-api and ota), and its pages and buttons are set from the HA blueprint, not
-here. Panels sit on VLAN 60, which has no internet, so the display (TFT)
-file comes from nas-sdg's mirror via `nextion_update_base_url`
+`kitchen-porch-panel.yaml` and `entry-hall-panel.yaml` are Sonoff NSPanels
+running [NSPanel Easy](https://github.com/edwardtfn/NSPanel-Easy) as a
+remote package. Everything they share is in `common/nspanel-easy.yaml`; the
+device files hold only names and hardware notes. They don't include
+`common/wifi.yaml` (the package defines wifi, api and ota), and their pages
+and buttons are set from each panel's HA blueprint automation, not here.
+Panels sit on VLAN 60, which has no internet, so the display (TFT) file comes from nas-sdg's mirror via `nextion_update_base_url`
 (nix-personal `hosts/nas-sdg/nspanel-tft.nix`). Renovate bumps the package
 `ref:`. Full setup: the notes vault's "Set Up an NSPanel with NSPanel Easy".
 
