@@ -1,11 +1,13 @@
 ---
-# Hardware: HASwitchPlate "plate01" in the entry hall. HASPone PCB with a
-#   Wemos D1 mini (ESP8266) and a Nextion 2.4" Basic (NX3224T024_011R),
-#   still running the stock HASPone TFT (lcdVersion 2, HASPone v1.09 release).
-# Replaces the HASPone MQTT firmware. The panel subscribes to the Home
-# Assistant entities it shows, so the ~18 HASPone blueprint automations and
-# the MQTT backlight automation go away. See the PR description for the
-# migration plan (serial flash, rollback to HASPone v1.09).
+# Hardware: HASwitchPlate "plate01". HASPone PCB with a Wemos D1 mini
+#   (ESP8266) and a Nextion 2.4" Basic (NX3224T024_011R), still running the
+#   stock HASPone TFT (lcdVersion 2, from the HASPone v1.09 release).
+# Retired from the entry hall (a second NSPanel replaces it) and now a bench
+# unit that may go back up at the top of the stairs or on a desk. Everything
+# tied to a location (area, motion sensor, lights, backlight levels) is a
+# substitution below. Replaces the HASPone MQTT firmware: the panel
+# subscribes to the HA entities it shows, with no blueprints. Flash over
+# serial on the bench; rollback to HASPone v1.09 is in the PR description.
 #
 # HASPone PCB wiring (from HASPone v1.09 HASwitchPlate.cpp):
 #   D4 / GPIO2  -> Nextion RX   (HASPone: Serial1 TX)
@@ -27,26 +29,39 @@
 #                    temperature / condition every 5 s), b7 house mode
 #                    (tap opens page 3)
 #   Page 2 (alerts): b4 label, b5 message, b6 time, b7 spare. Filled by the
-#                    show_alert API action (front-door notifications).
+#                    show_alert API action.
 #   Page 3 (mode):   b4..b7 = Home, Sleep, Away, Extended Away
 #   Page 4 (lights): b4..b6 toggle buttons, b7..b9 sliders (0..255)
 #   Every page:      b1 Status -> 1, b2 Lights -> 4, b3 Mode -> 3
 substitutions:
-  name: entry-hall-haspone
-  friendly_name: Entry Hall HASPone
+  name: haspone-plate01
+  friendly_name: HASPone plate01
+  # Where it's mounted. Empty = no suggested area in HA.
+  area: ""
   # HA entities
   weather_entity: weather.pirateweather
   house_mode_entity: input_select.house_mode
+  # Motion wakes the backlight and shows page 1. Set motion_enabled to
+  # "false" where there's no sensor (on a desk); motion_entity is then
+  # still subscribed but ignored.
+  motion_enabled: "true"
   motion_entity: binary_sensor.entry_hall_tradfri_motion_sensor_motion
+  # The three lights on page 4 (toggle + slider each).
   light1_entity: light.entry_hall_overhead
   light1_label: Entry Hall Overhead
   light2_entity: light.downstairs_hall_overhead
   light2_label: Downstairs Hall
   light3_entity: light.front_porch
   light3_label: Front Porch
+  # Backlight percentages. Day/night ramp between sun elevation +6 and -6
+  # degrees; motion raises it to at least motion_backlight; in Sleep it's 0,
+  # or sleep_motion_backlight with motion or after a wake touch.
+  day_backlight: "100"
+  night_backlight: "5"
+  motion_backlight: "40"
+  sleep_motion_backlight: "5"
   # RGB565 text colour for the weather condition text and the calendar
-  # icon (HASPone "selected foreground"). Check against the retained
-  # hasp/plate01/light/selectedforegroundcolor/rgb value before flashing.
+  # icon (HASPone "selected foreground"); 65535 = white.
   color_fg: "65535"
   idle_seconds: "30"
 
@@ -66,6 +81,7 @@ logger:
     nextion: INFO
 
 esphome:
+  area: ${area}
   on_boot:
     priority: 600
     then:
@@ -100,7 +116,7 @@ globals:
   - id: backlight_level
     type: int
     initial_value: "0"
-  # A touch while the backlight is off only wakes it (5% for 15 s).
+  # A touch while the backlight is off only wakes it, for 15 s.
   - id: touch_wake
     type: bool
     initial_value: "false"
@@ -396,26 +412,29 @@ script:
       - lambda: id(touch_wake) = false;
       - script.execute: apply_backlight
 
-  # Same rules as the old automation.haspone_plate01_backlight: daylight
-  # 100%, night 5%, linear between sun elevation +6 and -6 degrees. Sleep:
-  # off, 5% with motion (or after a wake touch). Otherwise motion lifts it to
-  # at least 40%. Until HA has sent the sun and house mode it stays off.
+  # Same rules as the entry hall's old automation.haspone_plate01_backlight,
+  # with the levels from substitutions: day/night ramp between sun
+  # elevation +6 and -6 degrees. Sleep: off, sleep_motion_backlight with
+  # motion (or after a wake touch). Otherwise motion lifts it to at least
+  # motion_backlight. Until HA has sent the sun and house mode it stays off.
   - id: apply_backlight
     then:
       - lambda: |-
           if (!id(disp).is_setup()) return;
+          const int day = ${day_backlight}, night = ${night_backlight};
           float e = id(sun_elevation).state;
           const std::string &mode = id(house_mode).state;
-          bool motion = id(entry_motion).has_state() && id(entry_motion).state;
+          bool motion = ${motion_enabled} && id(motion_sensor).has_state() && id(motion_sensor).state;
           bool awake = motion || id(touch_wake);
           int level;
           if (mode == "Sleep") {
-            level = awake ? 5 : 0;
+            level = awake ? ${sleep_motion_backlight} : 0;
           } else if (std::isnan(e) || mode.empty()) {
-            level = id(touch_wake) ? 5 : 0;
+            level = id(touch_wake) ? night : 0;
           } else {
-            int sun = e >= 6 ? 100 : (e <= -6 ? 5 : (int) lroundf(5 + (95.0f / 12.0f) * (e + 6)));
-            level = motion ? std::max(sun, 40) : sun;
+            int sun = e >= 6 ? day
+                    : (e <= -6 ? night : (int) lroundf(night + ((day - night) / 12.0f) * (e + 6)));
+            level = motion ? std::max(sun, ${motion_backlight}) : sun;
           }
           if (level != id(backlight_level)) {
             ESP_LOGI("backlight", "%d%% (elevation %.1f, mode %s, motion %d, wake %d)", level, e,
@@ -427,10 +446,9 @@ script:
 
 api:
   actions:
-    # Front-door notifications: label, message and time on page 2, then show
-    # page 2 (the idle timer returns to page 1). Replaces the MQTT JSON in
-    # automation.kitchen_porch_panel_front_door_notifications. In Sleep the
-    # backlight stays off unless motion wakes it, as before.
+    # Label, message and time on page 2, then show page 2 (the idle timer
+    # returns to page 1). In Sleep the backlight stays off unless motion
+    # wakes it.
     - action: show_alert
       variables:
         label: string
@@ -606,7 +624,7 @@ binary_sensor:
   - platform: status
     name: Status
   - platform: homeassistant
-    id: entry_motion
+    id: motion_sensor
     entity_id: ${motion_entity}
     internal: true
     on_press:
@@ -614,7 +632,7 @@ binary_sensor:
       # Motion shows the home page, except in Sleep.
       - if:
           condition:
-            lambda: return id(house_mode).state != "Sleep";
+            lambda: return ${motion_enabled} && id(house_mode).state != "Sleep";
           then:
             - lambda: id(disp).goto_page("1");
     on_release:
