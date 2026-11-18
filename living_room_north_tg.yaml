@@ -1,8 +1,8 @@
 ---
 substitutions:
-  name: hodad-outlet
-  old_name: mpmd-outlet-tg
-  friendly_name: "Hodad Outlet"
+  name: living-room-north-tg
+  old_name: mpmd-light-topgreener
+  friendly_name: "Living Room North Floor Lamp"
   # Plug state to set upon powerup (or after power loss)
   # See options here: https://esphome.io/components/switch/gpio.html
   restore_mode: RESTORE_DEFAULT_ON
@@ -14,9 +14,6 @@ substitutions:
 
 packages:
   wifi: !include common/wifi.yaml
-  ipv6: !include common/ipv6.yaml
   sensors: !include common/sensors.yaml
   esp01: !include common/esp01.yaml
   topgreener: !include common/outlet-topgreener.yaml
-
-web_server:

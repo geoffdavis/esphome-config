@@ -11,6 +11,8 @@ esp8266:
 
 logger:
   baud_rate: 0 # (UART logging interferes with cse7766)
+  # INFO instead of the DEBUG default keeps the firmware smaller.
+  level: INFO
 
 uart:
   rx_pin: RX

@@ -7,7 +7,7 @@ the doorbell, smart plugs, an NSPanel, and a few one-offs.
 
 | Path | What's there |
 | --- | --- |
-| `*.yaml` | One file per device. ESP-01 (1MB) devices have a `-minimal.yaml` and a `-full.yaml` (see below). |
+| `*.yaml` | One file per device. The den heat pump (ESP-01) has a `-minimal.yaml` and a `-full.yaml` for two-stage OTA (see below). |
 | `common/` | Shared packages: board definitions, wifi/api/ota, heat pump, outlet types. |
 | `include/` | C++ helpers used by lambdas (`aqipm.h` for the particle sensor's AQI). |
 | `fonts/` | Fonts for devices with displays. |
@@ -35,19 +35,28 @@ task build -- doorbell             # compile
 task upload -- doorbell            # compile and flash over the network
 ```
 
-ESP-01 devices have too little flash for an OTA of the full firmware over
-itself, so they go in two stages: flash the minimal firmware, then the full
-one.
+ESP-01 (1MB) devices take an OTA only when the running image and the new
+one fit in 1004KB together (the new image is written above the running one,
+up to the start of the filesystem area at 0xFB000; sizes round up to 4KB).
+
+The power plugs (TopGreener and Sonoff S31) fit in one stage: their
+packages log at INFO instead of DEBUG and the TopGreeners leave out IPv6,
+so the full firmware is about 442KB (S31: about 451KB). Keep each image
+under about 500KB to stay single-stage; check the `Flash:` line after a
+build.
+
+The den heat pump (`denheatpump-full.yaml`, about 556KB) is still too big,
+so it goes in two stages: flash the minimal firmware, then the full one.
 
 ```bash
-task upload-two-stage -- tg_lrtv
+task upload-two-stage -- denheatpump
 ```
 
 A device that can't be reached over the network has to be flashed over
 serial (USB, or the UART header on ESP-01 based plugs):
 
 ```bash
-esphome run tg_lrtv-minimal.yaml --device /dev/tty.usbserial-XXXX
+esphome run tg_lrtv.yaml --device /dev/tty.usbserial-XXXX
 ```
 
 ## NSPanels (NSPanel Easy)

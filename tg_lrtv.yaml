@@ -1,8 +1,8 @@
 ---
 substitutions:
-  name: tg-dishwasher
-  old_name: tg_dishwasher
-  friendly_name: "Dishwasher"
+  name: tg-lrtv
+  old_name: tg_lrtv
+  friendly_name: "Living Room Entertainment"
   # Plug state to set upon powerup (or after power loss)
   # See options here: https://esphome.io/components/switch/gpio.html
   restore_mode: RESTORE_DEFAULT_ON
@@ -13,7 +13,7 @@ substitutions:
   voltage: "120.0"
 
 packages:
-  wifi: !include common/wifi-minimal.yaml
+  wifi: !include common/wifi.yaml
+  sensors: !include common/sensors.yaml
   esp01: !include common/esp01.yaml
-
-web_server:
+  topgreener: !include common/outlet-topgreener.yaml

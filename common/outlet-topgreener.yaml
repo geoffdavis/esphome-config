@@ -33,7 +33,8 @@ esp8266:
   restore_from_flash: true
 
 logger:
-  # level: DEBUG
+  # INFO instead of the DEBUG default keeps the firmware ~7KB smaller.
+  level: INFO
   # Disable UART logging, we have no physical connections!
   baud_rate: 0
 
