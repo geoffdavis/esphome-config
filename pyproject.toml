@@ -7,5 +7,17 @@ requires-python = ">=3.13"
 dependencies = [
     # See https://github.com/echavet/MitsubishiCN105ESPHome/issues/396
     # https://github.com/echavet/MitsubishiCN105ESPHome/issues/378#issuecomment-3347999263
-    "esphome==2026.10.2",
+    "esphome==2026.11.0",
+]
+
+[tool.uv]
+# Resolve only for the platforms this repo is built on: Linux (CI, x86_64 and
+# arm64) and Apple Silicon Macs. ESPHome 2026.11.0 can't be installed on Intel
+# Macs: it pins cryptography==50.0.2 while its own aioesphomeapi==46.25.1 caps
+# cryptography<49 there, and uv's universal resolution fails on that split even
+# when running on Linux. Drop this once upstream fixes the pins, if Intel Macs
+# are wanted again.
+environments = [
+    "sys_platform == 'linux'",
+    "sys_platform == 'darwin' and platform_machine == 'arm64'",
 ]
