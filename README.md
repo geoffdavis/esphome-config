@@ -40,9 +40,10 @@ one fit in 1004KB together (the new image is written above the running one,
 up to the start of the filesystem area at 0xFB000; sizes round up to 4KB).
 
 The power plugs (TopGreener and Sonoff S31) fit in one stage: their
-packages remove `web_server` and the TopGreeners leave out IPv6, so the
-full firmware is about 433KB (S31: about 440KB). Keep each image under
-about 500KB to stay single-stage; check the `Flash:` line after a build.
+packages log at INFO instead of DEBUG and the TopGreeners leave out IPv6,
+so the full firmware is about 442KB (S31: about 451KB). Keep each image
+under about 500KB to stay single-stage; check the `Flash:` line after a
+build.
 
 The den heat pump (`denheatpump-full.yaml`, about 556KB) is still too big,
 so it goes in two stages: flash the minimal firmware, then the full one.

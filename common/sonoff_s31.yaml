@@ -11,6 +11,8 @@ esp8266:
 
 logger:
   baud_rate: 0 # (UART logging interferes with cse7766)
+  # INFO instead of the DEBUG default keeps the firmware smaller.
+  level: INFO
 
 uart:
   rx_pin: RX
@@ -81,10 +83,3 @@ sensor:
       # Multiplication factor from W to kW is 0.001
       - multiply: 0.001
     unit_of_measurement: kWh
-
-# The web UI isn't used on these 1MB plugs, and dropping it saves ~19KB.
-# Together with leaving out IPv6, that keeps the full firmware small enough
-# (~433KB) for a single-stage OTA: the running and new images must fit in
-# 1004KB together. HA control, OTA and the captive portal (fallback hotspot)
-# don't need it.
-web_server: !remove
