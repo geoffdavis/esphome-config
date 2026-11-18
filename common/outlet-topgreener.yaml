@@ -121,3 +121,10 @@ sensor:
       # Multiplication factor from W to kW is 0.001
       - multiply: ${wattage_multiplier}
     unit_of_measurement: kWh
+
+# The web UI isn't used on these 1MB plugs, and dropping it saves ~19KB.
+# Together with leaving out IPv6, that keeps the full firmware small enough
+# (~433KB) for a single-stage OTA: the running and new images must fit in
+# 1004KB together. HA control, OTA and the captive portal (fallback hotspot)
+# don't need it.
+web_server: !remove

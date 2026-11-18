@@ -14,9 +14,6 @@ substitutions:
 
 packages:
   wifi: !include common/wifi.yaml
-  ipv6: !include common/ipv6.yaml
   sensors: !include common/sensors.yaml
   esp01: !include common/esp01.yaml
   topgreener: !include common/outlet-topgreener.yaml
-
-web_server:
