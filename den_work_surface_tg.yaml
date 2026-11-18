@@ -1,8 +1,8 @@
 ---
 substitutions:
-  name: pruscilla-light-tg
-  old_name: pruscilla_light_tg
-  friendly_name: "Pruscilla Light"
+  name: den-work-surface-tg
+  old_name: pruscilla-light-tg
+  friendly_name: "Den Work Surface PSU Plug"
   # Plug state to set upon powerup (or after power loss)
   # See options here: https://esphome.io/components/switch/gpio.html
   restore_mode: RESTORE_DEFAULT_ON
