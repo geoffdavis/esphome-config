@@ -1,8 +1,8 @@
 ---
-# Hardware: Sonoff NSPanel (on order 2026-11-15). Fill in at bring-up:
-#   model (US portrait NSPanel-USW assumed; set display_model below if not),
-#   MAC address, and the stock firmware backup path, e.g.
-#   ~/Documents/nspanel/nspanel-<model>-stock-<mac>.bin
+# Hardware: Sonoff NSPanel US portrait (NSPanel-USW), ESP32-D0WD-V3, 4MB flash
+# Mac Address: c0:cd:d6:c5:85:ec (UniFi/NetBox reservation 172.29.60.29)
+# Stock firmware backup (eWeLink, flashed over serial 2026-11-18):
+#   ~/Documents/nspanel/nspanel-stock-c0cdd6c585ec.bin
 # Location: entry hall, replacing the HASPone (plate01).
 # Relays (planned, not wired yet):
 #   relay 1: front porch light feed (one Hue bulb). Stays on; it exists only
