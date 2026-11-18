@@ -1,0 +1,205 @@
+---
+# Hardware: bare ESP32-WROOM-32 dev board (no PSRAM) driving an original
+#   Adafruit PiTFT 2.8" resistive (product 1601, 26-pin Pi Model A/B
+#   version): ILI9341 320x240 on SPI CE0, STMPE610 touch on SPI CE1,
+#   D/C on Pi GPIO25, touch IRQ on Pi GPIO24, backlight on STMPE610 GPIO2.
+#   Not wired up or flashed yet.
+# Location: desk / bench.
+#
+# Wiring (PiTFT 26-pin header -> ESP32). Physical pin numbers are the Pi's;
+# ESP32 pins avoid the strapping pins (0, 2, 5, 12, 15), flash (6-11) and
+# input-only pins (34-39), and leave 21/22 free for I2C.
+#
+#   PiTFT pin  Pi signal        ESP32
+#   1          3V3              3V3
+#   2          5V               5V (VIN, from USB)
+#   6          GND              GND
+#   19         MOSI (GPIO10)    GPIO23 (VSPI MOSI)
+#   21         MISO (GPIO9)     GPIO19 (VSPI MISO)
+#   23         SCLK (GPIO11)    GPIO18 (VSPI SCLK)
+#   24         CE0  (GPIO8)     GPIO16 (display CS)
+#   26         CE1  (GPIO7)     GPIO17 (touch CS)
+#   22         GPIO25           GPIO4  (display D/C)
+#   18         GPIO24           GPIO27 (touch IRQ, active low)
+#
+# Touch calibration: the values below are placeholders. See
+# components/stmpe610/README.md for how to measure x_min/x_max/y_min/y_max.
+substitutions:
+  name: desk-panel
+  friendly_name: Desk Panel
+  # HA light the test button toggles.
+  light_entity: light.desk_lamp
+  light_label: Desk Lamp
+  # Turn the backlight off after this much time without a touch.
+  idle_timeout: 5min
+
+  spi_clk_pin: GPIO18
+  spi_mosi_pin: GPIO23
+  spi_miso_pin: GPIO19
+  tft_cs_pin: GPIO16
+  tft_dc_pin: GPIO4
+  touch_cs_pin: GPIO17
+  touch_irq_pin: GPIO27
+
+packages:
+  wifi: !include common/wifi.yaml
+  ipv6: !include common/ipv6.yaml
+  sensors: !include common/sensors.yaml
+
+esphome:
+  name: ${name}
+  friendly_name: ${friendly_name}
+
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+
+external_components:
+  - source:
+      type: local
+      path: components
+    components: [stmpe610]
+
+logger:
+  level: DEBUG
+
+spi:
+  clk_pin: ${spi_clk_pin}
+  mosi_pin: ${spi_mosi_pin}
+  miso_pin: ${spi_miso_pin}
+
+display:
+  - platform: mipi_spi
+    id: tft
+    model: ILI9341
+    cs_pin: ${tft_cs_pin}
+    dc_pin: ${tft_dc_pin}
+    # The PiTFT has no display reset line on the header.
+    # Adafruit's Linux overlay runs the ILI9341 at 32 MHz; start lower and
+    # raise it once the wiring is known to be clean.
+    data_rate: 26MHz
+    color_order: bgr
+    invert_colors: false
+    # LVGL draws straight to the panel, so the display itself needs no frame
+    # buffer; LVGL's own draw buffer is sized under lvgl: below.
+    auto_clear_enabled: false
+    update_interval: never
+
+touchscreen:
+  - platform: stmpe610
+    id: touch
+    display: tft
+    cs_pin: ${touch_cs_pin}
+    interrupt_pin: ${touch_irq_pin}
+    calibration:
+      x_min: 150
+      x_max: 3800
+      y_min: 150
+      y_max: 3800
+    transform:
+      swap_xy: false
+      mirror_x: false
+      mirror_y: false
+    on_release:
+      # Wake the screen on any touch.
+      - if:
+          condition: lvgl.is_paused
+          then:
+            - light.turn_on: backlight
+            - lvgl.resume:
+            - lvgl.widget.redraw:
+
+output:
+  - platform: stmpe610
+    id: backlight_gpio
+    stmpe610_id: touch
+    pin: 2
+
+light:
+  - platform: binary
+    id: backlight
+    name: Backlight
+    output: backlight_gpio
+    restore_mode: ALWAYS_ON
+
+binary_sensor:
+  - platform: homeassistant
+    id: ha_light
+    entity_id: ${light_entity}
+    on_state:
+      - lvgl.widget.update:
+          id: light_btn
+          state:
+            checked: !lambda return x;
+
+time:
+  - id: !extend homeassistant_time
+    on_time_sync:
+      - script.execute: update_clock
+    on_time:
+      - seconds: 0
+        then:
+          - script.execute: update_clock
+
+script:
+  - id: update_clock
+    then:
+      - lvgl.label.update:
+          id: clock_label
+          text:
+            time_format: "%H:%M"
+            time: homeassistant_time
+      - lvgl.label.update:
+          id: date_label
+          text:
+            time_format: "%a %b %-d"
+            time: homeassistant_time
+
+lvgl:
+  displays: tft
+  touchscreens: touch
+  # Landscape, 320x240 (the panel is 240x320 native). LVGL owns rotation
+  # and applies it to the touch points too.
+  rotation: 90
+  # No PSRAM: a quarter-screen draw buffer (320x240x2 / 4 = 38 KB).
+  buffer_size: 25%
+  on_idle:
+    timeout: ${idle_timeout}
+    then:
+      - light.turn_off: backlight
+      # Paused, LVGL ignores touches; on_release above wakes it, so the
+      # waking tap doesn't also press a button.
+      - lvgl.pause:
+  pages:
+    - id: main_page
+      widgets:
+        - label:
+            id: clock_label
+            align: TOP_MID
+            y: 16
+            text_font: montserrat_48
+            text: "--:--"
+        - label:
+            id: date_label
+            align: TOP_MID
+            y: 76
+            text_font: montserrat_20
+            text: ""
+        - button:
+            id: light_btn
+            align: BOTTOM_MID
+            y: -24
+            width: 200
+            height: 70
+            checkable: true
+            widgets:
+              - label:
+                  align: CENTER
+                  text_font: montserrat_20
+                  text: ${light_label}
+            on_click:
+              - homeassistant.action:
+                  action: light.toggle
+                  data:
+                    entity_id: ${light_entity}
