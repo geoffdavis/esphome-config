@@ -4,12 +4,16 @@
 # Stock firmware backup (eWeLink, flashed over serial 2026-11-18):
 #   ~/Documents/nspanel/nspanel-stock-c0cdd6c585ec.bin
 # Location: entry hall, replacing the HASPone (plate01).
-# Relays (planned, not wired yet):
+# Relays (wired and tested 2026-11-18):
 #   relay 1: front porch light feed (one Hue bulb). Stays on; it exists only
-#     to power-cycle the bulb. Not bound to the left button.
-#   relay 2: switched line to the entry hall Shelly Dimmer 2's SW input (edge
-#     mode), so the right button toggles the light locally with HA down.
-#     Panel and Shelly must be on the same breaker.
+#     to power-cycle the bulb. Not bound to the left button (the left button
+#     drives light.front_porch through HA).
+#   relay 2: switched line to the entry hall Shelly Dimmer 2's SW input. The
+#     Shelly's button type is "edge" (set 2026-11-18; it was one_button, which
+#     read the latched relay as a long press and dimmed). Every relay flip
+#     toggles the light. The blueprint binds the right button to
+#     light.entry_hall_overhead with relay 2 local fallback, so it still
+#     toggles the light with HA down. Panel and Shelly share a breaker.
 # Everything shared between the panels is in common/nspanel-easy.yaml.
 substitutions:
   name: entry-hall-panel
@@ -22,6 +26,11 @@ packages:
 # A Hue bulb without power drops off the Hue network, so the porch relay must
 # come back on after any reboot or power loss. NSPanel Easy's default is
 # RESTORE_DEFAULT_OFF.
+#
+# Relay 2 starts off on every boot: in edge mode, restoring it to on after a
+# power cut (both devices share a breaker) would toggle the entry hall light.
 switch:
   - id: !extend relay_1
     restore_mode: ALWAYS_ON
+  - id: !extend relay_2
+    restore_mode: ALWAYS_OFF
