@@ -1,7 +1,6 @@
 ---
 substitutions:
   name: hodad-outlet
-  old_name: mpmd-outlet-tg
   friendly_name: "Hodad Outlet"
   # Plug state to set upon powerup (or after power loss)
   # See options here: https://esphome.io/components/switch/gpio.html
