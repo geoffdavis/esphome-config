@@ -9,6 +9,7 @@ the doorbell, smart plugs, an NSPanel, and a few one-offs.
 | --- | --- |
 | `*.yaml` | One file per device. The den heat pump (ESP-01) has a `-minimal.yaml` and a `-full.yaml` for two-stage OTA (see below). |
 | `common/` | Shared packages: board definitions, wifi/api/ota, heat pump, outlet types. |
+| `components/` | Local external components (`stmpe610` touch controller, used by `desk-panel.yaml`). |
 | `include/` | C++ helpers used by lambdas (`aqipm.h` for the particle sensor's AQI). |
 | `fonts/` | Fonts for devices with displays. |
 | `archive/` | Retired configs kept for reference. Not validated or updated. |

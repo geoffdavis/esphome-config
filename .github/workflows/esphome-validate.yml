@@ -6,6 +6,7 @@ on:
     paths:
       - '*.yaml'
       - 'common/**'
+      - 'components/**'
       - 'include/**'
       - 'fonts/**'
       - 'pyproject.toml'
@@ -15,6 +16,7 @@ on:
     paths:
       - '*.yaml'
       - 'common/**'
+      - 'components/**'
       - 'include/**'
       - 'fonts/**'
       - 'pyproject.toml'
