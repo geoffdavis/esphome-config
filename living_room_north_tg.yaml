@@ -1,7 +1,6 @@
 ---
 substitutions:
   name: living-room-north-tg
-  old_name: mpmd-light-topgreener
   friendly_name: "Living Room North Floor Lamp"
   # Plug state to set upon powerup (or after power loss)
   # See options here: https://esphome.io/components/switch/gpio.html
